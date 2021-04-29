@@ -28,20 +28,20 @@ import logo from './logo.svg';
 
 import BlocklyComponent, { Block, Value, Field, Shadow } from './Blockly';
 
-import BlocklyJS from 'blockly/javascript';
 
 import './blocks/customblocks';
-import './generator/generator';
+import { LPGenerator } from './generator/generator';
 
 
-const electron = window.require('electron')
-const ipcRenderer =  electron.ipcRenderer
+//const electron = window.require('electron')
+//const ipcRenderer =  electron.ipcRenderer
 
-
+/*
 function sendVariables() {
       var result = ipcRenderer.sendSync('synchronous-message','sendVariables')
       console.log(result)
 }
+*/
 
 class App extends React.Component {
   constructor(props) {
@@ -50,11 +50,11 @@ class App extends React.Component {
   }
 
   generateCode = () => {
-    var code = BlocklyJS.workspaceToCode(
+    var code = LPGenerator.workspaceToCode(
       this.simpleWorkspace.current.workspace
     );
     var variables = "variables"
-    sendVariables(variables)
+    //sendVariables(variables)
     console.log(code);
   }
 
@@ -69,13 +69,17 @@ class App extends React.Component {
           move={{
             scrollbars: true,
             drag: true,
-            wheel: true
+            wheel: true,
           }}
+          sounds={true}
           initialXml={`
 <xml xmlns="http://www.w3.org/1999/xhtml">
 <block type="controls_ifelse" x="0" y="0"></block>
 </xml>
       `}>
+            <Block type = "new_variable" />
+            <Block type = "col_address" />
+            <Block type = "col_junction"/>
             <Block type="test_react_field" />
             <Block type="test_react_date_field" />
             <Block type="controls_ifelse" />

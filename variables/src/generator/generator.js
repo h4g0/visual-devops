@@ -25,12 +25,26 @@
 // https://developers.google.com/blockly/guides/create-custom-blocks/generating-code
 
 import * as Blockly from 'blockly/core';
-import 'blockly/javascript';
 
-Blockly.JavaScript['test_react_field'] = function (block) {
-    return 'console.log(\'custom block\');\n';
+export const LPGenerator = new Blockly.Generator('LP');
+
+LPGenerator['new_variable'] = function (block) {
+    var name = block.getFieldValue('VARNAME')
+    var cols = block.getFieldValue('VALUE')
+
+    return name + " = " + cols;
 };
 
-Blockly.JavaScript['test_react_date_field'] = function (block) {
-    return 'console.log(' + block.getField('DATE').getText() + ');\n';
+LPGenerator['col_address'] = function (block) { 
+    var col = block.getFieldValue('COL')
+    console.log(col)
+    return col;
+};
+
+LPGenerator['col_junction'] = function (block) {
+    var col1 = block.getFieldValue('COL1')
+    var col2 =  block.getFieldValue('COL2')
+    var operation = block.getFieldValue('OP')
+
+    return col1 + " " + operation + " " + col2;
 };
