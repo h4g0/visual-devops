@@ -134,7 +134,7 @@ var ReactColJunctionField = {
         ["+", "PLUS"]
       ]
     },
-    {"type": "input_value", "name": "COL1"},
+    {"type": "input_value", "name": "COL2"},
   ]
 }
 
