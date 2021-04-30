@@ -144,3 +144,28 @@ Blockly.Blocks['col_junction'] = {
     this.setStyle('loop_blocks');
   }
 };
+
+var ReactForallField = {
+  "message0": "FORALL %1",
+  "output": "Action",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "VAR",
+      "options": [
+        ["col1", "COL1"],
+        ["col2", "COL2"]
+      ]
+    } ],
+    "message1": "EXPRESSION %2", 
+    "args1": [
+        {"type": "input_value", "name": "EXPR"},
+    ]
+}
+
+Blockly.Blocks['forall'] = {
+  init: function() {
+    this.jsonInit(ReactForallField);
+    this.setStyle('loop_blocks');
+  }
+};

@@ -80,6 +80,7 @@ class App extends React.Component {
             <Block type = "new_variable" />
             <Block type = "col_address" />
             <Block type = "col_junction"/>
+            <Block type = "forall" />
             <Block type="test_react_field" />
             <Block type="test_react_date_field" />
             <Block type="controls_ifelse" />
