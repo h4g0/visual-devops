@@ -26,23 +26,23 @@
 
 import * as Blockly from 'blockly/core';
 
-export const LPGenerator = new Blockly.Generator('LP');
+export const LPGenerator: any =  new Blockly.Generator('LP');
 
 LPGenerator.PRECEDENCE = 0
 
-LPGenerator['new_variable'] = function (block) {
+LPGenerator['new_variable'] = function (block: any) {
     var name = block.getFieldValue('VARNAME')
     var cols =  LPGenerator.valueToCode(block, 'VALUE', LPGenerator.PRECEDENCE) || 'null'
 
     return name + " = " + cols;
 };
 
-LPGenerator['col_address'] = function (block) { 
+LPGenerator['col_address'] = function (block: any) { 
     var col = block.getFieldValue('COL')
     return [col, LPGenerator.PRECEDENCE];
 };
 
-LPGenerator['col_junction'] = function (block) {
+LPGenerator['col_junction'] = function (block: any) {
     var col1 = LPGenerator.valueToCode(block, 'COL1', LPGenerator.PRECEDENCE) || 'null'
     var col2 = LPGenerator.valueToCode(block, 'COL2', LPGenerator.PRECEDENCE) || 'null'
     var operation = block.getFieldValue('OP')

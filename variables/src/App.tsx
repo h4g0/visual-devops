@@ -32,6 +32,7 @@ import BlocklyComponent, { Block, Value, Field, Shadow } from './Blockly';
 import './blocks/customblocks';
 import { LPGenerator } from './generator/generator';
 
+import {createStore} from 'redux'
 
 //const electron = window.require('electron')
 //const ipcRenderer =  electron.ipcRenderer
@@ -44,7 +45,9 @@ function sendVariables() {
 */
 
 class App extends React.Component {
-  constructor(props) {
+  simpleWorkspace: any
+
+  constructor(props: any) {
     super(props);
     this.simpleWorkspace = React.createRef();
   }
@@ -62,7 +65,6 @@ class App extends React.Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <button onClick={this.generateCode}>Convert</button>
           <BlocklyComponent ref={this.simpleWorkspace}
           readOnly={false} trashcan={true} media={'media/'}

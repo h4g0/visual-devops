@@ -47,7 +47,9 @@ var testReactField = {
 
 Blockly.Blocks['test_react_field'] = {
   init: function() {
+    //@ts-ignore
     this.jsonInit(testReactField);
+    //@ts-ignore
     this.setStyle('loop_blocks');
   }
 };
@@ -68,7 +70,9 @@ var reactDateField = {
 
 Blockly.Blocks['test_react_date_field'] = {
   init: function() {
+    //@ts-ignore
     this.jsonInit(reactDateField);
+    //@ts-ignore
     this.setStyle('loop_blocks');
   }
 };
@@ -93,7 +97,9 @@ var ReactvariableField = {
 
 Blockly.Blocks['new_variable'] = {
   init: function() {
+    //@ts-ignore
     this.jsonInit(ReactvariableField);
+    //@ts-ignore
     this.setStyle('loop_blocks');
   }
 };
@@ -116,7 +122,9 @@ var ReactColField = {
 
 Blockly.Blocks['col_address'] = {
   init: function() {
+    //@ts-ignore
     this.jsonInit(ReactColField);
+    //@ts-ignore
     this.setStyle('loop_blocks');
   }
 };
@@ -140,14 +148,15 @@ var ReactColJunctionField = {
 
 Blockly.Blocks['col_junction'] = {
   init: function() {
+    //@ts-ignore
     this.jsonInit(ReactColJunctionField);
+    //@ts-ignore
     this.setStyle('loop_blocks');
   }
 };
 
 var ReactForallField = {
   "message0": "FORALL %1",
-  "output": "Action",
   "args0": [
     {
       "type": "field_dropdown",
@@ -157,15 +166,21 @@ var ReactForallField = {
         ["col2", "COL2"]
       ]
     } ],
-    "message1": "EXPRESSION %2", 
+    "message1": "EXPRESSION %1", 
     "args1": [
         {"type": "input_value", "name": "EXPR"},
-    ]
+    ],
+    "input": "Action",
+    "output": "Action",
+    "nextStatement": "Action",
+
 }
 
 Blockly.Blocks['forall'] = {
   init: function() {
+    //@ts-ignore
     this.jsonInit(ReactForallField);
+    //@ts-ignore
     this.setStyle('loop_blocks');
   }
 };
