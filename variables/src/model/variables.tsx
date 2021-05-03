@@ -1,20 +1,23 @@
 import React from 'react'
+import "./model.css"
 
 class Variables extends React.Component {
     
     variables = [" variable1 = example variable", "variable2 = example variable"]
-    constructor(props){
+    constructor(props: any){
         super(props)
     }
 
     render() {
 
-        return <div>
+        return <div className="variables">
             {
                 this.variables.map((variable, index) => {
-                    <p> variable </p>
+                    return <p>  {variable} </p>
                 })
             }
         </div>
     }
 }
+
+export default Variables

@@ -5,7 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux'
 import  {createStore} from 'redux'
-import {modify_model} from './actions/index.js'
+import {modify_model} from './actions/index'
 
 const store = createStore(modify_model)
 

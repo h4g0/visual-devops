@@ -31,6 +31,7 @@ import BlocklyComponent, { Block, Value, Field, Shadow } from './Blockly';
 
 import './blocks/customblocks';
 import { LPGenerator } from './generator/generator';
+import Model from './model/model'
 
 import {createStore} from 'redux'
 
@@ -64,7 +65,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
+        <Model />
           <button onClick={this.generateCode}>Convert</button>
           <BlocklyComponent ref={this.simpleWorkspace}
           readOnly={false} trashcan={true} media={'media/'}
@@ -108,7 +109,6 @@ class App extends React.Component {
               </Value>
             </Block>
           </BlocklyComponent>
-        </header>
       </div>
     );
   }

@@ -1,0 +1,40 @@
+.model {
+    height: h-25 ;
+    display: table-row
+}
+
+.variables {
+    height: 100%;
+    width: w-25 ;
+    display: table-cell;
+    border: 5px solid blue;
+    padding: 50px;
+    margin: 20px;
+}
+
+.constraints {
+    height: 100%;
+    width: w-25 ;
+    display: table-cell;
+    border: 5px solid green;
+    padding: 50px;
+    margin: 20px;
+}
+
+.objective {
+    height: 100%;
+    width: w-25 ;
+    display: table-cell;
+    border: 5px solid red;
+    padding: 50px;
+    margin: 20px;
+}
+
+.data {
+    height: 100%;
+    width: w-25 ;
+    display: table-cell;
+    border: 5px solid yellow;
+    padding: 50px;
+    margin: 20px;
+}
