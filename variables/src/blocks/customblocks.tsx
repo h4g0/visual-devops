@@ -26,6 +26,8 @@
 
 
 import * as Blockly from 'blockly/core';
+import { model1_cols } from '../linearprogramming/linear_programming';
+
 
 // Since we're using json to initialize the field, we'll need to import it.
 import '../fields/BlocklyReactField';
@@ -79,8 +81,7 @@ Blockly.Blocks['test_react_date_field'] = {
 
 var ReactvariableField = {
     "message0": "set %1 to %2",
-    "previousStatement": "Action",
-    "nextStatement": "Action",
+  
     "args0": [
       {
         "type": "field_input",
@@ -91,7 +92,7 @@ var ReactvariableField = {
       {
         "type": "input_value",
         "name": "VALUE"
-      }
+      } 
     ]
 }
 
@@ -104,6 +105,9 @@ Blockly.Blocks['new_variable'] = {
   }
 };
 
+let optreactcolfield: any = Array.from(model1_cols.keys()).map((val,index) => {
+  return [val, val]
+})
 
 var ReactColField = {
   "message0": "collumn: %1",
@@ -112,10 +116,7 @@ var ReactColField = {
     {
       "type": "field_dropdown",
       "name": "COL",
-      "options": [
-        ["col 1", "COL1"],
-        ["col 2", "COL2"]
-      ]
+      "options": optreactcolfield
     }
   ]
 }
@@ -138,8 +139,8 @@ var ReactColJunctionField = {
       "type": "field_dropdown",
       "name": "OP",
       "options": [
-        ["X", "MUL"],
-        ["+", "PLUS"]
+        ["X", "x"],
+        ["+", "+"]
       ]
     },
     {"type": "input_value", "name": "COL2"},

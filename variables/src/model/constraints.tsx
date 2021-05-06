@@ -14,7 +14,7 @@ class Constraints extends React.Component {
         return <div className="constraints">
             {
                 this.constraints.map((constraint, index) => {
-                    return <p> {constraint} </p>
+                    return <p className="modeltext"> {constraint} </p>
                 })
             }
         </div>

@@ -1,40 +1,50 @@
 .model {
     height: h-25 ;
-    display: table-row
+    display: flex
 }
 
 .variables {
+    border-radius: 25px;
     height: 100%;
     width: w-25 ;
-    display: table-cell;
-    border: 5px solid blue;
+    display: table-cell;    
+    background-color: lightgrey;
     padding: 50px;
     margin: 20px;
 }
 
 .constraints {
+    border-radius: 25px;
     height: 100%;
     width: w-25 ;
     display: table-cell;
-    border: 5px solid green;
+    background-color: lightgrey;
     padding: 50px;
     margin: 20px;
+    font-family:  Papyrus;
+
 }
 
 .objective {
+    border-radius: 25px;
     height: 100%;
     width: w-25 ;
     display: table-cell;
-    border: 5px solid red;
+    background-color: lightgrey;
     padding: 50px;
     margin: 20px;
 }
 
 .data {
+    border-radius: 25px;
     height: 100%;
     width: w-25 ;
     display: table-cell;
-    border: 5px solid yellow;
+    background-color: lightgrey;
     padding: 50px;
     margin: 20px;
+}
+
+modeltext {
+    font-family: Papyrus;
 }

@@ -26,6 +26,8 @@
 
 import * as Blockly from 'blockly/core';
 
+import { model1_cols, stringify_variables, generate_model_variables } from '../linearprogramming/linear_programming';
+
 export const LPGenerator: any =  new Blockly.Generator('LP');
 
 LPGenerator.PRECEDENCE = 0
@@ -34,7 +36,8 @@ LPGenerator['new_variable'] = function (block: any) {
     var name = block.getFieldValue('VARNAME')
     var cols =  LPGenerator.valueToCode(block, 'VALUE', LPGenerator.PRECEDENCE) || 'null'
 
-    return name + " = " + cols;
+    return JSON.stringify(generate_model_variables(model1_cols,[ name + " = " + cols])) ;
+
 };
 
 LPGenerator['col_address'] = function (block: any) { 
