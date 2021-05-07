@@ -36,7 +36,7 @@ LPGenerator['new_variable'] = function (block: any) {
     var name = block.getFieldValue('VARNAME')
     var cols =  LPGenerator.valueToCode(block, 'VALUE', LPGenerator.PRECEDENCE) || 'null'
 
-    return JSON.stringify(generate_model_variables(model1_cols,[ name + " = " + cols])) ;
+    return stringify_variables(generate_model_variables(model1_cols,[ name + " = " + cols])) ;
 
 };
 
