@@ -77,13 +77,14 @@ class App extends React.Component {
           sounds={true}
           initialXml={`
 <xml xmlns="http://www.w3.org/1999/xhtml">
-<block type="controls_ifelse" x="0" y="0"></block>
 </xml>
       `}>
             <Block type = "new_variable" />
             <Block type = "col_address" />
             <Block type = "col_junction"/>
             <Block type = "forall" />
+            <Block type="constraint" />
+            <Block type="operation" />
             <Block type="test_react_field" />
             <Block type="test_react_date_field" />
             <Block type="controls_ifelse" />

@@ -81,7 +81,8 @@ Blockly.Blocks['test_react_date_field'] = {
 
 var ReactvariableField = {
     "message0": "set %1 to %2",
-  
+    "nextStatement": "ACTION",
+    "previousStatement": "ACTION",
     "args0": [
       {
         "type": "field_input",
@@ -185,3 +186,57 @@ Blockly.Blocks['forall'] = {
     this.setStyle('loop_blocks');
   }
 };
+
+
+var ReactOperationField = {
+  "message0": "Operation %1 %2",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "OPERATION",
+      "options": [
+        ["<", "<"],
+        ["<=", "<="],
+        [">",">"],
+        [">=",">="],
+      ]
+    },
+    {
+      "type": "input_value",
+      "name": "NEXT_STATMENT",
+    } ],
+    "input": "Action",
+    "output": "Action",
+}
+
+Blockly.Blocks['operation'] = {
+  init: function() {
+    //@ts-ignore
+    this.jsonInit(ReactOperationField);
+    //@ts-ignore
+    this.setStyle('loop_blocks');
+  }
+};
+
+
+var ReactConstraintField = {
+  "message0": "Constraint %1",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "CONSTRAINT",
+    } ],
+    "input": "Action",
+    "previousStatement": "ACTION",
+    "nextStatement": "ACTION"
+}
+
+Blockly.Blocks['constraint'] = {
+  init: function() {
+    //@ts-ignore
+    this.jsonInit(ReactConstraintField);
+    //@ts-ignore
+    this.setStyle('loop_blocks');
+  }
+};
+

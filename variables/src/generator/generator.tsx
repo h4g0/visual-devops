@@ -32,6 +32,17 @@ export const LPGenerator: any =  new Blockly.Generator('LP');
 
 LPGenerator.PRECEDENCE = 0
 
+LPGenerator.scrub_ = function(block: any, code: any, opt_thisOnly: any) {
+    const nextBlock =
+        block.nextConnection && block.nextConnection.targetBlock();
+    let nextCode = '';
+    if (nextBlock) {
+        nextCode =
+            opt_thisOnly ? '' : ',\n' + LPGenerator.blockToCode(nextBlock);
+    }
+    return code +  nextCode;
+  };
+
 LPGenerator['new_variable'] = function (block: any) {
     var name = block.getFieldValue('VARNAME')
     var cols =  LPGenerator.valueToCode(block, 'VALUE', LPGenerator.PRECEDENCE) || 'null'
