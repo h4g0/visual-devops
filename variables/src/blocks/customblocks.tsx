@@ -240,3 +240,14 @@ Blockly.Blocks['constraint'] = {
   }
 };
 
+var ReactNumberField = {
+  "message0": "%1",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "VALUE",
+    } ],
+    "input": "Action",
+    "previousStatement": "ACTION",
+    "nextStatement": "ACTION"
+}
