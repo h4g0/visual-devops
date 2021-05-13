@@ -17,9 +17,11 @@ class Model extends React.Component {
        
           <Constraints />
        
+            <div className="objective-data-container"> 
           <Objective />
 
             <Data /> 
+            </div>
          </div>
     }
 }

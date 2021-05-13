@@ -1,50 +1,56 @@
 .model {
-    height: h-25 ;
-    display: flex
+    height: 250px;
+    display: flex;
+    background-color: lightgrey;
 }
 
 .variables {
     border-radius: 25px;
-    height: 100%;
-    width: w-25 ;
+    height: 200px;
+    width: 20% ;
     display: table-cell;    
-    background-color: lightgrey;
-    padding: 50px;
-    margin: 20px;
+    background-color: wheat;
+    padding: 5px;
+    margin: 2px;
+    margin-left: 20px;
+    margin-top: 20px;
 }
 
 .constraints {
     border-radius: 25px;
-    height: 100%;
-    width: w-25 ;
+    height: 200px;
+    width: 30% ;
     display: table-cell;
-    background-color: lightgrey;
-    padding: 50px;
-    margin: 20px;
-    font-family:  Papyrus;
-
+    background-color: wheat;
+    padding: 5px;
+    margin: 2px;
+    margin-left: 20px;
+    margin-top: 20px;
 }
 
 .objective {
-    border-radius: 25px;
-    height: 100%;
-    width: w-25 ;
-    display: table-cell;
-    background-color: lightgrey;
-    padding: 50px;
-    margin: 20px;
+    border-radius: 10px;
+    height: 40px;
+    width: 90% ;
+    background-color: wheat;
+    margin-left: 20px;
+    margin-top: 20px;
 }
 
 .data {
-    border-radius: 25px;
-    height: 100%;
-    width: w-25 ;
-    display: table-cell;
-    background-color: lightgrey;
-    padding: 50px;
-    margin: 20px;
+    border-radius: 10px;
+    height: 145px;
+    width: 90% ;
+    background-color: wheat;
+    margin-left: 20px;
+    margin-top: 20px;
 }
 
-modeltext {
+.objective-data-container{
+    width: 45%;
+
+}
+
+.modeltext {
     font-family: Papyrus;
 }

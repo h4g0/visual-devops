@@ -247,7 +247,13 @@ var ReactNumberField = {
       "type": "input_value",
       "name": "VALUE",
     } ],
-    "input": "Action",
-    "previousStatement": "ACTION",
-    "nextStatement": "ACTION"
 }
+
+Blockly.Blocks['number'] = {
+  init: function() {
+    //@ts-ignore
+    this.jsonInit(ReactNumberField);
+    //@ts-ignore
+    this.setStyle('loop_blocks');
+  }
+};
