@@ -2,6 +2,8 @@
     height: 250px;
     display: flex;
     background-color: lightgrey;
+    border-radius: 25px;
+
 }
 
 .variables {
@@ -12,6 +14,7 @@
     background-color: wheat;
     padding: 5px;
     margin: 2px;
+    border: 2.5px solid grey;
     margin-left: 20px;
     margin-top: 20px;
 }
@@ -24,6 +27,7 @@
     background-color: wheat;
     padding: 5px;
     margin: 2px;
+    border: 2.5px solid grey;
     margin-left: 20px;
     margin-top: 20px;
 }
@@ -33,6 +37,7 @@
     height: 40px;
     width: 90% ;
     background-color: wheat;
+    border: 2.5px solid grey;
     margin-left: 20px;
     margin-top: 20px;
 }
@@ -42,15 +47,28 @@
     height: 145px;
     width: 90% ;
     background-color: wheat;
+    border: 2.5px solid grey;
     margin-left: 20px;
     margin-top: 20px;
 }
 
 .objective-data-container{
-    width: 45%;
-
+    width: 45%
 }
 
-.modeltext {
-    font-family: Papyrus;
-}
+.selector{
+    width: 150px;
+    padding: 5px 5px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    box-sizing: border-box;
+    background-color: lightblue;
+    cursor: pointer;
+  }
+  
+  .generator:hover {
+    background-color: blue;
+    color: wheat;
+  }

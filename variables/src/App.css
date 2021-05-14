@@ -27,3 +27,21 @@
     transform: rotate(360deg);
   }
 }
+
+
+.generator{
+  width: 150px;
+  padding: 5px 5px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  box-sizing: border-box;
+  background-color: lightblue;
+  cursor: pointer;
+}
+
+.generator:hover {
+  background-color: blue;
+  color: wheat;
+}

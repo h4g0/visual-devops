@@ -66,7 +66,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <Model />
-          <button onClick={this.generateCode}>Convert</button>
+          <button onClick={this.generateCode} className="generator">Convert</button>
           <BlocklyComponent ref={this.simpleWorkspace}
           readOnly={false} trashcan={true} media={'media/'}
           move={{
@@ -83,8 +83,12 @@ class App extends React.Component {
             <Block type = "col_address" />
             <Block type = "col_junction"/>
             <Block type = "forall" />
-            <Block type="constraint" />
-            <Block type="operation" />
+            <Block type = "sum" />
+            <Block type = "constraint" />
+            <Block type = "operation" />
+            <Block type = "number" />
+            <Block type = "equals" />
+            <Block type = "objective" />
           </BlocklyComponent>
       </div>
     );

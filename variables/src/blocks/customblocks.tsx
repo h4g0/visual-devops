@@ -79,7 +79,7 @@ Blockly.Blocks['test_react_date_field'] = {
   }
 };
 
-var ReactvariableField = {
+var ReactvariableField =  {
     "message0": "set %1 to %2",
     "nextStatement": "ACTION",
     "previousStatement": "ACTION",
@@ -111,13 +111,17 @@ let optreactcolfield: any = Array.from(model1_cols.keys()).map((val,index) => {
 })
 
 var ReactColField = {
-  "message0": "collumn: %1",
+  "message0": "collumn: %1 %2",
   "output": "Action",
   "args0": [
     {
       "type": "field_dropdown",
       "name": "COL",
       "options": optreactcolfield
+    },
+    {
+      "type": "input_value",
+      "name": "NEXT_STATEMENT"
     }
   ]
 }
@@ -157,36 +161,81 @@ Blockly.Blocks['col_junction'] = {
   }
 };
 
-var ReactForallField = {
+var ReactForallField = (opt: any) => ({
   "message0": "FORALL %1",
   "args0": [
     {
       "type": "field_dropdown",
       "name": "VAR",
-      "options": [
-        ["col1", "COL1"],
-        ["col2", "COL2"]
-      ]
+      "options": opt
     } ],
     "message1": "EXPRESSION %1", 
     "args1": [
         {"type": "input_value", "name": "EXPR"},
     ],
-    "input": "Action",
     "output": "Action",
-    "nextStatement": "Action",
 
-}
+})
 
 Blockly.Blocks['forall'] = {
   init: function() {
     //@ts-ignore
-    this.jsonInit(ReactForallField);
+    this.jsonInit(ReactForallField(optreactcolfield));
     //@ts-ignore
     this.setStyle('loop_blocks');
   }
 };
 
+var ReactSumField = {
+  "message0": "SUM %1",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "VAR",
+      "options": optreactcolfield
+    } ],
+    "message1": "EXPRESSION %1", 
+    "args1": [
+        {"type": "input_value", "name": "EXPR"},
+    ],
+    "output": "Action",
+
+}
+
+Blockly.Blocks['sum'] = {
+  init: function() {
+    //@ts-ignore
+    this.jsonInit(ReactSumField);
+    //@ts-ignore
+    this.setStyle('loop_blocks');
+  }
+};
+
+
+var ReactEqualsField = (opt: any) => ({
+  "message0": "EQUALS %1",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "VAR",
+      "options": opt
+    } ],
+    "message1": "EXPRESSION %1", 
+    "args1": [
+        {"type": "input_value", "name": "EXPR"},
+    ],
+    "output": "Action",
+
+})
+
+Blockly.Blocks['equals'] = {
+  init: function() {
+    //@ts-ignore
+    this.jsonInit(ReactEqualsField(optreactcolfield));
+    //@ts-ignore
+    this.setStyle('loop_blocks');
+  }
+};
 
 var ReactOperationField = {
   "message0": "Operation %1 %2",
@@ -241,18 +290,48 @@ Blockly.Blocks['constraint'] = {
 };
 
 var ReactNumberField = {
-  "message0": "%1",
+  "message0": "%1 %2",
+  "output": "Action",
   "args0": [
     {
-      "type": "input_value",
+      "type": "field_number",
       "name": "VALUE",
-    } ],
+      "min": 0,
+      "max": 100,
+      "precision": 1,
+    },
+    {
+      "type": "input_value",
+      "name": "NEXTSTATEMENT"
+    }
+   ],
 }
 
 Blockly.Blocks['number'] = {
   init: function() {
     //@ts-ignore
     this.jsonInit(ReactNumberField);
+    //@ts-ignore
+    this.setStyle('loop_blocks');
+  }
+};
+
+var ReactObjectiveField = {
+  "message0": "Objective %1",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "OBJECTIVE",
+    } ],
+    "input": "Action",
+    "previousStatement": "ACTION",
+    "nextStatement": "ACTION"
+}
+
+Blockly.Blocks['objective'] = {
+  init: function() {
+    //@ts-ignore
+    this.jsonInit(ReactObjectiveField);
     //@ts-ignore
     this.setStyle('loop_blocks');
   }

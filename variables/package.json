@@ -17,7 +17,7 @@
     "update": "npm update",
     "postinstall": "cp -r node_modules/blockly/media public/media",
     "predeploy": "npm run build",
-    "start": "set PORT=3001 && set BROWSER=none && react-scripts start",
+    "start": "set BROWSER=none && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
