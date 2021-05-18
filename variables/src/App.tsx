@@ -79,9 +79,11 @@ class App extends React.Component {
 <xml xmlns="http://www.w3.org/1999/xhtml">
 </xml>
       `}>
-            <Block type = "new_variable" />
+            <Block type = "new_single_variable" />
+            <Block type = "new_col_variable" />
+            <Block type = "new_matrix_variable"/>
             <Block type = "col_address" />
-            <Block type = "col_junction"/>
+            <Block type = "matrix_variable"/>
             <Block type = "forall" />
             <Block type = "sum" />
             <Block type = "constraint" />

@@ -78,9 +78,10 @@ Blockly.Blocks['test_react_date_field'] = {
     this.setStyle('loop_blocks');
   }
 };
+ let index_cols: any = [["COL1","COL1"],["COL2","COL2"]]
 
-var ReactvariableField =  {
-    "message0": "set %1 to %2",
+var ReactColVariableField = (index_cols: any) => ({
+    "message0": "new collumn variable %1 index %2",
     "nextStatement": "ACTION",
     "previousStatement": "ACTION",
     "args0": [
@@ -91,20 +92,45 @@ var ReactvariableField =  {
         "spellcheck": false
       },
       {
-        "type": "input_value",
-        "name": "VALUE"
-      } 
+        "type": "field_dropdown",
+        "name": "COL",
+        "options": index_cols
+      }
     ]
-}
+})
 
-Blockly.Blocks['new_variable'] = {
+Blockly.Blocks['new_col_variable'] = {
   init: function() {
     //@ts-ignore
-    this.jsonInit(ReactvariableField);
+    this.jsonInit(ReactColVariableField(index_cols));
     //@ts-ignore
     this.setStyle('loop_blocks');
   }
 };
+
+var ReactSingleVariableField = {
+  "message0": "new single variable %1",
+  "nextStatement": "ACTION",
+  "previousStatement": "ACTION",
+  "args0": [
+    {
+      "type": "field_input",
+      "name": "VARNAME",
+      "text": "varname",
+      "spellcheck": false
+    }
+  ]
+}
+
+Blockly.Blocks['new_single_variable'] = {
+init: function() {
+  //@ts-ignore
+  this.jsonInit(ReactSingleVariableField);
+  //@ts-ignore
+  this.setStyle('loop_blocks');
+}
+};
+
 
 let optreactcolfield: any = Array.from(model1_cols.keys()).map((val,index) => {
   return [val, val]
@@ -135,27 +161,102 @@ Blockly.Blocks['col_address'] = {
   }
 };
 
-var ReactColJunctionField = {
-  "message0": "%1 %2 %3",
-  "output": "Action",
-  "args0": [
-    {"type": "input_value", "name": "COL1"},
+var ReactNewMatrixVariableField = (index_cols: any) => ({
+  "message0": "new matrix     name: %1        collumn 1: %2",
+ 
+    "nextStatement": "ACTION",
+    "previousStatement": "ACTION",
+    "args0": [
+      {
+        "type": "field_input",
+        "name": "VARNAME",
+        "text": "varname",
+      },
+      {
+        "type": "field_dropdown",
+        "name": "COL1",
+        "options": index_cols
+      }
+    ],
+  "message1": "variable          collumn 2: %1",
+  "args1": [
     {
       "type": "field_dropdown",
-      "name": "OP",
-      "options": [
-        ["X", "x"],
-        ["+", "+"]
-      ]
-    },
-    {"type": "input_value", "name": "COL2"},
+      "name": "COL2",
+      "options": index_cols
+    }
   ]
-}
 
-Blockly.Blocks['col_junction'] = {
+})
+
+Blockly.Blocks['new_matrix_variable'] = {
   init: function() {
     //@ts-ignore
-    this.jsonInit(ReactColJunctionField);
+    this.jsonInit(ReactNewMatrixVariableField(index_cols));
+    //@ts-ignore
+    this.setStyle('loop_blocks');
+  }
+};
+
+
+
+var ReactMatrixVariableField = (index_cols: any) => ({
+  "message0": "matrix  name: %1 collumn 1: %2",
+ 
+    "nextStatement": "ACTION",
+    "previousStatement": "ACTION",
+    "args0": [
+      {
+        "type": "field_dropdown",
+        "name": "VARNAME",
+        "options": index_cols,
+      },
+      {
+        "type": "field_dropdown",
+        "name": "COL1",
+        "options": index_cols
+      }
+    ],
+  "message1": "variable          collumn 2: %1",
+  "args1": [
+    {
+      "type": "field_dropdown",
+      "name": "COL2",
+      "options": index_cols
+    }
+  ]
+
+})
+
+Blockly.Blocks['matrix_variable'] = {
+  init: function() {
+    //@ts-ignore
+    this.jsonInit(ReactMatrixVariableField(index_cols));
+    //@ts-ignore
+    this.setStyle('loop_blocks');
+  }
+};
+
+var ReactForallField = (opt: any) => ({
+  "message0": "FORALL %1",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "VAR",
+      "options": opt
+    } ],
+    "message1": "EXPRESSION %1", 
+    "args1": [
+        {"type": "input_value", "name": "EXPR"},
+    ],
+    "output": "Action",
+
+})
+
+Blockly.Blocks['new_matrix_variable'] = {
+  init: function() {
+    //@ts-ignore
+    this.jsonInit(ReactNewMatrixVariableField(index_cols));
     //@ts-ignore
     this.setStyle('loop_blocks');
   }
