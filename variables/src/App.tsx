@@ -83,13 +83,12 @@ class App extends React.Component {
             <Block type = "new_col_variable" />
             <Block type = "new_matrix_variable"/>
             <Block type = "col_address" />
-            <Block type = "matrix_variable"/>
-            <Block type = "forall" />
-            <Block type = "sum" />
-            <Block type = "constraint" />
-            <Block type = "operation" />
+            <Block type = "single_variable" />
+            <Block type = "col_variable"/>
+            <Block type = "matrix_variable" />
             <Block type = "number" />
-            <Block type = "equals" />
+            <Block type = "operation" />
+            <Block type = "constraint" /> 
             <Block type = "objective" />
           </BlocklyComponent>
       </div>
