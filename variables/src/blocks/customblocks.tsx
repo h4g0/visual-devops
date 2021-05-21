@@ -83,7 +83,7 @@ Blockly.Blocks['test_react_date_field'] = {
     this.setStyle('loop_blocks');
   }
 };
- let index_cols: any = [["COL1","COL1"],["COL2","COL2"]]
+ let index_cols: any = [["Compartment","Compartment"],["Cargo","Cargo"]]
 
 var ReactNewColVariableField = (index_cols: any) => ({
     "message0": "new collumn variable %1 index %2",
@@ -210,13 +210,12 @@ Blockly.Blocks['new_matrix_variable'] = {
 
 
 
-let variables = [["var1","var1"],["var2","var2"]]
+let variables = [["CargoCompartment","CargoCompartment"],["var1","var1"],["var2","var2"]]
 
 
-var ReactMatrixVariableField = (variables: any,index_cols: any) => ({
-  "message0": "variable %1 %2 %3",
-  "nextStatement": "ACTION",
-  "previousStatement": "ACTION",
+var ReactMatrixVariableField = (variables: any,index1: any, index2: any) => ({
+  "message0": "variable %1 index %2 %3",
+  "output": "Action",
   "args0": [
     {
       "type": "field_dropdown",
@@ -226,20 +225,23 @@ var ReactMatrixVariableField = (variables: any,index_cols: any) => ({
     {
       "type": "field_dropdown",
       "name": "COL1",
-      "options": index_cols
+      "options": index1
     },
     {
       "type": "field_dropdown",
       "name": "COL2",
-      "options": index_cols
+      "options": index2
     }
   ]
 })
 
+let index1: any = [["Front","Front"],["Centre","Centre"],["Rear","Rear"]]
+let index2: any = [["C1","C1"],["C2","C2"],["C3","C3"],["C4","C4"]]
+
 Blockly.Blocks['matrix_variable'] = {
 init: function() {
   //@ts-ignore
-  this.jsonInit(ReactMatrixVariableField(variables,index_cols));
+  this.jsonInit(ReactMatrixVariableField(variables,index1,index2));
   //@ts-ignore
   this.setStyle('loop_blocks');
     //@ts-ignore
@@ -250,8 +252,7 @@ init: function() {
 
 var ReactColVariableField = (variables: any,index_cols: any) => ({
   "message0": "variable %1 index %2",
-  "nextStatement": "ACTION",
-  "previousStatement": "ACTION",
+  "output": "Action",
   "args0": [
     {
       "type": "field_dropdown",
@@ -280,8 +281,7 @@ init: function() {
 
 var ReactSingleVariableField = (variables: any) => ({
   "message0": "variable %1",
-  "nextStatement": "ACTION",
-  "previousStatement": "ACTION",
+   "output": "Action",
   "args0": [
     {
       "type": "field_dropdown",
@@ -394,6 +394,7 @@ var ReactOperationField = {
         ["<=", "<="],
         [">",">"],
         [">=",">="],
+        ["=","="],
         ["*","*"],
         ["-","-"],
         ["+","+"]

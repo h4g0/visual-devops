@@ -324,7 +324,7 @@ model1_cols.set("Compartment", ["Front", "Center", "Rear"])
 model1_cols.set("Weight_capacity", ["10","16","18"])
 model1_cols.set("Space_capacity", ["6800","8700","5300"])
 model1_cols.set("Cargo",["C1","C2","C3","C4"])
-model1_cols.set("Weigth",["18","15","23","12"])
+model1_cols.set("Weight",["18","15","23","12"])
 model1_cols.set("Volume", ["480","650","580","390"])
 model1_cols.set("Profit", ["310","380","350","285"])
 
