@@ -43,11 +43,13 @@ LPGenerator.scrub_ = function(block: any, code: any, opt_thisOnly: any) {
     return code +  nextCode;
   };
 
-LPGenerator['new_variable'] = function (block: any) {
-    var name = block.getFieldValue('VARNAME')
-    var cols =  LPGenerator.valueToCode(block, 'VALUE', LPGenerator.PRECEDENCE) || 'null'
+LPGenerator['new_matrix_variable'] = function (block: any) {
+    var name: string = block.getFieldValue('VARNAME')
+    ///var cols =  LPGenerator.valueToCode(block, 'VALUE', LPGenerator.PRECEDENCE) || 'null'
+    var col1: string = block.getFieldValue('COL1')
+    var col2: string = block.getFieldValue('COL2')
 
-    return stringify_variables(generate_model_variables(model1_cols,[ name + " = " + cols])) ;
+    return stringify_variables(generate_model_variables(model1_cols,[ name + " = " + col1 + " x "  + col2])) ;
 
 };
 

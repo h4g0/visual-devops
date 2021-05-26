@@ -170,7 +170,7 @@ Blockly.Blocks['col_address'] = {
 };
 
 var ReactNewMatrixVariableField = (index_cols: any) => ({
-  "message0": "new matrix     name: %1        collumn 1: %2",
+  "message0": "new matrix variable |  name: %1 ",
  
     "nextStatement": "ACTION",
     "previousStatement": "ACTION",
@@ -179,15 +179,15 @@ var ReactNewMatrixVariableField = (index_cols: any) => ({
         "type": "field_input",
         "name": "VARNAME",
         "text": "varname",
-      },
-      {
-        "type": "field_dropdown",
-        "name": "COL1",
-        "options": index_cols
       }
     ],
-  "message1": "variable          collumn 2: %1",
+  "message1": "collumn 1: %1 collumn 2: %2",
   "args1": [
+    {
+      "type": "field_dropdown",
+      "name": "COL1",
+      "options": index_cols
+    },
     {
       "type": "field_dropdown",
       "name": "COL2",
