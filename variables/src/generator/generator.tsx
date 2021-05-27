@@ -53,6 +53,21 @@ LPGenerator['new_matrix_variable'] = function (block: any) {
 
 };
 
+LPGenerator['operation'] = function (block: any) { 
+    const prev_statement =  LPGenerator.valueToCode(block, 'PREV_STATEMENT', LPGenerator.PRECEDENCE) || 'null'
+    const next_statement =  LPGenerator.valueToCode(block, 'NEXT_STATEMENT', LPGenerator.PRECEDENCE) || 'null'
+
+    const operation = block.getFieldValue('OPERATION')
+
+    return [operation, LPGenerator.PRECEDENCE];
+
+};
+
+LPGenerator['constraint'] = function (block: any) { 
+    var constraint =  LPGenerator.valueToCode(block, 'CONSTRAINT', LPGenerator.PRECEDENCE) || 'null'
+    return [constraint, LPGenerator.PRECEDENCE];
+};
+
 LPGenerator['col_address'] = function (block: any) { 
     var col = block.getFieldValue('COL')
     return [col, LPGenerator.PRECEDENCE];

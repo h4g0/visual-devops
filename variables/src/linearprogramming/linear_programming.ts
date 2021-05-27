@@ -328,6 +328,15 @@ model1_cols.set("Weight",["18","15","23","12"])
 model1_cols.set("Volume", ["480","650","580","390"])
 model1_cols.set("Profit", ["310","380","350","285"])
 
+export var indexes: Map<string,string> = new Map<string,string>()
+
+indexes.set("Compartment", "Compartment")
+indexes.set("Weight_capacity", "Compartment")
+indexes.set("Space_capacity", "Compartment")
+indexes.set("Cargo","Cargo")
+indexes.set("Weight","Cargo")
+indexes.set("Volume", "Cargo")
+indexes.set("Profit", "Cargo")
 
 let input_vars: string[] = [ "Cargo_quantity = Cargo x Compartment" ] 
 
@@ -380,3 +389,59 @@ let constr_1: formula[] = gen_forall( cols, Cargo, model_variables, operation_me
 console.log(constr_1)
 
 */
+
+export function get_index(col: string,index: Map<string,string>): string {
+    return ( index.get(col) as string)
+}
+
+
+export function sum_mul_matrix(varname: string,mul_col: number[] , fixed_index: string, variable_index: string[],position: string): string {
+    var sum: string = ""
+    var mul_col_index: number = 0
+
+    for(var index of variable_index) {
+
+        var first_index: string = position == "first" ? fixed_index : index
+        var second_index: string = position == "second" ? index : fixed_index
+
+        sum += ` + ${mul_col[mul_col_index]}${varname}[${first_index}]{${second_index}]` 
+        mul_col_index++
+    }
+
+    return sum
+
+}
+
+export function sum_matrix(varname: string,  fixed_index: string, variable_index: string[],position: string): string {
+    var sum: string = ""
+    
+    for(var index of variable_index) {
+
+        var first_index: string = position == "first" ? fixed_index : index
+        var second_index: string = position == "second" ? index : fixed_index
+
+        sum += ` ${varname}[${first_index}]{${second_index}]` 
+    }
+
+    return sum
+
+}
+
+export function forall_sum_matrix(varname: string, colname: string,forall_index: string[], sum_index: string[], position: string,opt: string,next_fun: string): string {
+    var forall: string = ""
+
+    for(var index of forall_index) {
+        switch(next_fun){
+            case "sum":
+                forall += ` ${sum_matrix(varname,index,sum_index,position)} ${opt} ${colname}[${index}]\n}`;
+                break;
+            case "sum_mul":
+                forall += ` ${sum_matrix(varname,index,sum_index,position)} ${opt} ${colname}[${index}]\n}`;
+                break;
+        }
+            
+    }
+
+    return forall
+    
+}
