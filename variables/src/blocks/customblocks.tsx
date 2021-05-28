@@ -285,7 +285,7 @@ var ReactSingleVariableField = (variables: any) => ({
   "args0": [
     {
       "type": "field_dropdown",
-      "name": "COL",
+      "name": "VALUE",
       "options": variables
     }
   ]
@@ -384,7 +384,7 @@ var ReactOperationField = {
   "args0": [
     {
       "type": "input_value",
-      "name": "PREV_STATMENT",
+      "name": "PREV_STATEMENT",
     },
     {
       "type": "field_dropdown",
@@ -402,7 +402,7 @@ var ReactOperationField = {
     },
     {
       "type": "input_value",
-      "name": "NEXT_STATMENT",
+      "name": "NEXT_STATEMENT",
     } ],
     "input": "Action",
     "output": "Action",

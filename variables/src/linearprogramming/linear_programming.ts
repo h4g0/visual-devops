@@ -342,6 +342,8 @@ let input_vars: string[] = [ "Cargo_quantity = Cargo x Compartment" ]
 
 let model_variables: variables = generate_model_variables(model1_cols,input_vars)
 
+export const variable_indexs: [string, string] = ["Cargo", "Compartment"]
+
 export function stringify_variables(model_variables: variables): string {
     
     return Array.from(model_variables.keys()).map((element: any ,index: any) => {
@@ -443,5 +445,21 @@ export function forall_sum_matrix(varname: string, colname: string,forall_index:
     }
 
     return forall
+    
+}
+
+export function gen_op(varname: string,  variable_indexs: [string,string],col: string, indexes: Map<string,string>, cols: collumns, op: string): string{
+    
+    const col_index: string[] = ( cols.get(( indexes.get(col) as string) ) as string[] )
+
+    const forall_index: string = variable_indexs[0] == indexes.get(col) ? variable_indexs[0] : variable_indexs[1]
+    const sum_index: string = variable_indexs[0] == indexes.get(col) ? variable_indexs[1] : variable_indexs[0]
+
+    const position: string = variable_indexs[0] == indexes.get(col) ? "first" : "second"
+
+    const forall_indexs: collumn = ( cols.get( forall_index ) as collumn)
+    const sum_indexs: collumn = ( cols.get( sum_index) as collumn )
+
+    return forall_sum_matrix(varname, col, forall_indexs, sum_indexs, position, op ,  "sum" )
     
 }

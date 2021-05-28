@@ -26,7 +26,7 @@
 
 import * as Blockly from 'blockly/core';
 
-import { model1_cols, stringify_variables, generate_model_variables } from '../linearprogramming/linear_programming';
+import { model1_cols, stringify_variables, generate_model_variables, gen_op, variable_indexs, indexes } from '../linearprogramming/linear_programming';
 
 export const LPGenerator: any =  new Blockly.Generator('LP');
 
@@ -59,13 +59,21 @@ LPGenerator['operation'] = function (block: any) {
 
     const operation = block.getFieldValue('OPERATION')
 
-    return [operation, LPGenerator.PRECEDENCE];
+    const constraints: string = gen_op( prev_statement, variable_indexs, next_statement, indexes, model1_cols, operation)
 
+    return [prev_statement, LPGenerator.PRECEDENCE];
+
+};
+
+LPGenerator['single_variable'] = function (block: any) { 
+    const value = block.getFieldValue('VALUE')
+
+    return [value, LPGenerator.PRECEDENCE];
 };
 
 LPGenerator['constraint'] = function (block: any) { 
     var constraint =  LPGenerator.valueToCode(block, 'CONSTRAINT', LPGenerator.PRECEDENCE) || 'null'
-    return [constraint, LPGenerator.PRECEDENCE];
+    return constraint
 };
 
 LPGenerator['col_address'] = function (block: any) { 
