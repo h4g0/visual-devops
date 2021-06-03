@@ -37,6 +37,7 @@ let var_creation_color: string = '#ff8080'
 let value_color: number = 360
 let constr_obj_color: number = 180
 let operation_color: number = 90
+let model_blocks_color: number = 185
 
 var testReactField = {
   "type": "test_react_field",
@@ -86,7 +87,7 @@ Blockly.Blocks['test_react_date_field'] = {
  let index_cols: any = [["Compartment","Compartment"],["Cargo","Cargo"]]
 
 var ReactNewColVariableField = (index_cols: any) => ({
-    "message0": "new collumn variable %1 index %2",
+    "message0": "new column variable %1 index %2",
     "nextStatement": "ACTION",
     "previousStatement": "ACTION",
     "args0": [
@@ -147,8 +148,8 @@ let optreactcolfield: any = Array.from(model1_cols.keys()).map((val,index) => {
 })
 
 var ReactColField = {
-  "message0": "collumn: %1",
-  "output": "Action",
+  "message0": "column: %1",
+  "output": "ACTION",
   "args0": [
     {
       "type": "field_dropdown",
@@ -181,7 +182,7 @@ var ReactNewMatrixVariableField = (index_cols: any) => ({
         "text": "varname",
       }
     ],
-  "message1": "collumn 1: %1 collumn 2: %2",
+  "message1": "column 1: %1 column 2: %2",
   "args1": [
     {
       "type": "field_dropdown",
@@ -215,7 +216,7 @@ let variables = [["CargoCompartment","CargoCompartment"],["var1","var1"],["var2"
 
 var ReactMatrixVariableField = (variables: any,index1: any, index2: any) => ({
   "message0": "variable %1 index %2 %3",
-  "output": "Action",
+  "output": "ACTION",
   "args0": [
     {
       "type": "field_dropdown",
@@ -250,9 +251,59 @@ init: function() {
 };
 
 
+
+var ReactVariablesField = {
+  "message0": "Variables %1",
+  "args0": [
+    {
+      "type": "input_statement",
+      "name": "variables"
+    }
+  ],
+  nextStatement: "ACTION"
+}
+
+
+
+Blockly.Blocks['variables'] = {
+init: function() {
+  //@ts-ignore
+  this.jsonInit(ReactVariablesField);
+  //@ts-ignore
+  this.setStyle('loop_blocks');
+    //@ts-ignore
+    this.setColour(model_blocks_color)
+}
+};
+
+var ReactConstraintsField = {
+  "message0": "Constrainsts %1",
+  "args0": [
+    {
+      "type": "input_statement",
+      "name": "variables"
+    }
+  ],
+  previousStatement: "ACTION",
+  nextStatement: "ACTION"
+}
+
+
+
+Blockly.Blocks['constraints'] = {
+init: function() {
+  //@ts-ignore
+  this.jsonInit(ReactConstraintsField);
+  //@ts-ignore
+  this.setStyle('loop_blocks');
+    //@ts-ignore
+    this.setColour(model_blocks_color)
+}
+};
+
 var ReactColVariableField = (variables: any,index_cols: any) => ({
   "message0": "variable %1 index %2",
-  "output": "Action",
+  "output": "ACTION",
   "args0": [
     {
       "type": "field_dropdown",
@@ -281,7 +332,7 @@ init: function() {
 
 var ReactSingleVariableField = (variables: any) => ({
   "message0": "variable %1",
-   "output": "Action",
+   "output": "ACTION",
   "args0": [
     {
       "type": "field_dropdown",
@@ -315,7 +366,7 @@ var ReactForallField = (opt: any) => ({
     "args1": [
         {"type": "input_value", "name": "EXPR"},
     ],
-    "output": "Action",
+    "output": "ACTION",
 
 })
 
@@ -340,7 +391,7 @@ var ReactSumField = {
     "args1": [
         {"type": "input_value", "name": "EXPR"},
     ],
-    "output": "Action",
+    "output": "ACTION",
 
 }
 
@@ -366,7 +417,7 @@ var ReactEqualsField = (opt: any) => ({
     "args1": [
         {"type": "input_value", "name": "EXPR"},
     ],
-    "output": "Action",
+    "output": "ACTION",
 
 })
 
@@ -380,7 +431,7 @@ Blockly.Blocks['equals'] = {
 };
 
 var ReactOperationField = {
-  "message0": "%1 %2 %3 .",
+  "message0": "%1 %2 %3 ",
   "args0": [
     {
       "type": "input_value",
@@ -395,17 +446,19 @@ var ReactOperationField = {
         [">",">"],
         [">=",">="],
         ["=","="],
-        ["*","*"],
+        ["X","X"],
+        ["/","/"],
         ["-","-"],
-        ["+","+"]
+        ["+","+"],
       ]
     },
     {
       "type": "input_value",
       "name": "NEXT_STATMENT",
     } ],
-    "input": "Action",
-    "output": "Action",
+    "inputsInline": true,
+    "input": "ACTION",
+    "output": "ACTION",
 }
 
 Blockly.Blocks['operation'] = {
@@ -413,7 +466,7 @@ Blockly.Blocks['operation'] = {
     //@ts-ignore
     this.jsonInit(ReactOperationField);
     //@ts-ignore
-    this.setStyle('loop_blocks');
+    this.setStyle('math_blocks');
     //@ts-ignore
     this.setColour(operation_color);
   }
@@ -427,7 +480,7 @@ var ReactConstraintField = {
       "type": "input_value",
       "name": "CONSTRAINT",
     } ],
-    "input": "Action",
+    "input": "ACTION",
     "previousStatement": "ACTION",
     "nextStatement": "ACTION"
 }
@@ -445,7 +498,7 @@ Blockly.Blocks['constraint'] = {
 
 var ReactNumberField = {
   "message0": "%1",
-  "output": "Action",
+  "output": "ACTION",
   "args0": [
     {
       "type": "field_number",
@@ -484,10 +537,8 @@ var ReactObjectiveField = {
         "name": "OBJECTIVE",
       }
      ],
-    "input": "Action",
+    "input": "ACTION",
     "previousStatement": "ACTION",
-    "nextStatement": "ACTION",
-    "colour": 100,
 }
 
 Blockly.Blocks['objective'] = {

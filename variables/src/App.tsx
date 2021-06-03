@@ -79,17 +79,19 @@ class App extends React.Component {
 <xml xmlns="http://www.w3.org/1999/xhtml">
 </xml>
       `}>
+            <Block type = "variables" />
             <Block type = "new_single_variable" />
             <Block type = "new_col_variable" />
             <Block type = "new_matrix_variable"/>
+            <Block type = "constraints" />
+            <Block type = "constraint" /> 
+            <Block type = "objective" />
             <Block type = "col_address" />
             <Block type = "single_variable" />
             <Block type = "col_variable"/>
             <Block type = "matrix_variable" />
             <Block type = "number" />
             <Block type = "operation" />
-            <Block type = "constraint" /> 
-            <Block type = "objective" />
           </BlocklyComponent>
       </div>
     );
