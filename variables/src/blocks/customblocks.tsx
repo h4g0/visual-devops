@@ -33,11 +33,11 @@ import { model1_cols } from '../linearprogramming/linear_programming';
 import '../fields/BlocklyReactField';
 import '../fields/DateField';
 
-let var_creation_color: string = '#ff8080'
-let value_color: number = 360
-let constr_obj_color: number = 180
-let operation_color: number = 90
-let model_blocks_color: number = 185
+let var_creation_color: string = "#ff0586"
+let value_color: string = "#05ff3b"
+let constr_obj_color: string = "#ff7a05"
+let operation_color: string = "#ff0505"
+let model_blocks_color: string  = "#051eff"
 
 var testReactField = {
   "type": "test_react_field",
@@ -456,7 +456,6 @@ var ReactOperationField = {
       "type": "input_value",
       "name": "NEXT_STATEMENT",
     } ],
-    "inputsInline": true,
     "input": "ACTION",
     "output": "ACTION",
 }
@@ -548,6 +547,6 @@ Blockly.Blocks['objective'] = {
     //@ts-ignore
     this.setStyle('loop_blocks');
     //@ts-ignore
-    this.setColour(constr_obj_color)
+    this.setColour(model_blocks_color)
   }
 };
