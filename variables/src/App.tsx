@@ -80,12 +80,12 @@ class App extends React.Component {
 </xml>
       `}>
             <Block type = "variables" />
-            <Block type = "new_single_variable" />
-            <Block type = "new_col_variable" />
-            <Block type = "new_matrix_variable"/>
             <Block type = "constraints" />
             <Block type = "constraint" /> 
             <Block type = "objective" />
+            <Block type = "new_single_variable" />
+            <Block type = "new_col_variable" />
+            <Block type = "new_matrix_variable"/>
             <Block type = "col_address" />
             <Block type = "single_variable" />
             <Block type = "col_variable"/>

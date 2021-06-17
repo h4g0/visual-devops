@@ -321,10 +321,10 @@ export function create_constraints(cols: collumns,my_constraints: string[]): str
 export var model1_cols:collumns = new Map<string , collumn>()
 
 model1_cols.set("Compartment", ["Front", "Center", "Rear"])
-model1_cols.set("Weight_capacity", ["10","16","18"])
+model1_cols.set("Weigth_capacity", ["10","16","18"])
 model1_cols.set("Space_capacity", ["6800","8700","5300"])
 model1_cols.set("Cargo",["C1","C2","C3","C4"])
-model1_cols.set("Weight",["18","15","23","12"])
+model1_cols.set("Weigth",["18","15","23","12"])
 model1_cols.set("Volume", ["480","650","580","390"])
 model1_cols.set("Profit", ["310","380","350","285"])
 
@@ -397,18 +397,8 @@ export function get_index(col: string,index: Map<string,string>): string {
 }
 
 
-export function sum_mul_matrix(varname: string,mul_col: number[] , fixed_index: string, variable_index: string[],position: string): string {
-    var sum: string = ""
-    var mul_col_index: number = 0
-
-    for(var index of variable_index) {
-
-        var first_index: string = position == "first" ? fixed_index : index
-        var second_index: string = position == "second" ? index : fixed_index
-
-        sum += ` + ${mul_col[mul_col_index]}${varname}[${first_index}]{${second_index}]` 
-        mul_col_index++
-    }
+export function gen_sum_matrix(var_index: string, ): string {
+    
 
     return sum
 

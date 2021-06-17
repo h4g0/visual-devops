@@ -43,13 +43,18 @@ LPGenerator.scrub_ = function(block: any, code: any, opt_thisOnly: any) {
     return code +  nextCode;
   };
 
+LPGenerator["variables"] = function (block: any){
+    const variables = LPGenerator.statementToCode(block, 'VARIABLES', LPGenerator.PRECEDENCE) || 'null'
+    return `VARIABLES \n${variables}`
+}
+
 LPGenerator['new_matrix_variable'] = function (block: any) {
     var name: string = block.getFieldValue('VARNAME')
     ///var cols =  LPGenerator.valueToCode(block, 'VALUE', LPGenerator.PRECEDENCE) || 'null'
     var col1: string = block.getFieldValue('COL1')
     var col2: string = block.getFieldValue('COL2')
 
-    return stringify_variables(generate_model_variables(model1_cols,[ name + " = " + col1 + " x "  + col2])) ;
+    return stringify_variables(generate_model_variables(model1_cols,[ name + " = " + col1 + " x "  + col2]));
 
 };
 
@@ -61,7 +66,7 @@ LPGenerator['operation'] = function (block: any) {
 
     const constraints: string = gen_op( prev_statement, variable_indexs, next_statement, indexes, model1_cols, operation)
 
-    return [prev_statement, LPGenerator.PRECEDENCE];
+    return [`${prev_statement} ${operation} ${next_statement}` , LPGenerator.PRECEDENCE];
 
 };
 
@@ -70,6 +75,12 @@ LPGenerator['single_variable'] = function (block: any) {
 
     return [value, LPGenerator.PRECEDENCE];
 };
+
+LPGenerator['constraints'] = function (block: any){
+    const constraints = LPGenerator.statementToCode(block, 'CONSTRAINTS', LPGenerator.PRECEDENCE) || 'null'
+    return `CONSTRAINTS \n${constraints}`
+
+}
 
 LPGenerator['constraint'] = function (block: any) { 
     var constraint =  LPGenerator.valueToCode(block, 'CONSTRAINT', LPGenerator.PRECEDENCE) || 'null'
@@ -88,3 +99,12 @@ LPGenerator['col_junction'] = function (block: any) {
 
     return [col1 + " " + operation + " " + col2, LPGenerator.PRECEDENCE]
 };
+
+LPGenerator['matrix_variable'] = function (block: any){
+    const col1: string = block.getFieldValue('COL1')
+    const col2: string = block.getFieldValue('COL2')
+    const variable: string = block.getFieldValue("VARNAME")
+
+    return [`${variable}[vaname${col1}][varname${col2}]`, LPGenerator.PRECEDENCE]
+
+}

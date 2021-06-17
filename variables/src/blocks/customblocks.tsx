@@ -33,11 +33,13 @@ import { model1_cols } from '../linearprogramming/linear_programming';
 import '../fields/BlocklyReactField';
 import '../fields/DateField';
 
-let var_creation_color: string = "#ff0586"
-let value_color: string = "#05ff3b"
-let constr_obj_color: string = "#ff7a05"
-let operation_color: string = "#ff0505"
-let model_blocks_color: string  = "#051eff"
+let var_creation_color: string = "#C2948A"
+let value_color: string = "#7EA8BE"
+let constr_obj_color: string = "#326886"
+let operation_color: string = "#BBB193"
+let model_block_variables_color: string = "#B2796C"
+let model_blocks_color_constraints: string  = "#28536B"
+let model_blocks_color_objective: string = "#7A523E"
 
 var testReactField = {
   "type": "test_react_field",
@@ -211,7 +213,7 @@ Blockly.Blocks['new_matrix_variable'] = {
 
 
 
-let variables = [["CargoCompartment","CargoCompartment"],["var1","var1"],["var2","var2"]]
+let variables = [["CompartmentCargo","CompartmentCargo"],["var1","var1"],["var2","var2"]]
 
 
 var ReactMatrixVariableField = (variables: any,index1: any, index2: any) => ({
@@ -257,7 +259,7 @@ var ReactVariablesField = {
   "args0": [
     {
       "type": "input_statement",
-      "name": "variables"
+      "name": "VARIABLES"
     }
   ],
   nextStatement: "ACTION"
@@ -271,8 +273,8 @@ init: function() {
   this.jsonInit(ReactVariablesField);
   //@ts-ignore
   this.setStyle('loop_blocks');
-    //@ts-ignore
-    this.setColour(model_blocks_color)
+  //@ts-ignore
+  this.setColour(model_block_variables_color)
 }
 };
 
@@ -281,7 +283,7 @@ var ReactConstraintsField = {
   "args0": [
     {
       "type": "input_statement",
-      "name": "variables"
+      "name": "CONSTRAINTS"
     }
   ],
   previousStatement: "ACTION",
@@ -297,7 +299,7 @@ init: function() {
   //@ts-ignore
   this.setStyle('loop_blocks');
     //@ts-ignore
-    this.setColour(model_blocks_color)
+    this.setColour(model_blocks_color_constraints)
 }
 };
 
@@ -447,7 +449,6 @@ var ReactOperationField = {
         [">=",">="],
         ["=","="],
         ["X","X"],
-        ["/","/"],
         ["-","-"],
         ["+","+"],
       ]
@@ -547,6 +548,6 @@ Blockly.Blocks['objective'] = {
     //@ts-ignore
     this.setStyle('loop_blocks');
     //@ts-ignore
-    this.setColour(model_blocks_color)
+    this.setColour(model_blocks_color_objective)
   }
 };
