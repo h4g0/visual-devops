@@ -41,6 +41,34 @@ let model_block_variables_color: string = "#B2796C"
 let model_blocks_color_constraints: string  = "#28536B"
 let model_blocks_color_objective: string = "#7A523E"
 
+
+let index_cols: any = [["Compartment", "Compartment"],["Cargo","Cargo"],["Supplier","Supplier"],["Plant","Plant"],
+["Product", "Product"],["Shifts","Shifts"],["Product","Product"],["Components","Components"],["Vegetable","Vegetable"]]
+
+let variables_single = ["CompartmentCargo","SupplierPlant","Mon","Tues","Wed","Thur","Fri","Sat","Sun",
+"Machine_x","Machine_y","Terminal_A","Terminal_B","T1","T2","Mixture"]
+
+let variables: [string,string][] = []
+
+for( let el of variables_single ) 
+  variables.push([el,el])
+
+let optreactcolfield_single = ["To_PlantA","To_PlantB","Supply","Price","Capacity","Labour_cost","Sale_price","Mon","Tues","Wed","Thur","Fri","Sat","Sun","Profit","Floor_space","Machine_x","Machine_y"
+,"Components","Resources_A","Resources_B","Resources_Available","Vegetable","Iron","Phosphorus","Calcium","Cost_per_pound"]
+
+let optreactcolfield: [string,string][] = []
+
+for( let el of optreactcolfield_single ) 
+  optreactcolfield.push([el,el])
+
+
+let index1: any = [["Front","Front"],["Centre","Centre"],["Rear","Rear"]]
+
+let index2: any = [["C1","C1"],["C2","C2"],["C3","C3"],["C4","C4"],["Plant_A","Plant_A"],["Plant_B","Plant_B"],
+["1","1"],["2","2"],["3","3"],["4","4"],["Materials","Materials"],["Labor","Labor"],
+["Beans","Beans"],["Corn","Corn"],["Broccoli","Broccoli"],["Cabbage","Cabbage"],["Potatoes","Potatoes"]
+]
+
 var testReactField = {
   "type": "test_react_field",
   "message0": "custom field %1",
@@ -86,7 +114,6 @@ Blockly.Blocks['test_react_date_field'] = {
     this.setStyle('loop_blocks');
   }
 };
- let index_cols: any = [["Compartment","Compartment"],["Cargo","Cargo"]]
 
 var ReactNewColVariableField = (index_cols: any) => ({
     "message0": "new column variable %1 index %2",
@@ -145,9 +172,13 @@ init: function() {
 };
 
 
-let optreactcolfield: any = Array.from(model1_cols.keys()).map((val,index) => {
+/*let optreactcolfield: any = Array.from(model1_cols.keys()).map((val,index) => {
   return [val, val]
-})
+})*/
+
+
+
+
 
 var ReactColField = {
   "message0": "column: %1",
@@ -165,6 +196,35 @@ Blockly.Blocks['col_address'] = {
   init: function() {
     //@ts-ignore
     this.jsonInit(ReactColField);
+    //@ts-ignore
+    this.setStyle('loop_blocks');
+     //@ts-ignore
+     this.setColour(value_color)
+  }
+};
+
+
+var ReactColValField = {
+  "message0": "column: %1 %2",
+  "output": "ACTION",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "COL",
+      "options": optreactcolfield
+    },
+    {
+      "type": "field_dropdown",
+      "name": "INDEX",
+      "options": index1.concat(index2)
+    }
+  ]
+}
+
+Blockly.Blocks['col_val_address'] = {
+  init: function() {
+    //@ts-ignore
+    this.jsonInit(ReactColValField);
     //@ts-ignore
     this.setStyle('loop_blocks');
      //@ts-ignore
@@ -213,7 +273,6 @@ Blockly.Blocks['new_matrix_variable'] = {
 
 
 
-let variables = [["CompartmentCargo","CompartmentCargo"],["var1","var1"],["var2","var2"]]
 
 
 var ReactMatrixVariableField = (variables: any,index1: any, index2: any) => ({
@@ -238,8 +297,6 @@ var ReactMatrixVariableField = (variables: any,index1: any, index2: any) => ({
   ]
 })
 
-let index1: any = [["Front","Front"],["Centre","Centre"],["Rear","Rear"]]
-let index2: any = [["C1","C1"],["C2","C2"],["C3","C3"],["C4","C4"]]
 
 Blockly.Blocks['matrix_variable'] = {
 init: function() {
@@ -279,7 +336,7 @@ init: function() {
 };
 
 var ReactConstraintsField = {
-  "message0": "Constrainsts %1",
+  "message0": "Constraints %1",
   "args0": [
     {
       "type": "input_statement",
@@ -315,7 +372,7 @@ var ReactColVariableField = (variables: any,index_cols: any) => ({
     {
       "type": "field_dropdown",
       "name": "COL",
-      "options": index_cols
+      "options": index1.concat(index2)
     }
   ]
 })
@@ -504,8 +561,8 @@ var ReactNumberField = {
       "type": "field_number",
       "name": "VALUE",
       "min": 0,
-      "max": 100,
-      "precision": 1,
+      "max": 100000,
+      "precision": 0.01,
     }
    ],
 }

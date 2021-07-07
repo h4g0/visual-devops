@@ -400,8 +400,7 @@ export function get_index(col: string,index: Map<string,string>): string {
 export function gen_sum_matrix(var_index: string, ): string {
     
 
-    return sum
-
+    return "sum"
 }
 
 export function sum_matrix(varname: string,  fixed_index: string, variable_index: string[],position: string): string {
