@@ -26,7 +26,7 @@
 
 import * as Blockly from 'blockly/core';
 
-import { model1_cols, stringify_variables, generate_model_variables, gen_op, variable_indexs, indexes } from '../linearprogramming/linear_programming';
+import { model1_cols, generate_matrix_variable,variable_indexs, indexes, gen_operation, stringify_variables } from '../linearprogramming/linear_programming';
 
 export const LPGenerator: any =  new Blockly.Generator('LP');
 
@@ -54,7 +54,8 @@ LPGenerator['new_matrix_variable'] = function (block: any) {
     var col1: string = block.getFieldValue('COL1')
     var col2: string = block.getFieldValue('COL2')
 
-    return stringify_variables(generate_model_variables(model1_cols,[ name + " = " + col1 + " x "  + col2]));
+
+    return [stringify_variables(generate_matrix_variable(model1_cols, name,col1,col2)), LPGenerator.PRECEDENCE]
 
 };
 
@@ -64,9 +65,10 @@ LPGenerator['operation'] = function (block: any) {
 
     const operation = block.getFieldValue('OPERATION')
 
-    const constraints: string = gen_op( prev_statement, variable_indexs, next_statement, indexes, model1_cols, operation)
+    const constraints = gen_operation(operation, model1_cols, prev_statement,next_statement)
 
-    return [`${prev_statement} ${operation} ${next_statement}` , LPGenerator.PRECEDENCE];
+    
+    return [constraints , LPGenerator.PRECEDENCE];
 
 };
 
@@ -88,8 +90,9 @@ LPGenerator['constraint'] = function (block: any) {
 };
 
 LPGenerator['col_address'] = function (block: any) { 
-    var col = block.getFieldValue('COL')
-    return [col, LPGenerator.PRECEDENCE];
+    const col = block.getFieldValue('COL')
+    const index = indexes.get(col)
+    return [`${col}[${index}]`, LPGenerator.PRECEDENCE];
 };
 
 LPGenerator['col_junction'] = function (block: any) {

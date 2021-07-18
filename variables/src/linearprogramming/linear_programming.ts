@@ -72,20 +72,69 @@ export function generate_single_variable(name: string): variables {
     return variable
 }
 
-export function generate_inequality_operation(operation: string, prev_statement: string, next_statement: string) {
+function get_indexes(statement: string): string[] {
+    const indexes = statement.match(/`index_[a-zA-Z10-9]*`/g)
+    const clean_indexes = indexes == undefined ? [] : indexes.map( (x: string) => x.replace("index_","")) 
+
+    return clean_indexes
+}
+
+export function generate_mul_operation(statement1: string, statement2: string,cols: collumns): string {
+    
+    const indexes_stat1 = get_indexes(statement1)
+    const indexes_stat2 = get_indexes(statement2)
+    
+    const matchs = indexes_stat1.filter( (x: string) => indexes_stat2.includes(x))
+
+    if(matchs.length == 0) return `${statement1} X ${statement2}`
+
+    const match = matchs[0]
+
+    const index_values = ( cols.get(match) as collumn )
+
+    let expr: string = ""
+
+    for (let i = 0; i < index_values.length; i++) {
+        const index_value = index_values[i]
+        const new_stat1 = statement1.replace(`index_${match}`, index_value)
+        const new_stat2 = statement1.replace(`index_${match}`, index_value)
+        expr += `${new_stat1} X ${new_stat2}`
+        if (i < index_values.length - 1) expr += " + "
+         
+    }
+
+    return expr
+
     
 }
 
-export function generate_operation(operation: string,prev_statement: string, next_statement: string, 
-            vars: variables, cols: collumns) {
+export function generate_inequality_operation(operation: string,cols: collumns, prev_statement: string, next_statement: string) {
+    let constraints: string[] = []
+    const indexes_prev = get_indexes(prev_statement)
+    const indexes_next = get_indexes(next_statement)
 
-    const inequality_operations = ["<=",">=","=",">","<"]
-    
-    if(inequality_operations.includes(operation))
+    const matchs = indexes_prev.filter( (x: string) => indexes_next.includes(x))
+
+    for (let match of matchs) {
+        const values = ( cols.get(match) as collumn)
+        for (let value of values) {
+            const new_prev_statement  = prev_statement.replace(`index_${match}`,match)
+            const new_next_statement  = next_statement.replace(`index_${match}`,match)
+
+            constraints.push( `${new_prev_statement} ${operation} ${new_next_statement}` )
+        }
+    }
+
+    return constraints
 }
 
+export function gen_operation(op: string, cols: collumns, prev_statement: string, next_statement: string){
+    const indequality_ops= ["<",">","<=",">=","="]
 
+    if (indequality_ops.includes(op)) return generate_inequality_operation(op, cols,prev_statement,next_statement).join("\n")
 
+    return ""
+}
 
 export var model1_cols:collumns = new Map<string , collumn>()
 
@@ -110,17 +159,19 @@ indexes.set("Profit", "Cargo")
 let input_vars: string[] = [ "Cargo_quantity = Cargo x Compartment" ] 
 
 
-export const variable_indexs: [string, string] = ["Cargo", "Compartment"]
+export let variable_indexs: Map<string, string[]> = new Map<string,string[]>()
 
-export function stringify_variables(model_variables: variables): string {
+variable_indexs.set("CompartmentCargo",["Cargo","Compartment"])
+
+
+
+export function stringify_variables(vars: variables): string {
+    let vars_str: string[] = []
+    let iterator = vars.keys()
+    let value = ""
+
+    while( value = iterator.next().value ) 
+        vars_str.push( value )
     
-    return Array.from(model_variables.keys()).map((element: any ,index: any) => {
-        return "" + element[0] + element[1].map((e: any,i: any) => {
-            return "[" + e + "]"
-        }).join("")
-    }).join("\n")
-
+    return (vars_str.join("\n"))
 }
-
-
-
