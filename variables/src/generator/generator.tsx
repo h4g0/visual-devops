@@ -26,7 +26,7 @@
 
 import * as Blockly from 'blockly/core';
 
-import { model1_cols, generate_matrix_variable,variable_indexs, indexes, gen_operation, stringify_variables } from '../linearprogramming/linear_programming';
+import { model1_cols, generate_matrix_variable, indexes, gen_operation, stringify_variables } from './../linearprogramming/linear_programming';
 
 export const LPGenerator: any =  new Blockly.Generator('LP');
 
@@ -55,7 +55,9 @@ LPGenerator['new_matrix_variable'] = function (block: any) {
     var col2: string = block.getFieldValue('COL2')
 
 
-    return [stringify_variables(generate_matrix_variable(model1_cols, name,col1,col2)), LPGenerator.PRECEDENCE]
+    const generated_variables = stringify_variables(generate_matrix_variable(model1_cols, name,col1,col2))
+
+    return [ generated_variables, LPGenerator.PRECEDENCE]
 
 };
 
