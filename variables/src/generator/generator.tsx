@@ -56,8 +56,8 @@ LPGenerator['new_matrix_variable'] = function (block: any) {
 
 
     const generated_variables = stringify_variables(generate_matrix_variable(model1_cols, name,col1,col2))
-
-    return [ generated_variables, LPGenerator.PRECEDENCE]
+    
+    return generated_variables
 
 };
 
