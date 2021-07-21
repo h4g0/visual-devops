@@ -114,7 +114,7 @@ export function generate_inequality_operation(operation: string,cols: collumns, 
     const indexes_next = get_indexes(next_statement)
 
     const matchs = indexes_prev.filter( (x: string) => indexes_next.includes(x))
-
+    
     for (let match of matchs) {
         const values = ( cols.get(match) as collumn)
         for (let value of values) {

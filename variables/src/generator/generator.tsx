@@ -26,7 +26,7 @@
 
 import * as Blockly from 'blockly/core';
 
-import { model1_cols, generate_matrix_variable, indexes, gen_operation, stringify_variables } from './../linearprogramming/linear_programming';
+import { model1_cols, generate_matrix_variable, indexes, gen_operation, stringify_variables, generate_col_variable, generate_single_variable } from './../linearprogramming/linear_programming';
 
 export const LPGenerator: any =  new Blockly.Generator('LP');
 
@@ -60,6 +60,25 @@ LPGenerator['new_matrix_variable'] = function (block: any) {
     return generated_variables
 
 };
+
+LPGenerator['new_col_variable'] = function (block: any) {
+    const name: string = block.getFieldValue('VARNAME')
+    const col: string = block.getFieldValue('COL')
+
+    const generated_variables = stringify_variables(generate_col_variable(model1_cols, name, col))
+
+    return generated_variables
+
+}
+
+LPGenerator['new_single_variable'] = function(block: any){
+    const name: string = block.getFieldValue('VARNAME')
+    const col: string = block.getFieldValue('COL')
+
+    const generated_variables = stringify_variables(generate_single_variable(name))
+
+    return generated_variables
+}
 
 LPGenerator['operation'] = function (block: any) { 
     const prev_statement =  LPGenerator.valueToCode(block, 'PREV_STATEMENT', LPGenerator.PRECEDENCE) || 'null'
