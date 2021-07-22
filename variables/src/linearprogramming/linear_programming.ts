@@ -73,7 +73,7 @@ export function generate_single_variable(name: string): variables {
 }
 
 function get_indexes(statement: string): string[] {
-    const indexes = statement.match(/`index_[a-zA-Z10-9]*`/g)
+    const indexes = statement.match(/index_[a-zA-Z0-9]+/g)
     const clean_indexes = indexes == undefined ? [] : indexes.map( (x: string) => x.replace("index_","")) 
 
     return clean_indexes
@@ -113,13 +113,14 @@ export function generate_inequality_operation(operation: string,cols: collumns, 
     const indexes_prev = get_indexes(prev_statement)
     const indexes_next = get_indexes(next_statement)
 
+    console.log(`${prev_statement} ${next_statement}`)
     const matchs = indexes_prev.filter( (x: string) => indexes_next.includes(x))
     
     for (let match of matchs) {
         const values = ( cols.get(match) as collumn)
         for (let value of values) {
-            const new_prev_statement  = prev_statement.replace(`index_${match}`,match)
-            const new_next_statement  = next_statement.replace(`index_${match}`,match)
+            const new_prev_statement  = prev_statement.replace(`index_${match}`,value)
+            const new_next_statement  = next_statement.replace(`index_${match}`,value)
 
             constraints.push( `${new_prev_statement} ${operation} ${new_next_statement}` )
         }
@@ -164,6 +165,7 @@ export let variable_indexs: Map<string, string[]> = new Map<string,string[]>()
 variable_indexs.set("CompartmentCargo",["Cargo","Compartment"])
 
 
+export let model1_variables = generate_matrix_variable(model1_cols, "CompartmentCargo","Compartment","Cargo")
 
 export function stringify_variables(vars: variables): string {
     let vars_str: string[] = []

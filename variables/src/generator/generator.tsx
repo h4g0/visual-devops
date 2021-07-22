@@ -26,7 +26,7 @@
 
 import * as Blockly from 'blockly/core';
 
-import { model1_cols, generate_matrix_variable, indexes, gen_operation, stringify_variables, generate_col_variable, generate_single_variable } from './../linearprogramming/linear_programming';
+import { model1_cols, generate_matrix_variable, indexes, gen_operation, stringify_variables, generate_col_variable, generate_single_variable, variable_indexs } from './../linearprogramming/linear_programming';
 
 export const LPGenerator: any =  new Blockly.Generator('LP');
 
@@ -89,7 +89,7 @@ LPGenerator['operation'] = function (block: any) {
     const constraints = gen_operation(operation, model1_cols, prev_statement,next_statement)
 
     
-    return [constraints , LPGenerator.PRECEDENCE];
+    return [constraints, LPGenerator.PRECEDENCE];
 
 };
 
@@ -113,7 +113,7 @@ LPGenerator['constraint'] = function (block: any) {
 LPGenerator['col_address'] = function (block: any) { 
     const col = block.getFieldValue('COL')
     const index = indexes.get(col)
-    return [`${col}[${index}]`, LPGenerator.PRECEDENCE];
+    return [`${col}[index_${index}]`, LPGenerator.PRECEDENCE];
 };
 
 LPGenerator['col_junction'] = function (block: any) {
@@ -129,6 +129,20 @@ LPGenerator['matrix_variable'] = function (block: any){
     const col2: string = block.getFieldValue('COL2')
     const variable: string = block.getFieldValue("VARNAME")
 
-    return [`${variable}[vaname${col1}][varname${col2}]`, LPGenerator.PRECEDENCE]
+    return [`${variable}[${col1}][${col2}]`, LPGenerator.PRECEDENCE]
 
 }
+
+LPGenerator['single_variable'] = function (block: any){
+    const variable: string = block.getFieldValue("VARNAME")
+    const indexes = ( variable_indexs.get(variable) as string[] )
+
+    const index_holder = indexes.map( (x: string) => `[index_${x}]`).join("")
+
+    const variable_holder = `${variable}${index_holder}`
+    
+    return [variable_holder, LPGenerator.PRECEDENCE]
+
+}
+
+

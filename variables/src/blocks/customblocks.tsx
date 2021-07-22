@@ -395,7 +395,7 @@ var ReactSingleVariableField = (variables: any) => ({
   "args0": [
     {
       "type": "field_dropdown",
-      "name": "VALUE",
+      "name": "VARNAME",
       "options": variables
     }
   ]
