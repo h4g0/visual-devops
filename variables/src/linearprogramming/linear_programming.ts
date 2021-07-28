@@ -134,6 +134,8 @@ export function gen_operation(op: string, cols: collumns, prev_statement: string
 
     if (indequality_ops.includes(op)) return generate_inequality_operation(op, cols,prev_statement,next_statement).join("\n")
 
+    if(op == "X") return generate_mul_operation(prev_statement,next_statement,cols)
+    if(op == "+") 
     return ""
 }
 
