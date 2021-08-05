@@ -108,6 +108,47 @@ export function generate_mul_operation(statement1: string, statement2: string,co
     
 }
 
+function get_index(exp: string): string {
+    const index_exp = /index_[a-zA-Z0-9]+/
+    const index = exp.match(index_exp) || []
+    const clean_index = index[0].replace("index_","")
+
+    return clean_index
+}
+
+function get_non_expanded_expr(statement: string): string[] {
+    const index_exp = /index_[a-zA-Z0-9]+/
+    //const non_exp = statement.match(/[a-zA-Z0-9]+(\[index_[a-zA-Z0-9]+\])+/g) || []
+    const non_exp = statement.match(/(\[index_[a-zA-Z0-9]+\])+/g) || []
+
+    console.log((non_exp))
+
+    return non_exp
+}
+
+export function fix_expression(expr: string,cols: collumns): string {
+    const non_exp = get_non_expanded_expr(expr)
+    let new_expr: string = expr
+    console.log(expr)
+    console.log(non_exp)
+    for(let exp of non_exp) {
+        const index = get_index(expr)
+        const vals = cols.get(index) || []
+
+        let new_exp: string = "( "
+
+        for(let val of vals) 
+            new_exp += exp.replace(`index_${index}`,val)
+
+        new_exp += " )"
+
+        new_expr = new_expr.replace(exp,new_exp)
+
+    }
+
+    return new_expr
+}
+
 export function generate_inequality_operation(operation: string,cols: collumns, prev_statement: string, next_statement: string) {
     let constraints: string[] = []
     const indexes_prev = get_indexes(prev_statement)

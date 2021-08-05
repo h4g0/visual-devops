@@ -26,7 +26,7 @@
 
 import * as Blockly from 'blockly/core';
 
-import { model1_cols, generate_matrix_variable, indexes, gen_operation, stringify_variables, generate_col_variable, generate_single_variable, variable_indexs } from './../linearprogramming/linear_programming';
+import { model1_cols, generate_matrix_variable, indexes, gen_operation, stringify_variables, generate_col_variable, generate_single_variable, variable_indexs, fix_expression } from './../linearprogramming/linear_programming';
 
 export const LPGenerator: any =  new Blockly.Generator('LP');
 
@@ -106,8 +106,9 @@ LPGenerator['constraints'] = function (block: any){
 }
 
 LPGenerator['constraint'] = function (block: any) { 
-    var constraint =  LPGenerator.valueToCode(block, 'CONSTRAINT', LPGenerator.PRECEDENCE) || 'null'
-    return constraint
+    const constraint =  LPGenerator.valueToCode(block, 'CONSTRAINT', LPGenerator.PRECEDENCE) || 'null'
+    const fixed_constraint = fix_expression(constraint, model1_cols)
+    return fixed_constraint
 };
 
 LPGenerator['col_address'] = function (block: any) { 
@@ -145,4 +146,9 @@ LPGenerator['single_variable'] = function (block: any){
 
 }
 
-
+LPGenerator['objective'] = function (block: any) { 
+    const objective =  LPGenerator.valueToCode(block, 'OBJECTIVE', LPGenerator.PRECEDENCE) || 'null'
+    const obj =  block.getFieldValue('OBJ')
+    const fixed_objective = fix_expression(objective, model1_cols)
+    return `${obj} ${fixed_objective}`
+}
