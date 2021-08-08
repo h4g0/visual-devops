@@ -1,10 +1,12 @@
 import React from 'react'
+import DataCols from './data-col'
 import './model.css'
 
 class Data extends React.Component {
     
-    data: string[][] = [["data1","data2"],["data3","data4"]]
-    
+    data: string[][] = [["truck1","truck2"],["1","2"],["load1","load2"],["2","2"]]
+    titles: string[] = ["trucks","gaspriceshour","loads","profit"]
+
     constructor(props: any){
         super(props)
     }
@@ -14,9 +16,8 @@ class Data extends React.Component {
         return <div className="data">
             {
             this.data.map((col, index) => {
-                return col.map((cel, cel_index) => {
-                    return <p> {cel} </p>
-                })
+                
+                return <DataCols data={col} title={this.titles[index]} ></DataCols>
             })
             }
             </div>

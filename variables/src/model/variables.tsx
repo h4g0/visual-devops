@@ -3,7 +3,8 @@ import "./model.css"
 
 class Variables extends React.Component {
     
-    variables = [" variable1 = example variable", "variable2 = example variable"]
+    variable_title = "trucks_loads"
+    variables = ["truck1 x load1", "truck2 x load1", "truck1 x load2", "truck2 x load2"]
     constructor(props: any){
         super(props)
     }
@@ -11,9 +12,10 @@ class Variables extends React.Component {
     render() {
 
         return <div className="variables">
+            <h4>{this.variable_title}</h4>
             {
                 this.variables.map((variable, index) => {
-                    return <p>  {variable} </p>
+                    return <p> {variable} </p>
                 })
             }
         </div>

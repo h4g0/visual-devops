@@ -3,7 +3,7 @@ import './model.css'
 
 class Constraints extends React.Component {
     
-    constraints: string[] = [" constraint1 = example constraint", "constraint2 = example constraint"]
+    constraints: string[] = ["trucks_loads[truck1][load1] > gaspriceshour[load1]","trucks_loads[truck2][load2] > gaspriceshour[load2]"]
     
     constructor(props: any){
         super(props)

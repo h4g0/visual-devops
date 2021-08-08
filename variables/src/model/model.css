@@ -1,59 +1,56 @@
 .model {
-    height: 250px;
+    height: 22vw;
     display: flex;
     background-color: lightgrey;
     border-radius: 25px;
+    padding: 5px;
 
 }
 
 .variables {
-    border-radius: 25px;
-    height: 200px;
+    border-radius: 15px;
+    height: 100%;
     width: 20% ;
     display: table-cell;    
     background-color: wheat;
-    padding: 5px;
-    margin: 2px;
+    padding: 1px;
+    margin: 1px;
     border: 2.5px solid grey;
-    margin-left: 20px;
-    margin-top: 20px;
+    margin-left: 1px;
 }
 
 .constraints {
     border-radius: 25px;
-    height: 200px;
+    height: 100%;
     width: 30% ;
     display: table-cell;
     background-color: wheat;
     padding: 5px;
     margin: 2px;
     border: 2.5px solid grey;
-    margin-left: 20px;
-    margin-top: 20px;
+    margin-left: 10px;
 }
 
 .objective {
     border-radius: 10px;
-    height: 40px;
-    width: 90% ;
+    height: 60px;
+    width: 600px ;
     background-color: wheat;
     border: 2.5px solid grey;
-    margin-left: 20px;
-    margin-top: 20px;
+    margin-left: 10px;
 }
 
 .data {
     border-radius: 10px;
-    height: 145px;
+    height: 20vw;
     width: 90% ;
     background-color: wheat;
     border: 2.5px solid grey;
-    margin-left: 20px;
-    margin-top: 20px;
-}
+    display: flex;
+    float: left;
+    padding: 5px;
+    margin-left: 10px;
 
-.objective-data-container{
-    width: 45%
 }
 
 .selector{
@@ -71,4 +68,13 @@
   .generator:hover {
     background-color: blue;
     color: wheat;
+  }
+
+  .DataCol{
+      float: left;
+      margin-left: 0px;
+      border: 1px solid black;
+      border-spacing: 2px;
+      border-radius: 4px;
+      padding: 5px;
   }
