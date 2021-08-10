@@ -33,11 +33,12 @@
 
 .objective {
     border-radius: 10px;
-    height: 60px;
+    height: 30px;
     width: 600px ;
     background-color: wheat;
     border: 2.5px solid grey;
     margin-left: 10px;
+    overflow-y: scroll;
 }
 
 .data {
@@ -72,7 +73,7 @@
 
   .DataCol{
       float: left;
-      margin-left: 0px;
+      margin-left: 5px;
       border: 1px solid black;
       border-spacing: 2px;
       border-radius: 4px;
