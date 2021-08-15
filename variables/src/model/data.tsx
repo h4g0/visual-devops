@@ -4,8 +4,8 @@ import './model.css'
 
 class Data extends React.Component {
     
-    data: string[][] = [["truck1","truck2"],["1","2"],["load1","load2"],["2","2"]]
-    titles: string[] = ["trucks","gaspriceshour","loads","profit"]
+    data: string[][] = [["Front", "Center", "Rear"],["10","16","18"], ["6800","8700","5300"],["C1","C2","C3","C4"],["18","15","23","12"],["480","650","580","390"],["310","380","350","285"]]
+    titles: string[] = ["Compartment","Weight_capacity","Space_capacity","Cargo","Weight","Volume","Profit"]
 
     constructor(props: any){
         super(props)
@@ -13,7 +13,10 @@ class Data extends React.Component {
 
     render() {
 
-        return <div className="data">
+        return (
+        <div className="data">
+            <h4>Data</h4>
+            <div className="data-content">
             {
             this.data.map((col, index) => {
                 
@@ -21,6 +24,9 @@ class Data extends React.Component {
             })
             }
             </div>
+            </div>
+        )
+        
     }
 }
 

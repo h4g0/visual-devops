@@ -5,25 +5,35 @@ import Data from './data'
 
 import React from 'react'
 import './model.css'
+import { Options } from './options/options'
 
-class Model extends React.Component {
+function Model(props: any) {
 
+    const generator = props.generator
 
-    render() {
+    return (
 
-        return <div className="model">
-       
+         <div className="model">
+           
+          <div className="variables-constraints-options">
+
           <Variables />
        
           <Constraints />
        
-            <div className="objective-data-container"> 
+          <Options generator={generator}/>
+
+          </div>
+
+            <div > 
           <Objective />
+
+          
 
             <Data /> 
             </div>
          </div>
-    }
+    )
 }
 
 export default Model

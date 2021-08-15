@@ -64,9 +64,8 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="App">
-        <Model />
-          <button onClick={this.generateCode} className="generator">Convert</button>
+      <div>
+        <Model generator={this.generateCode}/>
           <BlocklyComponent ref={this.simpleWorkspace}
           readOnly={false} trashcan={true} media={'media/'}
           move={{
