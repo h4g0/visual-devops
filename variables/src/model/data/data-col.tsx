@@ -1,5 +1,5 @@
 import React from 'react'
-import './model.css'
+import './../model.css'
 
 export function DataCols(props: any) {
     

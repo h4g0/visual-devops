@@ -1,7 +1,7 @@
 import Constraints from './constraints'
 import Variables from './variables'
 import Objective from './objective'
-import Data from './data'
+import Data from './data/data'
 
 import React from 'react'
 import './model.css'
