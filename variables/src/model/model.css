@@ -59,15 +59,16 @@
     display: table-cell;
     float: left;
     margin-left: 10px; 
-    overflow: scroll;
     
 }
 
 .data-content {
+    display: inline-flex;
     float: left;
-    display: flex;
     margin-left: 0;
-    overflow: scroll;
+    overflow-x: scroll;
+    height: 70%;
+    width: 97%;
 }
 
 .selector{
@@ -87,44 +88,59 @@
     padding: 5px 5px;
     margin: 8px 0;
     display: inline-block;
-    border: 1px solid #ccc;
+    border: 2px solid grey;
     border-radius: 20px;
     box-sizing: border-box;
-    background-color: lightblue;
+    background-color: white;
     cursor: pointer;
   }
   
   .generator:hover {
-    background-color: blue;
-    color: wheat;
+    background-color: pink;
+    color: grey;
   }
 
   .DataCol{
-      float: left;
-      margin-left: 7px;
+      display: block;
+      margin-left: 5px;
       border: 2px solid grey;
       border-spacing: 2px;
       border-radius: 5px;
       padding: 5px;
+      height: min-content;
       background-color: white;
+      line-height: 2px;
+      
   }
 
   .IndexCol{
-    float: left;
     margin-left: 7px;
     border: 2px solid grey;
     border-spacing: 2px;
     border-radius: 5px;
     padding: 5px;
+    height: auto;
     background-color: pink;
+    height: min-content;
+    line-height: 2px;
+}
+
+h4 {
+   margin: 5px;
+   margin-left: 0px;
 }
 
 .ColGroup{
     border: 2px solid grey;
     padding: 5px;
-    overflow: scroll;
+    width: min-content;
+    height: min-content;
+    display: inline-flex;
+    margin: 5px;
+    padding: 5px;
 }
 
   ::-webkit-scrollbar{
     display: none;
   }
+  
