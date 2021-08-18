@@ -14,6 +14,7 @@ class Variables extends React.Component {
         return <div className="variables">
             <h4>Variables</h4>
             {
+                
                 this.variables.map((curr: string, index: number) => <li>{curr}</li>)
             }
         </div>

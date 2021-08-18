@@ -11,7 +11,8 @@
 .variables-constraints-options {
     height: 100%;
     width: 100%;
-    margin-left: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
     display: table-cell;    
 }
 
@@ -22,7 +23,7 @@
     /*display: table-cell;*/    
     background-color: white;
     padding: 1px;
-    margin: 1px;
+    margin-bottom: 10px;
     border: 2.5px solid grey;
     overflow: scroll;
 }
@@ -40,8 +41,8 @@
 }
 
 .objective {
-    border-radius: 5px;
-    height: 10%;
+    border-radius: 10px;
+    height: 15%;
     width: 97% ;
     background-color: white;
     border: 2px solid grey;
@@ -51,8 +52,8 @@
 }
 
 .data {
-    border-radius: 5px;
-    height: 80%;
+    border-radius: 10px;
+    height: 75%;
     width: 97% ;
     background-color: white;
     border: 2.5px solid grey;
@@ -109,7 +110,6 @@
       padding: 5px;
       height: min-content;
       background-color: white;
-      line-height: 2px;
       
   }
 
@@ -122,14 +122,20 @@
     height: auto;
     background-color: pink;
     height: min-content;
-    line-height: 2px;
 }
 
 h4 {
-   margin: 5px;
+   margin: 2px;
    margin-left: 0px;
 }
 
+p {
+    margin: 0px;
+    margin-left: 0px;
+}
+ul {
+    margin-left: 0px;
+}
 .ColGroup{
     border: 2px solid grey;
     padding: 5px;
