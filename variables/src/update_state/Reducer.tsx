@@ -11,25 +11,25 @@ const default_state: any = {
     columns: new Map<string,string[]>()
 }
 
-export const loginReducer = function (state = default_state , action: any) {
+export const dataReducer = function (state = default_state , action: any) {
     var new_state: any = { ...state }
 
     switch ( action.type ) {
         case Types.COLUMNS: 
             //console.log(action)
-            new_state.token = action.payload.columns
+            new_state.columns = action.payload.columns
             return new_state;
         case Types.CONSTRAINTS: 
-            new_state.menu = action.payload.constraints
+            new_state.constraints = action.payload.constraints
             return new_state
         case Types.VARIABLES:
-            new_state.password = action.payload.variables
+            new_state.variables = action.payload.variables
             return new_state
         case Types.INDEXES:
-            new_state.email = action.payload.indexes
+            new_state.indexes = action.payload.indexes
             return new_state
         case Types.INDEX_COLS:
-            new_state.user = action.payload.index_cols
+            new_state.index_cols = action.payload.index_cols
             return new_state
         default: 
             return state;

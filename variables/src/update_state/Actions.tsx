@@ -6,7 +6,7 @@ export const Types = {
     VARIABLES: "VARIABLES",
     INDEXES: "INDEXES",
     COLUMNS: "COLUMNS",
-    INDEX_COLS: "INDEX_COLS"
+    INDEX_COLS: "INDEX_COLS",
 };
 
 // Actions para mudar o valor das variáveis globais

@@ -1,13 +1,21 @@
 import { collumns } from "../linearprogramming/linear_programming";
+import { useSelector,useDispatch } from 'react-redux'
+import { updateColumns, updateIndexCols, updateIndexes } from "../update_state/Actions";
 
 const xlsx = require("xlsx")
 
+
 function read_spreadsheet(doc: string) {
-    const workbook = xlsx.readFile(doc)
+    /*const workbook = xlsx.readFile(doc)
     const sheetNames = workbook.SheetNames;
     
     const obj = xlsx.utils.sheet_to_json(workbook.Sheets[sheetNames[0]]);
-    console.log(obj)
+    console.log(obj)*/
+
+    const obj = [
+        { col1: 1, col2: 2, Empty: '#', col3: 5, col4: 6 },
+        { col1: 3, col2: 4, Empty: '#', col3: 7, col4: 8 }
+      ]
     return obj
 }
 
@@ -85,12 +93,14 @@ function get_indexes(spreadsheet: any): Map<string,string> {
 
 }
 
-export function get_data(doc: string) {
+export function read_data(doc: string) {
     const spreadsheet = read_spreadsheet(doc)
 
     const cols = get_cols(spreadsheet)
     const indexes = get_indexes(spreadsheet)
     const index_cols = get_index_cols(spreadsheet)
+
+    return [cols,indexes,index_cols]
 }
 
-get_data("test.xlsx")
+read_data("test.xlsx")

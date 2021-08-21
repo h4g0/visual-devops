@@ -87,7 +87,8 @@
   .generator{
     width: 150px;
     padding: 5px 5px;
-    margin: 8px 0;
+    margin: 8px 0px;
+    margin-right: 8px;
     display: inline-block;
     border: 2px solid grey;
     border-radius: 20px;

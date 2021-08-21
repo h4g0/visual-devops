@@ -34,6 +34,8 @@ import { LPGenerator } from './generator/generator';
 import Model from './model/model'
 
 import {createStore} from 'redux'
+import dataStore from './update_state/Store';
+import { Provider } from 'react-redux';
 
 //const electron = window.require('electron')
 //const ipcRenderer =  electron.ipcRenderer
@@ -64,6 +66,7 @@ class App extends React.Component {
 
   render() {
     return (
+      <Provider store={dataStore} >
       <div>
         <Model generator={this.generateCode}/>
           <BlocklyComponent ref={this.simpleWorkspace}
@@ -94,6 +97,7 @@ class App extends React.Component {
             <Block type = "operation" />
           </BlocklyComponent>
       </div>
+      </Provider>
     );
   }
 }

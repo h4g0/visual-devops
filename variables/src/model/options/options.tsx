@@ -1,6 +1,7 @@
 import React from 'react'
 import Generator from './generator'
 import './../model.css'
+import ReloadData from './reload_data'
 
 export function Options(props: any) {
     
@@ -10,7 +11,10 @@ export function Options(props: any) {
 
   
     return (
-       <Generator generator={generator}/>
+        <div>
+       <Generator generator={generator} > </Generator>
+       <ReloadData generator={generator}> </ReloadData>
+       </div>
     )
     
 }

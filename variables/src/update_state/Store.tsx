@@ -1,6 +1,6 @@
 import { createStore } from 'redux'
-import { loginReducer } from './Reducer'
+import { dataReducer } from './Reducer'
 
-let loginStore: any = createStore(loginReducer)
+let dataStore: any = createStore(dataReducer)
 
-export default loginStore
+export default dataStore
