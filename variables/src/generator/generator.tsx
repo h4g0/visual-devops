@@ -25,6 +25,8 @@
 // https://developers.google.com/blockly/guides/create-custom-blocks/generating-code
 
 import * as Blockly from 'blockly/core';
+import { useSelector } from 'react-redux';
+import dataStore from './../update_state/Store'
 
 import { model1_cols, generate_matrix_variable, indexes, gen_operation, stringify_variables, generate_col_variable, generate_single_variable, variable_indexs, fix_expression } from './../linearprogramming/linear_programming';
 
@@ -49,10 +51,18 @@ LPGenerator["variables"] = function (block: any){
 }
 
 LPGenerator['new_matrix_variable'] = function (block: any) {
-    var name: string = block.getFieldValue('VARNAME')
+    const cols: any = dataStore.getState().cols
+
+    //dataStore.dipatch( {})
+    console.log(dataStore.getState())
+    console.log(cols)
+    console.log(`cols ${JSON.stringify(cols)}`)
+    console.log("11111")
+
+    const name: string = block.getFieldValue('VARNAME')
     ///var cols =  LPGenerator.valueToCode(block, 'VALUE', LPGenerator.PRECEDENCE) || 'null'
-    var col1: string = block.getFieldValue('COL1')
-    var col2: string = block.getFieldValue('COL2')
+    const col1: string = block.getFieldValue('COL1')
+    const col2: string = block.getFieldValue('COL2')
 
 
     const generated_variables = stringify_variables(generate_matrix_variable(model1_cols, name,col1,col2))
@@ -126,6 +136,7 @@ LPGenerator['col_junction'] = function (block: any) {
 };
 
 LPGenerator['matrix_variable'] = function (block: any){
+   
     const col1: string = block.getFieldValue('COL1')
     const col2: string = block.getFieldValue('COL2')
     const variable: string = block.getFieldValue("VARNAME")

@@ -69,6 +69,15 @@ let index2: any = [["C1","C1"],["C2","C2"],["C3","C3"],["C4","C4"],["Plant_A","P
 ["Beans","Beans"],["Corn","Corn"],["Broccoli","Broccoli"],["Cabbage","Cabbage"],["Potatoes","Potatoes"]
 ]
 
+//@ts-ignore
+Blockly.Workspace.prototype.refresh = function() {
+  var xml = Blockly.Xml.workspaceToDom(this);
+  this.clear();
+  Blockly.Xml.domToWorkspace(xml, this);
+  //@ts-ignore
+  this.refreshToolboxSelection();
+};
+
 var testReactField = {
   "type": "test_react_field",
   "message0": "custom field %1",
@@ -270,10 +279,6 @@ Blockly.Blocks['new_matrix_variable'] = {
     this.setColour(var_creation_color)
   }
 };
-
-
-
-
 
 var ReactMatrixVariableField = (variables: any,index1: any, index2: any) => ({
   "message0": "variable %1 index %2 %3",

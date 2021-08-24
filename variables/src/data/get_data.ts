@@ -31,14 +31,8 @@ export function get_types(cols: collumns,index_cols: string[]) {
     let types = []
 
     let curr_group: any[] = []
-    console.log("_____________________")
-    console.log(cols)
-
+   
     const col_keys = Array.from(cols.entries()).map( (x: [string,collumn]) => x[0] )
-
-    console.log(col_keys)
-    console.log(index_cols)
-    console.log("_____________________")
 
     for( let col of col_keys ) {
         if(index_cols.includes(col)) {
