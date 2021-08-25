@@ -26,8 +26,9 @@
 
 
 import * as Blockly from 'blockly/core';
-import { model1_cols } from '../linearprogramming/linear_programming';
+import { collumn, collumns, model1_cols } from '../linearprogramming/linear_programming';
 
+import dataStore from './../update_state/Store'
 
 // Since we're using json to initialize the field, we'll need to import it.
 import '../fields/BlocklyReactField';
@@ -124,7 +125,7 @@ Blockly.Blocks['test_react_date_field'] = {
   }
 };
 
-var ReactNewColVariableField = (index_cols: any) => ({
+var ReactNewColVariableField = () => ({
     "message0": "new column variable %1 index %2",
     "nextStatement": "ACTION",
     "previousStatement": "ACTION",
@@ -136,17 +137,36 @@ var ReactNewColVariableField = (index_cols: any) => ({
         "spellcheck": false
       },
       {
-        "type": "field_dropdown",
+        "type": "input_dummy",
         "name": "COL",
-        "options": index_cols
+        "options": []
       }
-    ]
+    ],
+    "extensions": ["dynamic_menu_extension_col_variable"]
 })
+
+Blockly.Extensions.register('dynamic_menu_extension_col_variable',
+
+  function() {
+    const cols: collumns = ( dataStore.getState().columns as collumns )
+    const col_keys = Array.from(cols.entries()).map( (x: [string,collumn]) => x[0] )
+
+    //@ts-ignore
+    this.getInput('COL')
+      .appendField(new Blockly.FieldDropdown(
+        function() {
+          let options = [];
+          for(let col of col_keys) {
+            options.push([col , col.toUpperCase()]);
+          }
+          return ["E","E"];
+        }), 'COL');
+  });
 
 Blockly.Blocks['new_col_variable'] = {
   init: function() {
     //@ts-ignore
-    this.jsonInit(ReactNewColVariableField(index_cols));
+    this.jsonInit(ReactNewColVariableField());
     //@ts-ignore
     this.setStyle('loop_blocks');
     //@ts-ignore

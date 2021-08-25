@@ -9,13 +9,47 @@ function read_spreadsheet(doc: string) {
     /*const workbook = xlsx.readFile(doc)
     const sheetNames = workbook.SheetNames;
     
-    const obj = xlsx.utils.sheet_to_json(workbook.Sheets[sheetNames[0]]);
-    console.log(obj)*/
+    const obj = xlsx.utils.sheet_to_json(workbook.Sheets[sheetNames[0]]);*/
 
-    const obj = [
-        { col1: 1, col2: 2, Empty: '#', col3: 5, col4: 6 },
-        { col1: 3, col2: 4, Empty: '#', col3: 7, col4: 8 }
+    const obj =[
+        {
+          Vegetables: 'Beans',
+          Iron: 0.5,
+          Phosphorus: 10,
+          Calcium: 200,
+          Cost_per_pound: 0.2
+        },
+        {
+          Vegetables: 'Corn',
+          Iron: 0.5,
+          Phosphorus: 20,
+          Calcium: 280,
+          Cost_per_pound: 0.18
+        },
+        {
+          Vegetables: 'Broccoli',
+          Iron: 1.2,
+          Phosphorus: 40,
+          Calcium: 800,
+          Cost_per_pound: 0.32
+        },
+        {
+          Vegetables: 'Cabbage',
+          Iron: 0.3,
+          Phosphorus: 30,
+          Calcium: 420,
+          Cost_per_pound: 0.28
+        },
+        {
+          Vegetables: 'Potatoes',
+          Iron: 0.4,
+          Phosphorus: 50,
+          Calcium: 360,
+          Cost_per_pound: 0.16
+        }
       ]
+    console.log(obj)
+
     return obj
 }
 
@@ -103,4 +137,4 @@ export function read_data(doc: string) {
     return [cols,indexes,index_cols]
 }
 
-read_data("test.xlsx")
+read_data("Vegetables.xlsx")

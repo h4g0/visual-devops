@@ -32,9 +32,7 @@ function ReloadData(props: any) {
         const index_cols = ( data[2] as string[] )
     
         update_values(cols,indexes,index_cols)
-
-        //@ts-ignore
-        Blockly.Workspace.prototype.refresh()
+        
     }
  
     return (
