@@ -33,6 +33,7 @@ import dataStore from './../update_state/Store'
 // Since we're using json to initialize the field, we'll need to import it.
 import '../fields/BlocklyReactField';
 import '../fields/DateField';
+import { updateBlockIndex } from '../update_state/Actions';
 
 let var_creation_color: string = "#C2948A"
 let value_color: string = "#7EA8BE"
@@ -142,27 +143,9 @@ var ReactNewColVariableField = () => ({
         "options": []
       }
     ],
-    "extensions": ["dynamic_menu_extension_col"]
+    "extensions": ["dynamic_menu_extension_col_var"]
 })
 
-Blockly.Extensions.register('dynamic_menu_extension_col',
-
-  function() {
-    
-    //@ts-ignore
-    this.getInput('COL')
-      .appendField(new Blockly.FieldDropdown(
-      
-        function() {
-          const cols: collumns = ( dataStore.getState().columns as collumns )
-          const col_keys = Array.from(cols.entries()).map( (x: [string,collumn]) => x[0] )
-          let options = [];
-          for(let col of col_keys) {
-            options.push([col , col]);
-          }
-          return options.length > 0 ? options : [["",""]];
-        }), 'COL');
-  });
 
 Blockly.Blocks['new_col_variable'] = {
   init: function() {
@@ -209,11 +192,12 @@ var ReactColField = {
   "output": "ACTION",
   "args0": [
     {
-      "type": "field_dropdown",
+      "type": "input_dummy",
       "name": "COL",
-      "options": optreactcolfield
+      "options": []
     }
-  ]
+  ],
+"extensions": ["dynamic_menu_extension_col"]
 }
 
 Blockly.Blocks['col_address'] = {
@@ -228,20 +212,17 @@ Blockly.Blocks['col_address'] = {
 };
 
 var ReactColValField = {
-  "message0": "column: %1 %2",
+  "message0": "column: %1",
   "output": "ACTION",
   "args0": [
     {
-      "type": "field_dropdown",
-      "name": "COL",
-      "options": optreactcolfield
-    },
-    {
-      "type": "field_dropdown",
-      "name": "INDEX",
-      "options": index1.concat(index2)
+      "type": "input_dummy",
+      "name": "INPUT",
+      "options": []
     }
-  ]
+  ],
+  "extensions": ["dynamic_menu_extension_col_val","on_change_col_val"]
+
 }
 
 Blockly.Blocks['col_val_address'] = {
@@ -255,6 +236,7 @@ Blockly.Blocks['col_val_address'] = {
   }
 };
 
+
 var ReactNewMatrixVariableField = (index_cols: any) => ({
   "message0": "new matrix variable |  name: %1 ",
  
@@ -267,20 +249,15 @@ var ReactNewMatrixVariableField = (index_cols: any) => ({
         "text": "varname",
       }
     ],
-  "message1": "column 1: %1 column 2: %2",
+  "message1": "columns : %1",
   "args1": [
     {
       "type": "input_dummy",
       "name": "COL1",
-      "options": []
-    },
-    {
-      "type": "input_dummy",
-      "name": "COL2",
-      "options": []
+      "options": [["",""]],
     }
   ],
-  "extensions": ["dynamic_menu_extension_two_cols_col1","dynamic_menu_extension_two_cols_col2"]
+  "extensions": ["dynamic_menu_extension_two_cols"]
 
 })
 
@@ -295,12 +272,27 @@ Blockly.Blocks['new_matrix_variable'] = {
   }
 };
 
-Blockly.Extensions.register('dynamic_menu_extension_two_cols_col1',
+Blockly.Extensions.register('dynamic_menu_extension_two_cols',
 
   function() {   
 
       //@ts-ignore
-    this.getInput('COL1')
+    this.getInput('COL1').setAlign(Blockly.ALIGN_LEFT)
+    .appendField(new Blockly.FieldDropdown(
+
+    
+      function() {
+        const cols: collumns = ( dataStore.getState().columns as collumns )
+        const col_keys = Array.from(cols.entries()).map( (x: [string,collumn]) => x[0] )
+        let options = [];
+        for(let col of col_keys) {
+          options.push([col , col]);
+        }
+        return options.length > 0 ? options : [["",""]];
+      }), 'COL1');
+
+       //@ts-ignore
+    this.getInput('COL1').setAlign(Blockly.ALIGN_LEFT)
     .appendField(new Blockly.FieldDropdown(
 
     
@@ -314,28 +306,6 @@ Blockly.Extensions.register('dynamic_menu_extension_two_cols_col1',
         return options.length > 0 ? options : [["",""]];
       }), 'COL2');
 
-    
-});
-
-
-Blockly.Extensions.register('dynamic_menu_extension_two_cols_col2',
-
-  function() {
-
-    //@ts-ignore
-    this.getInput('COL2')
-    .appendField(new Blockly.FieldDropdown(
-
-    
-      function() {
-        const cols: collumns = ( dataStore.getState().columns as collumns )
-        const col_keys = Array.from(cols.entries()).map( (x: [string,collumn]) => x[0] )
-        let options = [];
-        for(let col of col_keys) {
-          options.push([col , col]);
-        }
-        return options.length > 0 ? options : [["",""]];
-      }), 'COL2');
 
     
 });
@@ -360,7 +330,6 @@ var ReactMatrixVariableField = (variables: any,index1: any, index2: any) => ({
       "options": []
     }
   ],
-  "extensions": ["dynamic_menu_extension_two_cols_col1","dynamic_menu_extension_two_cols_col2"]
 
 })
 

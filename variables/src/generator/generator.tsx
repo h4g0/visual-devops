@@ -28,7 +28,8 @@ import * as Blockly from 'blockly/core';
 import { useSelector } from 'react-redux';
 import dataStore from './../update_state/Store'
 
-import { model1_cols, generate_matrix_variable, indexes, gen_operation, stringify_variables, generate_col_variable, generate_single_variable, variable_indexs, fix_expression } from './../linearprogramming/linear_programming';
+import { model1_cols, generate_matrix_variable, indexes, gen_operation, stringify_variables, generate_col_variable, generate_single_variable, variable_indexs, fix_expression, generate_col_variable_index } from './../linearprogramming/linear_programming';
+import { updateVariables } from '../update_state/Actions';
 
 export const LPGenerator: any =  new Blockly.Generator('LP');
 
@@ -51,13 +52,12 @@ LPGenerator["variables"] = function (block: any){
 }
 
 LPGenerator['new_matrix_variable'] = function (block: any) {
-    const cols: any = dataStore.getState().cols
+    const cols: any = dataStore.getState().columns
 
     //dataStore.dipatch( {})
     console.log(dataStore.getState())
     console.log(cols)
     console.log(`cols ${JSON.stringify(cols)}`)
-    console.log("11111")
 
     const name: string = block.getFieldValue('VARNAME')
     ///var cols =  LPGenerator.valueToCode(block, 'VALUE', LPGenerator.PRECEDENCE) || 'null'
@@ -65,19 +65,26 @@ LPGenerator['new_matrix_variable'] = function (block: any) {
     const col2: string = block.getFieldValue('COL2')
 
 
-    const generated_variables = stringify_variables(generate_matrix_variable(model1_cols, name,col1,col2))
-    
-    return generated_variables
+    const generated_variables = generate_matrix_variable(cols, name,col1,col2)
+
+    const string_generated_variables = stringify_variables(generated_variables)
+    console.log(string_generated_variables)
+    return string_generated_variables
 
 };
 
 LPGenerator['new_col_variable'] = function (block: any) {
+
+    const cols: any = dataStore.getState().columns
+
     const name: string = block.getFieldValue('VARNAME')
     const col: string = block.getFieldValue('COL')
 
-    const generated_variables = stringify_variables(generate_col_variable(model1_cols, name, col))
+    const generated_variables = generate_col_variable_index(name, col)
 
-    return generated_variables
+    dataStore.dispatch( updateVariables( {variables : generated_variables}))
+
+    return JSON.stringify(generated_variables)
 
 }
 

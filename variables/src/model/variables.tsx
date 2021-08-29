@@ -1,24 +1,21 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import "./model.css"
 
-class Variables extends React.Component {
+function Variables(props: any) {   
+
+    const vars: any = ( useSelector((state: any) => state.variables) as Map<string,string[]> )
+
+    const vars_array: [string,string[]][] = Array.from(vars.entries())
+    const variables = vars_array.map( (x: [string,string[]]) => `${x[0]} = ${x[1].join("x")}` )
     
-    variable_title = "trucks_loads"
-    variables = ["x = Compartment x Cargo"]
-    constructor(props: any){
-        super(props)
-    }
-
-    render() {
-
-        return <div className="variables">
-            <h4>Variables</h4>
-            {
-                
-                this.variables.map((curr: string, index: number) => <li>{curr}</li>)
-            }
-        </div>
-    }
+    
+    return  ( <div className="variables">
+        <h4>Variables</h4>
+        {    
+            variables.map((curr: string, index: number) => <li>{curr}</li>)
+        }
+        </div> )
 }
 
 export default Variables

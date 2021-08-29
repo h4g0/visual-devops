@@ -8,7 +8,7 @@ type Var_type = "single" | "col" | "mat"
 
 type formula =  string[]
 
-type my_variable = {
+export type my_variable = {
     name: string,
     type: Var_type
     formula: formula
@@ -44,11 +44,20 @@ export function generate_matrix_variable(cols: collumns, name: string,col1: stri
             variable.set(`${name}[${item1}][${item2}]`,{
                 name: name,
                 type: mat_var,
-                formula: [item1,item1]
+                formula: [item1,item2]
             })
         
     
 
+    return variable
+}
+
+
+export function generate_col_variable_index(name: string,col1: string): Map<string, string[]>{
+    let variable = new Map<string,string[]>()
+
+    variable.set(name, [col1])
+    
     return variable
 }
 

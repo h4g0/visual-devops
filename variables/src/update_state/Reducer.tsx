@@ -1,14 +1,17 @@
+import { my_variable } from '../linearprogramming/linear_programming'
 import { Types } from './Actions'
 
 
 // Declaração das variáveis globais e dos respetivos set's 
 
 const default_state: any = {
-    variables: [],
+    variables: new Map<string, string[]>(),
     constraints: [],
+    objective: "",
     indexes: new Map<string,string>(),
     index_cols: [],
-    columns: new Map<string,string[]>()
+    columns: new Map<string,string[]>(),
+    block_col: new Map<string,string>(),
 }
 
 export const dataReducer = function (state = default_state , action: any) {
@@ -30,6 +33,15 @@ export const dataReducer = function (state = default_state , action: any) {
             return new_state
         case Types.INDEX_COLS:
             new_state.index_cols = action.payload.index_cols
+            return new_state
+        case Types.BLOCK_COL:
+            new_state.block_col = state.block_col
+            new_state.block_col.set(action.payload.block,action.payload.index)
+            return new_state
+        case Types.CLEAR:
+            new_state.variables =  new Map<string, string[]>()
+            new_state.constraints =  []
+            new_state.objective =  ""
             return new_state
         default: 
             return state;
