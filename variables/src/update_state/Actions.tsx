@@ -20,7 +20,7 @@ export const updateConstraints = (value: {constraints: string[]})  => ({
     payload: value
 });
 
-export const updateVariables = (value: {variables: Map<string,string[]>})  => ({
+export const updateVariables = (value: {name : string,cols: string[]})  => ({
     type: Types.VARIABLES,
     payload: value
 });

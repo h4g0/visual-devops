@@ -30,6 +30,12 @@ export type aux_variables =  Map<string, number>
 export type collumn = string[]
 export type collumns = Map<string, collumn>
 
+export function generate_matrix_variable_index(name: string,col1: string, col2: string):  [string,string[]] {
+   
+    return [name, [col1,col2]]
+
+}
+
 
 export function generate_matrix_variable(cols: collumns, name: string,col1: string, col2: string): variables {
     let variable: variables = new Map<string,my_variable>()
@@ -53,12 +59,10 @@ export function generate_matrix_variable(cols: collumns, name: string,col1: stri
 }
 
 
-export function generate_col_variable_index(name: string,col1: string): Map<string, string[]>{
-    let variable = new Map<string,string[]>()
+export function generate_col_variable_index(name: string,col1: string): [string,string[]]{
 
-    variable.set(name, [col1])
-    
-    return variable
+    return [name, [col1]]
+
 }
 
 export function  generate_col_variable(cols: collumns, name: string, col: string): variables {
@@ -72,6 +76,12 @@ export function  generate_col_variable(cols: collumns, name: string, col: string
         variable.set(`${name}[${item}]`,{name: name, type: col_var, formula: [item]})
 
     return variable
+}
+
+export function generate_single_variable_index(name: string): [string,string[]] {
+
+    return [name,[]]
+
 }
 
 export function generate_single_variable(name: string): variables {

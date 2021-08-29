@@ -28,7 +28,7 @@ import * as Blockly from 'blockly/core';
 import { useSelector } from 'react-redux';
 import dataStore from './../update_state/Store'
 
-import { model1_cols, generate_matrix_variable, indexes, gen_operation, stringify_variables, generate_col_variable, generate_single_variable, variable_indexs, fix_expression, generate_col_variable_index } from './../linearprogramming/linear_programming';
+import { model1_cols, generate_matrix_variable, indexes, gen_operation, stringify_variables, generate_col_variable, generate_single_variable, variable_indexs, fix_expression, generate_col_variable_index, generate_matrix_variable_index, generate_single_variable_index } from './../linearprogramming/linear_programming';
 import { updateVariables } from '../update_state/Actions';
 
 export const LPGenerator: any =  new Blockly.Generator('LP');
@@ -64,12 +64,14 @@ LPGenerator['new_matrix_variable'] = function (block: any) {
     const col1: string = block.getFieldValue('COL1')
     const col2: string = block.getFieldValue('COL2')
 
+    const generated_variables = generate_matrix_variable_index(name, col1,col2)
 
-    const generated_variables = generate_matrix_variable(cols, name,col1,col2)
+    const var_name = generated_variables[0]
+    const var_col = generated_variables[1]
 
-    const string_generated_variables = stringify_variables(generated_variables)
-    console.log(string_generated_variables)
-    return string_generated_variables
+    dataStore.dispatch( updateVariables( {name : var_name, cols: var_col}))
+    
+    return JSON.stringify(generated_variables)
 
 };
 
@@ -82,7 +84,10 @@ LPGenerator['new_col_variable'] = function (block: any) {
 
     const generated_variables = generate_col_variable_index(name, col)
 
-    dataStore.dispatch( updateVariables( {variables : generated_variables}))
+    const var_name = generated_variables[0]
+    const var_col = generated_variables[1]
+
+    dataStore.dispatch( updateVariables( {name : var_name, cols: var_col}))
 
     return JSON.stringify(generated_variables)
 
@@ -92,9 +97,14 @@ LPGenerator['new_single_variable'] = function(block: any){
     const name: string = block.getFieldValue('VARNAME')
     const col: string = block.getFieldValue('COL')
 
-    const generated_variables = stringify_variables(generate_single_variable(name))
+    const generated_variables = generate_single_variable_index(name)
 
-    return generated_variables
+    const var_name = generated_variables[0]
+    const var_col = generated_variables[1]
+
+    dataStore.dispatch( updateVariables( {name : var_name, cols: var_col}))
+
+    return JSON.stringify(generated_variables)
 }
 
 LPGenerator['operation'] = function (block: any) { 
