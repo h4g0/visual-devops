@@ -29,7 +29,8 @@ import logo from './logo.svg';
 import BlocklyComponent, { Block, Value, Field, Shadow } from './Blockly';
 
 
-import './blocks/customblocks';
+import './blocks/customblocks'
+
 import { LPGenerator } from './generator/generator';
 import Model from './model/model'
 
