@@ -2,13 +2,14 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import "./model.css"
 
-function Variables(props: any) {   
+export function Variables(props: any) {   
 
-    const vars: any = ( useSelector((state: any) => state.variables) as Map<string,string[]> )
+    let vars: any = ( useSelector((state: any) => state.variables) )
 
     const vars_array: [string,string[]][] = Array.from(vars.entries())
-    const variables = vars_array.map( (x: [string,string[]]) => `${x[0]} = ${x[1].join("x")}` )
-    
+    const variables = vars_array.map( (x: [string,string[]]) => x[1].length > 0 ? `${x[0]} = ${x[1].join( " X ")}` : x[0] )
+
+    console.log(vars_array)
     
     return  ( <div className="variables">
         <h4>Variables</h4>

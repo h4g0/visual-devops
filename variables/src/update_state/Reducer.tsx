@@ -26,7 +26,7 @@ export const dataReducer = function (state = default_state , action: any) {
             new_state.constraints = action.payload.constraints
             return new_state
         case Types.VARIABLES:
-            new_state.variables = state.variables
+            new_state.variables = new Map(state.variables)
             const name = action.payload.name
             const cols = action.payload.cols
             new_state.variables.set(name,cols)
