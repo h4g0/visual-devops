@@ -114,6 +114,9 @@ LPGenerator['operation'] = function (block: any) {
     const prev_statement =  LPGenerator.valueToCode(block, 'PREV_STATEMENT', LPGenerator.PRECEDENCE) || 'null'
     const next_statement =  LPGenerator.valueToCode(block, 'NEXT_STATEMENT', LPGenerator.PRECEDENCE) || 'null'
     
+    console.log(prev_statement)
+    console.log(next_statement)
+    
     const operation = block.getFieldValue('OPERATION')
 
     const constraints = gen_operation(operation, cols, prev_statement,next_statement)
@@ -122,11 +125,11 @@ LPGenerator['operation'] = function (block: any) {
 
 };
 
-LPGenerator['single_variable'] = function (block: any) { 
-    const value = block.getFieldValue('VALUE')
+LPGenerator['number'] = function (block: any){
+    const number = block.getFieldValue('VALUE') || 0
 
-    return [value, LPGenerator.PRECEDENCE];
-};
+    return [`${number}`, LPGenerator.PRECEDENCE];
+}
 
 LPGenerator['constraints'] = function (block: any){
     const constraints = LPGenerator.statementToCode(block, 'CONSTRAINTS', LPGenerator.PRECEDENCE) || 'null'
@@ -158,14 +161,16 @@ LPGenerator['matrix_variable'] = function (block: any){
    
     const col1: string = block.getFieldValue('COL1')
     const col2: string = block.getFieldValue('COL2')
-    const variable: string = block.getFieldValue("VARNAME")
+    const variable: string = block.getFieldValue("COL")
 
-    return [`${variable}[${col1}][${col2}]`, LPGenerator.PRECEDENCE]
+    const variable_holder = `${variable}[index_${col1}][index_${col2}]`
+
+    return [variable_holder, LPGenerator.PRECEDENCE]
 
 }
 
 LPGenerator['single_variable'] = function (block: any){
-    const variable: string = block.getFieldValue("VARNAME")
+    const variable: string = block.getFieldValue("COL")
     const indexes = ( variable_indexs.get(variable) as string[] )
 
     const index_holder = indexes.map( (x: string) => `[index_${x}]`).join("")

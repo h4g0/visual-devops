@@ -550,7 +550,7 @@ var ReactNumberField = {
       "name": "VALUE",
       "min": 0,
       "max": 100000,
-      "precision": 0.01,
+      "precision": 0.001,
     }
    ],
 }
