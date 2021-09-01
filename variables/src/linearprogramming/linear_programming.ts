@@ -138,7 +138,7 @@ function get_index(exp: string): string {
 function get_non_expanded_expr(statement: string): string[] {
     const index_exp = /index_[a-zA-Z0-9]+/
     //const non_exp = statement.match(/[a-zA-Z0-9]+(\[index_[a-zA-Z0-9]+\])+/g) || []
-    const non_exp = statement.match(/(\[index_[a-zA-Z0-9]+\])+/g) || []
+    const non_exp = statement.match(/[a-zA-Z]+(\[index_[a-zA-Z0-9]+\])+/g) || []
 
     console.log((non_exp))
 
@@ -146,6 +146,7 @@ function get_non_expanded_expr(statement: string): string[] {
 }
 
 export function fix_expression(expr: string,cols: collumns): string {
+    console.log("fix expression")
     const non_exp = get_non_expanded_expr(expr)
     let new_expr: string = expr
     console.log(expr)
@@ -154,16 +155,21 @@ export function fix_expression(expr: string,cols: collumns): string {
         const index = get_index(expr)
         const vals = cols.get(index) || []
 
-        let new_exp: string = "( "
+        let new_exp: string = ""
 
-        for(let val of vals) 
+        for(let i = 0; i < vals.length; i++) {
+            const val = vals[i]
+            if(i > 0) new_exp += " + "
             new_exp += exp.replace(`index_${index}`,val)
-
-        new_exp += " )"
+        }
+            
+        
 
         new_expr = new_expr.replace(exp,new_exp)
 
     }
+
+    console.log("fix expression")
 
     return new_expr
 }

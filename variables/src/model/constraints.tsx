@@ -4,8 +4,9 @@ import parse from 'html-react-parser'
 
 class Constraints extends React.Component {
     
-    constraints: string[] = ["x<sub>C1,Front</sub> + x<sub>C1,Centr</sub> + x<sub>C1,Rear</sub> <= 18","x<sub>C2,Front</sub> + x<sub>C2,Centre</sub> + x<sub>C2,Rear</sub> <= 15",
-    "x<sub>C3,Front</sub> + x<sub>C3,Centre</sub> + x<sub>C3,Rear</sub> <= 23","x<sub>C4,Front</sub> + x<sub>C4,Centre</sub> + x<sub>C4,Rear</sub> <= 12"]
+    //constraints: string[] = ["x<sub>C1,Front</sub> + x<sub>C1,Centr</sub> + x<sub>C1,Rear</sub> <= 18","x<sub>C2,Front</sub> + x<sub>C2,Centre</sub> + x<sub>C2,Rear</sub> <= 15",
+    //"x<sub>C3,Front</sub> + x<sub>C3,Centre</sub> + x<sub>C3,Rear</sub> <= 23","x<sub>C4,Front</sub> + x<sub>C4,Centre</sub> + x<sub>C4,Rear</sub> <= 12"]
+    constraints = []
     
     constructor(props: any){
         super(props)

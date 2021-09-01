@@ -119,9 +119,9 @@ LPGenerator['operation'] = function (block: any) {
     
     const operation = block.getFieldValue('OPERATION')
 
-    const constraints = gen_operation(operation, cols, prev_statement,next_statement)
+    //const constraints = gen_operation(operation, cols, prev_statement,next_statement)
 
-    return [constraints, LPGenerator.PRECEDENCE];
+    return [`${prev_statement} ${operation} ${next_statement}`, LPGenerator.PRECEDENCE];
 
 };
 
@@ -138,8 +138,10 @@ LPGenerator['constraints'] = function (block: any){
 }
 
 LPGenerator['constraint'] = function (block: any) { 
+    const state: any = dataStore.getState()
+    const cols: any = state.columns
     const constraint =  LPGenerator.valueToCode(block, 'CONSTRAINT', LPGenerator.PRECEDENCE) || 'null'
-    const fixed_constraint = fix_expression(constraint, model1_cols)
+    const fixed_constraint = fix_expression(constraint, cols)
     return fixed_constraint
 };
 
@@ -147,14 +149,6 @@ LPGenerator['col_address'] = function (block: any) {
     const col = block.getFieldValue('COL')
     const index = indexes.get(col)
     return [`${col}[index_${index}]`, LPGenerator.PRECEDENCE];
-};
-
-LPGenerator['col_junction'] = function (block: any) {
-    var col1 = LPGenerator.valueToCode(block, 'COL1', LPGenerator.PRECEDENCE) || 'null'
-    var col2 = LPGenerator.valueToCode(block, 'COL2', LPGenerator.PRECEDENCE) || 'null'
-    var operation = block.getFieldValue('OP')
-
-    return [col1 + " " + operation + " " + col2, LPGenerator.PRECEDENCE]
 };
 
 LPGenerator['matrix_variable'] = function (block: any){
@@ -170,8 +164,11 @@ LPGenerator['matrix_variable'] = function (block: any){
 }
 
 LPGenerator['single_variable'] = function (block: any){
+    const state: any = dataStore.getState()
+    const variables = state.variables
     const variable: string = block.getFieldValue("COL")
-    const indexes = ( variable_indexs.get(variable) as string[] )
+    console.log(variable)
+    const indexes = ( variables.get(variable) as string[] )
 
     const index_holder = indexes.map( (x: string) => `[index_${x}]`).join("")
 
@@ -182,13 +179,32 @@ LPGenerator['single_variable'] = function (block: any){
 }
 
 LPGenerator['col_variable'] = function (block: any){
+    const state: any = dataStore.getState()
+    const variables = state.variables
+    const cols = state.columns
+
     const variable: string = block.getFieldValue("COL")
 
+    const indexes = variables.get(variable) || []
     const index = block.getFieldValue("COL1")
 
-    const variable_holder = `${variable}[index_${index}]`
-    
-    return [variable_holder, LPGenerator.PRECEDENCE]
+    if( indexes.length == 1) {
+
+        const variable_holder = `${variable}[${index}]`
+        
+        return [variable_holder, LPGenerator.PRECEDENCE]
+    }
+
+    else {
+        let variable_holder = variable
+        for(let i of indexes ) {
+            const vals = cols.get(i) || []
+            if (vals.include(index) ) variable_holder += `[index]`
+            else variable_holder += `[index_${i}]`
+        }
+
+        return [variable_holder, LPGenerator.PRECEDENCE]
+    }
 
 }
 

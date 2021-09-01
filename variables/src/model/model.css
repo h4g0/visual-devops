@@ -10,10 +10,15 @@
 
 .variables-constraints-options {
     height: 100%;
-    width: 100%;
+    width: 120vh;
     margin-left: 10px;
     margin-right: 10px;
     display: table-cell;    
+}
+
+.objective-data{
+    height: 100%;
+    width: 100vh;
 }
 
 .variables {

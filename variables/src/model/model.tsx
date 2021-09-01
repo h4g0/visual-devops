@@ -25,7 +25,7 @@ function Model(props: any) {
 
           </div>
 
-            <div > 
+            <div className="objective-data"> 
           <Objective />
 
           
