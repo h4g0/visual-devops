@@ -37,6 +37,7 @@ import Model from './model/model'
 import {createStore} from 'redux'
 import dataStore from './update_state/Store';
 import { Provider } from 'react-redux';
+import { clearModel } from './update_state/Actions';
 
 //const electron = window.require('electron')
 //const ipcRenderer =  electron.ipcRenderer
@@ -56,11 +57,13 @@ class App extends React.Component {
     this.simpleWorkspace = React.createRef();
   }
 
-  generateCode = () => {
-    var code = LPGenerator.workspaceToCode(
+  generateCode = () =>  {
+    dataStore.dispatch( clearModel({}) )
+    
+    const code = LPGenerator.workspaceToCode(
       this.simpleWorkspace.current.workspace
     );
-    var variables = "variables"
+    const variables = "variables"
     //sendVariables(variables)
     console.log(code);
   }

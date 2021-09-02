@@ -1,7 +1,5 @@
 // Declaração das actions 
 
-import { variables } from "../linearprogramming/linear_programming";
-
 // types of action
 export const Types = {
     CONSTRAINTS: "CONSTRAINTS",
@@ -10,6 +8,8 @@ export const Types = {
     COLUMNS: "COLUMNS",
     INDEX_COLS: "INDEX_COLS",
     BLOCK_COL: "BLOCK_COL",
+    OBJECTIVE: "OBJECTIVE",
+    GOAL: "GOAL",
     CLEAR: "CLEAR",
 };
 
@@ -35,6 +35,17 @@ export const updateColumns = (value: {columns: Map<string,string[]>})  => ({
     payload: value
 });
 
+export const updateGoal = (value: {goal: string})  => ({
+    type: Types.GOAL,
+    payload: value
+});
+
+export const updateObjective = (value: {objective: string})  => ({
+    type: Types.OBJECTIVE,
+    payload: value
+});
+
+
 export const updateIndexCols= (value: {index_cols: string[]})  => ({
     type: Types.INDEX_COLS,
     payload: value
@@ -42,5 +53,10 @@ export const updateIndexCols= (value: {index_cols: string[]})  => ({
 
 export const updateBlockIndex = (value: {block: string, index: string}) => ({
     type: Types.BLOCK_COL,
+    payload: value
+});
+ 
+export const clearModel = (value: {}) => ({
+    type: Types.CLEAR,
     payload: value
 });

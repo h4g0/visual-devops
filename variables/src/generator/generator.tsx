@@ -29,7 +29,7 @@ import { useSelector } from 'react-redux';
 import dataStore from './../update_state/Store'
 
 import { model1_cols, generate_matrix_variable, indexes, gen_operation, stringify_variables, generate_col_variable, generate_single_variable, variable_indexs, fix_expression, generate_col_variable_index, generate_matrix_variable_index, generate_single_variable_index } from './../linearprogramming/linear_programming';
-import { updateVariables } from '../update_state/Actions';
+import { updateConstraints, updateGoal, updateObjective, updateVariables } from '../update_state/Actions';
 
 export const LPGenerator: any =  new Blockly.Generator('LP');
 
@@ -119,9 +119,11 @@ LPGenerator['operation'] = function (block: any) {
     
     const operation = block.getFieldValue('OPERATION')
 
-    //const constraints = gen_operation(operation, cols, prev_statement,next_statement)
+    const constraints = gen_operation(operation, cols, prev_statement,next_statement)
 
-    return [`${prev_statement} ${operation} ${next_statement}`, LPGenerator.PRECEDENCE];
+    console.log(constraints)
+
+    return [constraints, LPGenerator.PRECEDENCE];
 
 };
 
@@ -133,6 +135,10 @@ LPGenerator['number'] = function (block: any){
 
 LPGenerator['constraints'] = function (block: any){
     const constraints = LPGenerator.statementToCode(block, 'CONSTRAINTS', LPGenerator.PRECEDENCE) || 'null'
+    const constraints_list = ( constraints as string ).split("\n")
+
+    dataStore.dispatch( updateConstraints( { constraints: constraints_list } ) )
+
     return `CONSTRAINTS \n${constraints}`
 
 }
@@ -146,6 +152,8 @@ LPGenerator['constraint'] = function (block: any) {
 };
 
 LPGenerator['col_address'] = function (block: any) { 
+    const state = dataStore.getState()
+    const indexes = state.indexes
     const col = block.getFieldValue('COL')
     const index = indexes.get(col)
     return [`${col}[index_${index}]`, LPGenerator.PRECEDENCE];
@@ -209,8 +217,14 @@ LPGenerator['col_variable'] = function (block: any){
 }
 
 LPGenerator['objective'] = function (block: any) { 
+    const state = dataStore.getState()
+    const cols = state.columns
     const objective =  LPGenerator.valueToCode(block, 'OBJECTIVE', LPGenerator.PRECEDENCE) || 'null'
     const obj =  block.getFieldValue('OBJ')
-    const fixed_objective = fix_expression(objective, model1_cols)
+    const fixed_objective = fix_expression(objective, cols)
+
+    dataStore.dispatch( updateGoal( {goal: obj } ) )
+    dataStore.dispatch( updateObjective( {objective: fixed_objective} ) ) 
+
     return `${obj} ${fixed_objective}`
 }

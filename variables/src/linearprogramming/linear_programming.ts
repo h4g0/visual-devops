@@ -116,8 +116,8 @@ export function generate_mul_operation(statement1: string, statement2: string,co
     for (let i = 0; i < index_values.length; i++) {
         const index_value = index_values[i]
         const new_stat1 = statement1.replace(`index_${match}`, index_value)
-        const new_stat2 = statement1.replace(`index_${match}`, index_value)
-        expr += `${new_stat1} X ${new_stat2}`
+        const new_stat2 = statement2.replace(`index_${match}`, index_value)
+        expr += ` ( ${new_stat1} X ${new_stat2} )`
         if (i < index_values.length - 1) expr += " + "
          
     }
@@ -192,6 +192,8 @@ export function generate_inequality_operation(operation: string,cols: collumns, 
         }
     }
 
+    if(matchs.length == 0) return [ `${prev_statement} ${operation} ${next_statement}` ]
+
     return constraints
 }
 
@@ -201,7 +203,7 @@ export function gen_operation(op: string, cols: collumns, prev_statement: string
     if (indequality_ops.includes(op)) return generate_inequality_operation(op, cols,prev_statement,next_statement).join("\n")
 
     if(op == "X") return generate_mul_operation(prev_statement,next_statement,cols)
-    if(op == "+") 
+    if(op == "+") return []
     return ""
 }
 

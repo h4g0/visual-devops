@@ -7,6 +7,7 @@ import { Types } from './Actions'
 const default_state: any = {
     variables: new Map<string, string[]>(),
     constraints: [],
+    goal: "",
     objective: "",
     indexes: new Map<string,string>(),
     index_cols: [],
@@ -23,7 +24,9 @@ export const dataReducer = function (state = default_state , action: any) {
             new_state.columns = action.payload.columns
             return new_state;
         case Types.CONSTRAINTS: 
-            new_state.constraints = action.payload.constraints
+            new_state.constraints = [] 
+            new_state.constraints.push(...state.constraints)
+            new_state.constraints.push(...action.payload.constraints)
             return new_state
         case Types.VARIABLES:
             new_state.variables = new Map(state.variables)
@@ -41,10 +44,17 @@ export const dataReducer = function (state = default_state , action: any) {
             new_state.block_col = state.block_col
             new_state.block_col.set(action.payload.block,action.payload.index)
             return new_state
+        case Types.OBJECTIVE:
+            new_state.objective = action.payload.objective
+            return new_state
+        case Types.GOAL:
+            new_state.goal = action.payload.goal
+            return new_state
         case Types.CLEAR:
             new_state.variables =  new Map<string, string[]>()
             new_state.constraints =  []
             new_state.objective =  ""
+            new_state.goal = ""
             return new_state
         default: 
             return state;
