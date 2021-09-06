@@ -105,7 +105,7 @@ export function generate_mul_operation(statement1: string, statement2: string,co
     
     const matchs = indexes_stat1.filter( (x: string) => indexes_stat2.includes(x))
 
-    if(matchs.length == 0) return `${statement1} X ${statement2}`
+    if(matchs.length == 0) return `( ${statement1} ) X ${statement2}`
 
     const match = matchs[0]
 
@@ -152,6 +152,7 @@ export function fix_expression(expr: string,cols: collumns): string {
     console.log(expr)
     console.log(non_exp)
     for(let exp of non_exp) {
+
         const index = get_index(expr)
         const vals = cols.get(index) || []
 
@@ -174,6 +175,31 @@ export function fix_expression(expr: string,cols: collumns): string {
     return new_expr
 }
 
+function expand_numerical_left_right_side(expr: string,cols: collumns){
+
+    const non_exp = get_non_expanded_expr(expr)
+    let exprs = []
+
+    for( let exp of non_exp) {
+        const index = get_index(expr)
+        const vals = cols.get(index) || []
+
+        let new_exp: string = ""
+
+        for(let i = 0; i < vals.length; i++) {
+            const val = vals[i]
+            if(i > 0) new_exp += "\n"
+            new_exp = exp.replace(`index_${index}`,val)
+            exprs.push(expr.replace(exp,new_exp))
+        }
+
+    }
+
+    if( exprs.length == 0) exprs.push(expr)
+
+    return exprs
+}
+
 export function generate_inequality_operation(operation: string,cols: collumns, prev_statement: string, next_statement: string) {
     let constraints: string[] = []
     const indexes_prev = get_indexes(prev_statement)
@@ -181,7 +207,11 @@ export function generate_inequality_operation(operation: string,cols: collumns, 
 
     console.log(`${prev_statement} ${next_statement}`)
     const matchs = indexes_prev.filter( (x: string) => indexes_next.includes(x))
+    const expression_numerical = /^[ 0-9]+$/g
     
+    if(expression_numerical.test(prev_statement) || expression_numerical.test(next_statement))
+        return  expand_numerical_left_right_side(`${prev_statement} ${operation} ${next_statement}`,cols)
+        
     for (let match of matchs) {
         const values = ( cols.get(match) as collumn)
         for (let value of values) {

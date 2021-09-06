@@ -49,14 +49,14 @@ Blockly.Extensions.register('dynamic_menu_extension_col_val',
         }), 'COL');
    
     //@ts-ignore
+    this.getInput('INPUT').appendField("index")
+
+    //@ts-ignore
     this.getInput('INPUT')
     .appendField(new Blockly.FieldDropdown(
     
       function() {
         const state = dataStore.getState()
-        console.log("2222")
-        //@ts-ignore
-        console.log(`id 2${id}`)
         const cols: collumns = ( state.columns as collumns )
         //const col_keys = Array.from(cols.entries()).map( (x: [string,collumn]) => x[0] )
         const block_col = ( state.block_col as Map<string,string> )
@@ -117,6 +117,9 @@ Blockly.Extensions.register('dynamic_menu_extension_col_val',
 
           return options.length > 0 ? options : [["",""]];
         }), 'COL');
+
+    //@ts-ignore
+    this.getInput('INPUT').appendField("index")
 
       //@ts-ignore
     this.getInput('INPUT')
@@ -182,6 +185,7 @@ Blockly.Extensions.register('dynamic_menu_extension_col_var_val',
     //@ts-ignore   
     const id = this.id
 
+    
       //@ts-ignore
       this.getInput('INPUT')
       .appendField(new Blockly.FieldDropdown(
@@ -199,7 +203,10 @@ Blockly.Extensions.register('dynamic_menu_extension_col_var_val',
           return options.length > 0 ? options : [["",""]];
         }), 'COL');
 
-      //@ts-ignore
+    //@ts-ignore
+    this.getInput('INPUT').appendField("index")
+
+    //@ts-ignore
     this.getInput('INPUT')
     .appendField(new Blockly.FieldDropdown(
 
