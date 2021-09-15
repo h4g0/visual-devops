@@ -6,6 +6,7 @@ import Data from './data/data'
 import React from 'react'
 import './model.css'
 import { Options } from './options/options'
+import Result from './result'
 
 function Model(props: any) {
 
@@ -25,9 +26,10 @@ function Model(props: any) {
 
           </div>
 
-            <div className="objective-data"> 
+            <div className="objective-result-data"> 
           <Objective />
 
+          <Result />
           
 
             <Data /> 
