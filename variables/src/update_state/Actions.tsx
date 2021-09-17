@@ -9,6 +9,7 @@ export const Types = {
     INDEX_COLS: "INDEX_COLS",
     BLOCK_COL: "BLOCK_COL",
     OBJECTIVE: "OBJECTIVE",
+    RESULT: "RESULT",
     GOAL: "GOAL",
     CLEAR: "CLEAR",
 };
@@ -17,6 +18,11 @@ export const Types = {
 
 export const updateConstraints = (value: {constraints: string[]})  => ({
     type: Types.CONSTRAINTS,
+    payload: value
+});
+
+export const updateResult = (value: {result: Map<string,string>})  => ({
+    type: Types.RESULT,
     payload: value
 });
 
