@@ -1,6 +1,6 @@
 const SimpleSimplex = require('simple-simplex');
 
-function replace_values(statement: string,indexes: string): string {
+function replace_values(statement: string,columns: Map<string,string[]>,indexes: Map<string,string>): string {
     let new_statement = "" + statement
     let elements = statement.match(/[a-zA-Z]+(\[[a-zA-Z]+\])+/g) || []
 
@@ -10,9 +10,27 @@ function replace_values(statement: string,indexes: string): string {
         if(col_indexes.length > 2) continue
 
         const col = col_indexes[0]
-        const indexes = col_indexes.slice(1)
+        const index = col_indexes[1]
 
-        
+        const col_vals = columns.get(col) || []
+
+        if(col_vals.length == 0) continue
+
+        const index_col_name = indexes.get(col) || ""
+
+        if(index_col_name == "") continue
+
+        const index_col = columns.get(index_col_name) || []
+
+        if(index_col.length == 0) continue
+
+        const index_col_pos = index_col.indexOf(index)
+
+        if(index_col_pos == -1 || index_col_pos > col_vals.length) continue
+
+        const value = col_vals[index_col_pos]
+
+        new_statement = new_statement.replace(element,value)
     }
 
     return new_statement
