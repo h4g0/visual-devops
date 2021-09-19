@@ -1,5 +1,11 @@
 const SimpleSimplex = require('simple-simplex');
 
+function round_decimal(x: number): number {
+    //@ts-ignore
+    const rounded_number: number = parseFloat(parseFloat(x).toFixed(2))
+    return rounded_number
+}
+
 function replace_values(statement: string,columns: Map<string,string[]>,indexes: Map<string,string>): string {
     let new_statement = "" + statement
     let elements = statement.match(/[a-zA-Z]+(\[[a-zA-Z]+\])+/g) || []
@@ -48,16 +54,16 @@ function get_col_indexes(statement: string): string[] {
 function simplify_subtrs(statement: string): string {
     let new_statement = "" + statement
 
-    const subtrs = statement.match(/\- \(.+\)/g) || []
+    const subtrs = statement.match(/\- \([^\)]+\)/g) || []
 
     for(let subtr of subtrs) {
         let new_subtr = "" + subtr
-        new_subtr = new_subtr.slice(3,new_subtr.length - 1)
+        new_subtr = new_subtr.slice(2,new_subtr.length)
         new_subtr = new_subtr.replace(/\-/g,"PLUS")
         new_subtr = new_subtr.replace(/\+/g,"-")
         new_subtr = new_subtr.replace(/PLUS/g,"+")
 
-        new_statement = new_statement.replace(subtr,new_subtr)
+        new_statement = new_statement.replace(subtr,"- " + new_subtr)
     }
 
     return new_statement
@@ -74,34 +80,25 @@ function simplify_mults(statement: string): string {
     const mults_rigth = statement.match(new RegExp(`\\([^\\)]*\\) X ${num_expr}`,"g")) || []
     const mults_left = statement.match(new RegExp(`${num_expr} X \\([^\\)]*\\)`,"g")) || []
 
-    console.log(new RegExp(`\\(.*\\) X ${num_expr}`,"g"))
-    console.log(mults_rigth)
-    console.log(mults_left)
 
     mults.push(...mults_rigth)
     mults.push(...mults_left)
 
-    console.log(mults)
     for( let el = 0; el < mults.length; el++ ) {
         const mult = mults[el]
         const part1_part2 = mult.split(" X ") 
         if(part1_part2.length < 2) continue
 
         const part1 = el < mults_rigth.length ? part1_part2[0] : part1_part2[1]
-        const part2 = el < mults_rigth.length ? part1_part2[1] : part1_part2[0]
-
-        console.log(part1)
-        
+        const part2 = el < mults_rigth.length ? part1_part2[1] : part1_part2[0]        
 
         let elements_string= part1.replace(/[\(\)]/g,"")
         let new_elements = "" + elements_string
 
         elements_string = elements_string.replace(/[\+\-]/g,"")
         let elements = elements_string.split(" ")
-        console.log(elements)
         elements = elements.filter( (x: string) => x != " " && x != "")
 
-        console.log(elements)
         for(let element of elements) {
             const numerical_values = element.match(new RegExp(num_expr,"g")) || []
 
@@ -125,21 +122,20 @@ function simplify_mults(statement: string): string {
 
 }
 
-function get_values(statement: string) {
+function get_values_expr(statement: string): [Map<string,number>,number] {
     
     let values = new Map<string,number>()
 
-    let new_statement = statement.replace(/\+[ ]/g,"+")
-    new_statement = new_statement.replace(/\-[ ]/g,"-")
+    let new_statement = statement.replace(/\+[ ]*/g,"+")
+    new_statement = new_statement.replace(/\-[ ]*/g,"-")
 
     const num_expr = `[0-9]+((\\.)[0-9]+)*`
     const var_expr = `[a-zA-Z]+(\\[[^\\]]*\\])+`
     const val_expr = `([\\+\\-])?(${num_expr})?${var_expr}`
 
-    console.log(new_statement)
-    console.log(new RegExp(val_expr,"g"))
+    
     const values_list = new_statement.match(new RegExp(val_expr,"g")) || []
-    console.log(values_list)
+
     for(let value of values_list) {
         new_statement = new_statement.replace(value,"")
 
@@ -160,8 +156,6 @@ function get_values(statement: string) {
     const numerical_expr = `([\\+\\-])?(${num_expr})`
     const numerical_values = new_statement.match(new RegExp(numerical_expr,"g")) || []
 
-    console.log(numerical_values)
-
     const constant = numerical_values.reduce( (acc: number, curr: string) => {
         const sign = curr[0] == "-" ? -1 : 1
         curr = curr.replace(/[\+\-]/g,"")
@@ -169,28 +163,109 @@ function get_values(statement: string) {
         return acc + parseFloat(curr) * sign
     }, 0)
 
-    console.log(values)
-
-    console.log(constant)
 
     return [values,constant]
 
 }
 
-function parse_objective(indexes: Map<string,string>,index_cols: string[],columns: Map<string,string[]>,goal: string,objective: string){
-    const replaced_objective = replace_values(objective, columns,indexes)
-    const simpliflid_mult_objective = simplify_mults(replaced_objective)
-    
-    console.log(simpliflid_mult_objective)
+function get_values_ineq(statement: string): [Map<string,number>,number]{
+    let values = new Map<string,number>()
+    const expr = statement.split(/(\<\=|\>\=|\=|\>|\<)/g)
 
-    const values = get_values(simpliflid_mult_objective)
+    console.log(expr)
+    if(expr.length == 0) return [values,0]
 
-    return simpliflid_mult_objective
+    if(expr.length == 1) return get_values_expr(statement)
+
+    const values_constants_right = get_values_expr(expr[0])
+    const values_constants_left = get_values_expr(expr[2])
+
+    const values_right = values_constants_right[0]
+    const values_left = values_constants_left[0]
+
+    const constants_right = values_constants_right[1]
+    const constants_left = values_constants_left[1]
+
+    for( let value of Array.from(values_right.entries())){
+        const value_right = value[1]
+        const value_left = values_left.get(value[0])  || 0
+
+        values.set(value[0], round_decimal(value_right - value_left))
+    }
+
+    const constants = constants_left - constants_right
+
+    return [values,constants]
 }
 
-export function run_model(indexes: Map<string,string>,index_cols: string[],columns: Map<string,string[]>,goal: string,objective: string): Map<string,string>{
+function parse_model(indexes: Map<string,string>,columns: Map<string,string[]>,statement: string){
+    const replaced_objective = replace_values(statement, columns,indexes)
+    const simplified_subtrs_objective = simplify_subtrs(replaced_objective)
+    const simpliflid_mult_objective = simplify_mults(simplified_subtrs_objective)
+
+    const values_constants = get_values_ineq(simpliflid_mult_objective)
+
+    const values = values_constants[0]
+    const constants = values_constants[1]
+
+    console.log(values)
+    console.log(constants)
+
+    return values_constants
+}
+
+function parse_objective(indexes: Map<string,string>,columns: Map<string,string[]>,goal: string,objective: string){
+    const values_constants = parse_model(indexes ,columns ,objective )
+
+    const values = values_constants[0]
+
+    return values
+}
+
+function parse_constraints(indexes: Map<string,string>,constraints: string[],columns: Map<string,string[]>,){
+    const model_constraints = []
+
+    for(let constraint of constraints){
+        const values_constants = parse_model(indexes ,columns ,constraint)
+
+        const ineq = ( constraint.match(/(\<\=|\>\=|\=|\>|\<)/g) || ["="] )[0]
+        const values = values_constants[0]
+        const constant = values_constants[1]
+    
+        model_constraints.push({
+            namedVector: values,
+            constraint: ineq,
+            constant: constant,
+        })
+    }
+    
+    return model_constraints
+}
+
+export function run_model(indexes: Map<string,string>,index_cols: string[],constraints: string[],columns: Map<string,string[]>,goal: string,objective: string): Map<string,string>{
     let solution = new Map<string,string>()
 
-    parse_objective(indexes ,index_cols ,columns ,goal ,objective )
+    const objective_model = parse_objective(indexes ,columns ,goal ,objective )
+    const constraints_model = parse_constraints(indexes, constraints, columns )
+
+    const optimization_type = goal == "Maximize" ? "max" : "min"
+
+    const model  = {
+        objective: objective_model,
+        constraints: constraints_model,
+        optimizationType: optimization_type
+    }
+
+    const solver = new SimpleSimplex(model)
+
+    const result = solver.solve({
+        methodName: 'simplex',
+      });
+
+    console.log({
+        solution: result.solution,
+        isOptimal: result.details.isOptimal,
+    });
+    
     return solution
 }
