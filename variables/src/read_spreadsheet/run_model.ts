@@ -130,7 +130,7 @@ function get_values(statement: string) {
     let values = new Map<string,number>()
 
     let new_statement = statement.replace(/\+[ ]/g,"+")
-    new_statement = new_statement.replace(/\-[ ]/g,"+")
+    new_statement = new_statement.replace(/\-[ ]/g,"-")
 
     const num_expr = `[0-9]+((\\.)[0-9]+)*`
     const var_expr = `[a-zA-Z]+(\\[[^\\]]*\\])+`
@@ -157,8 +157,10 @@ function get_values(statement: string) {
         values.set(variable, past_value + numerical_value * sign )
     }
 
-    const numerical_expr = `([\\+\\-])?(${num_expr})?`
-    const numerical_values = statement.match(new RegExp(numerical_expr,"g")) || []
+    const numerical_expr = `([\\+\\-])?(${num_expr})`
+    const numerical_values = new_statement.match(new RegExp(numerical_expr,"g")) || []
+
+    console.log(numerical_values)
 
     const constant = numerical_values.reduce( (acc: number, curr: string) => {
         const sign = curr[0] == "-" ? -1 : 1
@@ -168,6 +170,8 @@ function get_values(statement: string) {
     }, 0)
 
     console.log(values)
+
+    console.log(constant)
 
     return [values,constant]
 

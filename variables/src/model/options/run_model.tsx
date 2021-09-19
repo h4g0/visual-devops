@@ -24,7 +24,7 @@ function RunModel(props: any) {
     
     const runModel = () => {
         console.log("running model")
-        run_model(indexes ,index_cols ,columns ,"Maximize" ,"Iron[Beans] - ( Mixture[Beans] + Mixture[Corn] ) X 82.2 + 4 X ( Mixture[Beans] + Mixture[Corn] ) >= ( Mixture[Beans] + Mixture[Corn] ) X 0.4")
+        run_model(indexes ,index_cols ,columns ,"Maximize" ,"Iron[Beans] - 0.2 - ( Mixture[Beans] + Mixture[Corn] ) X 82.2 + 4 X ( Mixture[Beans] + Mixture[Corn] ) >= ( Mixture[Beans] + Mixture[Corn] ) X 0.4")
     }
 
     return (
