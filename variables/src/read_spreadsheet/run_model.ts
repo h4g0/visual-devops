@@ -66,30 +66,58 @@ function simplify_subtrs(statement: string): string {
 function simplify_mults(statement: string): string {
     let new_statement = "" + statement
 
-    const mults = statement.match(/\([a-zA-Z0-9 \_\[\]]*\) X ([0-9]*|[a-zA-Z]+(\[[a-zA-Z]*\]))+/g) || []
+    let mults = []
+    
+    const col_expr = `[a-zA-Z]+(\\[.*\\]])+`
+    const num_expr = `[0-9]+((\\.)[0-9]+)*`
+    
+    const mults_rigth = statement.match(new RegExp(`\\([^\\)]*\\) X ${num_expr}`,"g")) || []
+    const mults_left = statement.match(new RegExp(`${num_expr} X \\([^\\)]*\\)`,"g")) || []
 
-    for( let mult of mults ) {
+    console.log(new RegExp(`\\(.*\\) X ${num_expr}`,"g"))
+    console.log(mults_rigth)
+    console.log(mults_left)
+
+    mults.push(...mults_rigth)
+    mults.push(...mults_left)
+
+    console.log(mults)
+    for( let el = 0; el < mults.length; el++ ) {
+        const mult = mults[el]
         const part1_part2 = mult.split(" X ") 
         if(part1_part2.length < 2) continue
 
-        const part1 = part1_part2[0]
-        const part2 = part1_part2[1]
+        const part1 = el < mults_rigth.length ? part1_part2[0] : part1_part2[1]
+        const part2 = el < mults_rigth.length ? part1_part2[1] : part1_part2[0]
+
+        console.log(part1)
+        
 
         let elements_string= part1.replace(/[\(\)]/g,"")
+        let new_elements = "" + elements_string
+
         elements_string = elements_string.replace(/[\+\-]/g,"")
         let elements = elements_string.split(" ")
-        elements = elements.filter( (x: string) => x != " ")
+        console.log(elements)
+        elements = elements.filter( (x: string) => x != " " && x != "")
 
+        console.log(elements)
         for(let element of elements) {
-            const col_indexes = get_col_indexes(element)
+            const numerical_values = element.match(new RegExp(num_expr,"g")) || []
 
-            if(col_indexes.length > 2) continue
+            if( numerical_values.length > 0 ) {
+                const new_element = element.replace(numerical_values[0], "" + parseFloat(numerical_values[0]) * parseFloat(part2))
+                new_elements = new_elements.replace(element,new_element)
+            }
 
-            const col = col_indexes[0]
-            const indexes = col_indexes.slice(1)
-
+            else {
+                const new_element = `${part2}${element}`
+                new_elements = new_elements.replace(element,new_element)
+            }
 
         }
+
+        new_statement = new_statement.replace(mult,new_elements)
         
     }
 
@@ -97,13 +125,68 @@ function simplify_mults(statement: string): string {
 
 }
 
-function parse_objective(goal: string,objective: string){
+function get_values(statement: string) {
+    
+    let values = new Map<string,number>()
 
+    let new_statement = statement.replace(/\+[ ]/g,"+")
+    new_statement = new_statement.replace(/\-[ ]/g,"+")
+
+    const num_expr = `[0-9]+((\\.)[0-9]+)*`
+    const var_expr = `[a-zA-Z]+(\\[[^\\]]*\\])+`
+    const val_expr = `([\\+\\-])?(${num_expr})?${var_expr}`
+
+    console.log(new_statement)
+    console.log(new RegExp(val_expr,"g"))
+    const values_list = new_statement.match(new RegExp(val_expr,"g")) || []
+    console.log(values_list)
+    for(let value of values_list) {
+        new_statement = new_statement.replace(value,"")
+
+        const sign = value[0] == "-" ? -1 : 1
+        value = value.replace(/[\+\-]/g,"")
+
+        const numerical_value = parseFloat( (value.match(new RegExp(num_expr)) || ["1"])[0] )
+
+        const variables = ( value.match(new RegExp(var_expr)) || [] )
+        if( variables.length == 0) continue
+        const variable = variables[0]
+
+        const past_value = values.get(variable) || 0
+
+        values.set(variable, past_value + numerical_value * sign )
+    }
+
+    const numerical_expr = `([\\+\\-])?(${num_expr})?`
+    const numerical_values = statement.match(new RegExp(numerical_expr,"g")) || []
+
+    const constant = numerical_values.reduce( (acc: number, curr: string) => {
+        const sign = curr[0] == "-" ? -1 : 1
+        curr = curr.replace(/[\+\-]/g,"")
+
+        return acc + parseFloat(curr) * sign
+    }, 0)
+
+    console.log(values)
+
+    return [values,constant]
+
+}
+
+function parse_objective(indexes: Map<string,string>,index_cols: string[],columns: Map<string,string[]>,goal: string,objective: string){
+    const replaced_objective = replace_values(objective, columns,indexes)
+    const simpliflid_mult_objective = simplify_mults(replaced_objective)
+    
+    console.log(simpliflid_mult_objective)
+
+    const values = get_values(simpliflid_mult_objective)
+
+    return simpliflid_mult_objective
 }
 
 export function run_model(indexes: Map<string,string>,index_cols: string[],columns: Map<string,string[]>,goal: string,objective: string): Map<string,string>{
     let solution = new Map<string,string>()
 
-
+    parse_objective(indexes ,index_cols ,columns ,goal ,objective )
     return solution
 }
