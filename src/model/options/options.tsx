@@ -14,8 +14,8 @@ export function Options(props: any) {
     return (
         <div>
        <Generator generator={generator} > </Generator>
-       <ReloadData generator={generator}> </ReloadData>
        <RunModel> </RunModel>
+       <ReloadData generator={generator}> </ReloadData>
        </div>
     )
     

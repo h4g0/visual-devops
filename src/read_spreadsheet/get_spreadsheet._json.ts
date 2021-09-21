@@ -4,7 +4,10 @@ const dotenv = require('dotenv')
 
 dotenv.config()
 
-const read_spreadsheet_server: string =  (process.env.SPREADSHEET_SERVER as string)
+const read_spreadsheet_server: string =  "https://read-xlsx.herokuapp.com"
+//const read_spreadsheet_server: string =  "http://localhost:3000"
+
+console.log(read_spreadsheet_server)
 
 export async function get_spreadsheet_json(file: any) {
     
@@ -20,16 +23,19 @@ export async function get_spreadsheet_json(file: any) {
     data : formData
     };
 
+    let data = {}
     await axios(config)
     .then(function (response: any) {
     console.log(JSON.stringify(response.data));
 
-    return response.data
+    data = response.data
     })
     .catch(function (error: any) {
     console.log(error);
     });
 
-    return {}
+
+    return data
+
 }
 

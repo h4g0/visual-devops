@@ -134,6 +134,7 @@ function get_indexes(spreadsheet: any): Map<string,string> {
 export async function read_data(doc: any) {
     const spreadsheet = await read_spreadsheet(doc)
 
+    console.log(spreadsheet)
     const cols = get_cols(spreadsheet)
     const indexes = get_indexes(spreadsheet)
     const index_cols = get_index_cols(spreadsheet)

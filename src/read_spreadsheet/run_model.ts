@@ -187,10 +187,11 @@ function get_values_ineq(statement: string): [Map<string,number>,number]{
     const constants_left = values_constants_left[1]
 
     for( let value of Array.from(values_right.entries())){
+        const variable = value[0].replace("]","").replace("[","_")
         const value_right = value[1]
-        const value_left = values_left.get(value[0])  || 0
+        const value_left = values_left.get(variable)  || 0
 
-        values.set(value[0], round_decimal(value_right - value_left))
+        values.set(variable, round_decimal(value_right - value_left))
     }
 
     const constants = constants_left - constants_right
@@ -233,7 +234,7 @@ function parse_constraints(indexes: Map<string,string>,constraints: string[],col
         const constant = values_constants[1]
     
         model_constraints.push({
-            namedVector: values,
+            namedVector: Object.fromEntries(values),
             constraint: ineq,
             constant: constant,
         })
@@ -251,13 +252,16 @@ export function run_model(indexes: Map<string,string>,index_cols: string[],const
     const optimization_type = goal == "Maximize" ? "max" : "min"
 
     const model  = {
-        objective: objective_model,
+        objective: Object.fromEntries(objective_model),
         constraints: constraints_model,
         optimizationType: optimization_type
     }
+    
+    console.log(model)
 
     const solver = new SimpleSimplex(model)
 
+    
     const result = solver.solve({
         methodName: 'simplex',
       });
@@ -265,7 +269,43 @@ export function run_model(indexes: Map<string,string>,index_cols: string[],const
     console.log({
         solution: result.solution,
         isOptimal: result.details.isOptimal,
-    });
+    })
+
+    /*const solver = new SimpleSimplex({
+        objective: {
+          a: 70,
+          b: 210,
+          c: -200,
+        },
+        constraints: [
+          {
+            namedVector: { a: 1, b: -1, c: 1 },
+            constraint: '<=',
+            constant: 100,
+          },
+          {
+            namedVector: { a: 5, b: 4, c: 4 },
+            constraint: '<=',
+            constant: 480,
+          },
+          {
+            namedVector: { a: 40, b: 20, c: 30 },
+            constraint: '<=',
+            constant: 3200,
+          },
+        ],
+        optimizationType: 'max',
+      });
+
+      const result = solver.solve({
+        methodName: 'simplex',
+      });
+       
+      // see the solution and meta data
+      console.log({
+        solution: result.solution,
+        isOptimal: result.details.isOptimal,
+      });*/
     
     return solution
 }

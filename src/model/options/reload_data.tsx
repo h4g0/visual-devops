@@ -1,5 +1,4 @@
 import React from 'react'
-import * as Blockly from 'blockly/core';
 import { useDispatch } from 'react-redux'
 import { collumns } from '../../linearprogramming/linear_programming'
 import { read_data } from '../../read_spreadsheet/read_spreadsheet'
@@ -27,6 +26,7 @@ function ReloadData(props: any) {
     const reloadData = async(e: any) => {
         const file = e.target.files[0] 
 
+        console.log(file)
         const data = await read_data(file)
 
 
@@ -39,7 +39,7 @@ function ReloadData(props: any) {
     }
  
     return (
-        <input type="file" onChange={reloadData} className="generator"/>
+        <input type="file" onChange={reloadData} className="fileUpload"/>
     )
     
 }
