@@ -1,17 +1,21 @@
 import { collumns } from "../linearprogramming/linear_programming";
 import { useSelector,useDispatch } from 'react-redux'
 import { updateColumns, updateIndexCols, updateIndexes } from "../update_state/Actions";
+import { get_spreadsheet_json } from "./get_spreadsheet._json";
 
 const xlsx = require("xlsx")
 
 
-function read_spreadsheet(doc: string) {
+async function read_spreadsheet(doc: any) {
     /*const workbook = xlsx.readFile(doc)
     const sheetNames = workbook.SheetNames;
     
     const obj = xlsx.utils.sheet_to_json(workbook.Sheets[sheetNames[0]]);*/
 
-    const obj =[
+    const obj = await get_spreadsheet_json(doc)
+
+    
+    /*const obj =[
         {
           Vegetables: 'Beans',
           Iron: 0.5,
@@ -48,7 +52,7 @@ function read_spreadsheet(doc: string) {
           Cost_per_pound: 0.16
         }
       ]
-    console.log(obj)
+    console.log(obj)*/
 
     return obj
 }
@@ -127,8 +131,8 @@ function get_indexes(spreadsheet: any): Map<string,string> {
 
 }
 
-export function read_data(doc: string) {
-    const spreadsheet = read_spreadsheet(doc)
+export async function read_data(doc: any) {
+    const spreadsheet = await read_spreadsheet(doc)
 
     const cols = get_cols(spreadsheet)
     const indexes = get_indexes(spreadsheet)
@@ -136,5 +140,3 @@ export function read_data(doc: string) {
 
     return [cols,indexes,index_cols]
 }
-
-read_data("Vegetables.xlsx")

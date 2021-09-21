@@ -24,8 +24,11 @@ function ReloadData(props: any) {
     
     }
     
-    const reloadData = () => {
-        const data = read_data("test.xlsx")
+    const reloadData = async(e: any) => {
+        const file = e.target.files[0] 
+
+        const data = await read_data(file)
+
 
         const cols = ( data[0] as collumns)
         const indexes = ( data[1] as Map<string,string> )
@@ -36,7 +39,7 @@ function ReloadData(props: any) {
     }
  
     return (
-        <button onClick={reloadData} className="generator">Reload data</button>
+        <input type="file" onChange={reloadData} className="generator"/>
     )
     
 }

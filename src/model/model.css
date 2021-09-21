@@ -166,4 +166,24 @@ ul {
   ::-webkit-scrollbar{
     display: none;
   }
+
+  .fileUpload {
+    color: #4e9ce6;
+}
+
+.fileUpload::-webkit-file-upload-button {
+    background-color: #0377fc;
+    border: 0px;
+    border-radius: 2px;
+    color: white;
+}
+
+.fileUpload::-webkit-file-upload-button:hover {
+    background-color: #035bad;
+    cursor: pointer;
+}
+
+.fileUpload input::-webkit-file-upload-button {
+    background-color: lightblue;
+}
   
