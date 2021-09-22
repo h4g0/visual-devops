@@ -92,7 +92,6 @@ class App extends React.Component {
             <Block type = "new_single_variable" />
             <Block type = "new_col_variable" />
             <Block type = "new_matrix_variable"/>
-            <Block type = "col_address" />
             <Block type = "col_val_address" />
             <Block type = "single_variable" />
             <Block type = "col_variable"/>

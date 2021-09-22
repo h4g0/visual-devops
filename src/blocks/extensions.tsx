@@ -65,6 +65,11 @@ Blockly.Extensions.register('dynamic_menu_extension_col_val',
 
         const options = entries.map( (entry: string) => [""  + entry , "" + entry])
         
+        if( options.length > 0 ) {
+          options.push(["each","each"])
+          options.push(["sum","sum"])
+        }
+        
         return options.length > 0 ? options : [["",""]];
       }), 'INDEX');
   });
@@ -112,9 +117,13 @@ Blockly.Extensions.register('dynamic_menu_extension_col_val',
           
           const variables = ( state.variables as Map<string,string[]> )
 
-          const vars = Array.from(variables.entries()).map( (x: [string,string[]]) => x[0] )
+          const vars = Array.from(variables.entries()).filter( (x: [string,string[]]) => x[1].length == 2 )
+          .map( (x: [string,string[]]) => x[0] )
+
           const options = vars.map( (x: string) => [x,x] )
 
+         
+          
           return options.length > 0 ? options : [["",""]];
         }), 'COL');
 
@@ -143,6 +152,12 @@ Blockly.Extensions.register('dynamic_menu_extension_col_val',
         const vars_col = cols.get( (variables.get(col) || [""])[0]) || []
 
         const options = vars_col.map( (x: string) => [x,x])
+
+        if( options.length > 0 ) {
+          options.push(["each","each"])
+          options.push(["sum","sum"])
+        }
+        
         
         return options.length > 0 ? options : [["",""]];
       }), 'COL1');
@@ -169,6 +184,11 @@ Blockly.Extensions.register('dynamic_menu_extension_col_val',
 
         const options = vars_col.map( (x: string) => [x,x])
         
+        if( options.length > 0 ) {
+          options.push(["each","each"])
+          options.push(["sum","sum"])
+        }
+
         return options.length > 0 ? options : [["",""]];
       }), 'COL2');
 
@@ -197,9 +217,14 @@ Blockly.Extensions.register('dynamic_menu_extension_col_var_val',
           
           const variables = ( state.variables as Map<string,string[]> )
 
-          const vars = Array.from(variables.entries()).map( (x: [string,string[]]) => x[0] )
+          const vars = Array.from(variables.entries())
+          .filter( (x: [string,string[]]) => x[1].length == 1)
+          .map( (x: [string,string[]]) => x[0] )
+          
           const options = vars.map( (x: string) => [x,x] )
 
+          
+          
           return options.length > 0 ? options : [["",""]];
         }), 'COL');
 
@@ -229,6 +254,11 @@ Blockly.Extensions.register('dynamic_menu_extension_col_var_val',
 
         const options = vars_col.map( (x: string) => [x,x])
         
+        if( options.length > 0 ) {
+          options.push(["each","each"])
+          options.push(["sum","sum"])
+        }
+        
         return options.length > 0 ? options : [["",""]];
       }), 'COL1');
 
@@ -255,7 +285,9 @@ Blockly.Extensions.register('dynamic_menu_extension_single_var_val',
           
           const variables = ( state.variables as Map<string,string[]> )
 
-          const vars = Array.from(variables.entries()).map( (x: [string,string[]]) => x[0] )
+          const vars = Array.from(variables.entries()).filter( (x: [string,string[]]) => x[1].length == 0)
+              .map( (x: [string,string[]]) => x[0] )
+
           const options = vars.map( (x: string) => [x,x] )
 
           return options.length > 0 ? options : [["",""]];
