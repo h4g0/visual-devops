@@ -1,5 +1,8 @@
 const SimpleSimplex = require('simple-simplex');
 
+const MIN_VAR = 0
+const MAX_VAR = 1000
+
 function round_decimal(x: number): number {
     //@ts-ignore
     const rounded_number: number = parseFloat(parseFloat(x).toFixed(2))
@@ -117,6 +120,8 @@ function simplify_mults(statement: string): string {
         new_statement = new_statement.replace(mult,new_elements)
         
     }
+
+    new_statement = new_statement.replace("X ", "X")
 
     return new_statement
 
@@ -243,6 +248,8 @@ function parse_constraints(indexes: Map<string,string>,constraints: string[],col
     return model_constraints
 }
 
+
+
 export function run_model(indexes: Map<string,string>,index_cols: string[],constraints: string[],columns: Map<string,string[]>,goal: string,objective: string): Map<string,string>{
     let solution = new Map<string,string>()
 
@@ -273,23 +280,23 @@ export function run_model(indexes: Map<string,string>,index_cols: string[],const
 
     /*const solver = new SimpleSimplex({
         objective: {
-          a: 70,
+          A: 70,
           b: 210,
           c: -200,
         },
         constraints: [
           {
-            namedVector: { a: 1, b: -1, c: 1 },
+            namedVector: { A: 1, b: -1, c: 1 },
             constraint: '<=',
             constant: 100,
           },
           {
-            namedVector: { a: 5, b: 4, c: 4 },
+            namedVector: { A: 5, b: 4, c: 4 },
             constraint: '<=',
             constant: 480,
           },
           {
-            namedVector: { a: 40, b: 20, c: 30 },
+            namedVector: { A: 40, b: 20, c: 30 },
             constraint: '<=',
             constant: 3200,
           },
@@ -305,7 +312,7 @@ export function run_model(indexes: Map<string,string>,index_cols: string[],const
       console.log({
         solution: result.solution,
         isOptimal: result.details.isOptimal,
-      });*/
+      })*/
     
     return solution
 }

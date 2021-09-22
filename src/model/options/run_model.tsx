@@ -6,6 +6,8 @@ import { updateColumns, updateIndexCols, updateIndexes, updateResult } from '../
 import './../model.css'
 import { run_model } from '../../read_spreadsheet/run_model';
 
+
+
 function RunModel(props: any) {
     let dispatch = useDispatch()
 
@@ -23,7 +25,7 @@ function RunModel(props: any) {
     
     const runModel = () => {
         console.log("running model")
-        run_model(indexes ,index_cols ,["Mixture[Beans] + Mixture[Corn] >= 0"],columns ,"Maximize" ,"Iron[Beans] + ( Mixture[Beans] + Mixture[Corn] ) X 82 + 4 X ( Mixture[Beans] + Mixture[Corn] ) >= ( Mixture[Beans] + Mixture[Corn] ) X 10")
+        run_model(indexes ,index_cols ,["Mixture[Beans] + Mixture[Corn] >= 1","Mixture[Beans] + 2Mixture[Corn] <= 2"],columns ,"Maximize" ,"Iron[Beans] + ( Mixture[Beans] + Mixture[Corn] ) X 82 + 4 X ( Mixture[Beans] + Mixture[Corn] ) >= ( Mixture[Beans] + Mixture[Corn] ) X 10")
     }
 
     return (
