@@ -1,7 +1,7 @@
 const SimpleSimplex = require('simple-simplex');
 
 const MIN_VAR = 0
-const MAX_VAR = 1000
+const MAX_VAR = 10000
 
 function round_decimal(x: number): number {
     //@ts-ignore
@@ -173,8 +173,8 @@ function get_values_expr(statement: string): [Map<string,number>,number] {
 
 }
 
-function get_values_ineq(statement: string): [Map<string,number>,number]{
-    let values = new Map<string,number>()
+function get_values_ineq(variables: Map<string,string[]>,statement: string): [Map<string,number>,number]{
+    let values = get_all_variables_namedVector_objective(variables)
     const expr = statement.split(/(\<\=|\>\=|\=|\>|\<)/g)
 
     console.log(expr)
@@ -204,12 +204,12 @@ function get_values_ineq(statement: string): [Map<string,number>,number]{
     return [values,constants]
 }
 
-function parse_model(indexes: Map<string,string>,columns: Map<string,string[]>,statement: string){
+function parse_model(indexes: Map<string,string>,variables: Map<string,string[]>,columns: Map<string,string[]>,statement: string){
     const replaced_objective = replace_values(statement, columns,indexes)
     const simplified_subtrs_objective = simplify_subtrs(replaced_objective)
     const simpliflid_mult_objective = simplify_mults(simplified_subtrs_objective)
 
-    const values_constants = get_values_ineq(simpliflid_mult_objective)
+    const values_constants = get_values_ineq(variables,simpliflid_mult_objective)
 
     const values = values_constants[0]
     const constants = values_constants[1]
@@ -220,19 +220,19 @@ function parse_model(indexes: Map<string,string>,columns: Map<string,string[]>,s
     return values_constants
 }
 
-function parse_objective(indexes: Map<string,string>,columns: Map<string,string[]>,goal: string,objective: string){
-    const values_constants = parse_model(indexes ,columns ,objective )
+function parse_objective(indexes: Map<string,string>,variables: Map<string,string[]>,columns: Map<string,string[]>,goal: string,objective: string){
+    const values_constants = parse_model(indexes , variables, columns ,objective )
 
     const values = values_constants[0]
 
     return values
 }
 
-function parse_constraints(indexes: Map<string,string>,constraints: string[],columns: Map<string,string[]>,){
+function parse_constraints(indexes: Map<string,string>,variables: Map<string,string[]>,constraints: string[],columns: Map<string,string[]>,){
     const model_constraints = []
 
     for(let constraint of constraints){
-        const values_constants = parse_model(indexes ,columns ,constraint)
+        const values_constants = parse_model(indexes , variables, columns ,constraint)
 
         const ineq = ( constraint.match(/(\<\=|\>\=|\=|\>|\<)/g) || ["="] )[0]
         const values = values_constants[0]
@@ -248,14 +248,59 @@ function parse_constraints(indexes: Map<string,string>,constraints: string[],col
     return model_constraints
 }
 
+function get_non_negativity_max_values_constraints(variables: Map<string,string[]>,min_var: number,max_var: number){
+    const zero_variables = get_all_variables_namedVector_objective(variables)
+    let non_negativy_max_constraints = []
 
+    for(let value of Array.from(zero_variables.entries())){
+        zero_variables.set(value[0],1)
 
-export function run_model(indexes: Map<string,string>,index_cols: string[],constraints: string[],columns: Map<string,string[]>,goal: string,objective: string): Map<string,string>{
+        const named_vector = Object.fromEntries(zero_variables)
+
+        non_negativy_max_constraints.push({
+            namedVector: named_vector,
+            constraint: ">=",
+            constant: min_var,
+        })
+
+        non_negativy_max_constraints.push({
+            namedVector: named_vector,
+            constraint: "<=",
+            constant: max_var,
+        })
+
+        zero_variables.set(value[0],0)
+
+    
+    }
+
+    return non_negativy_max_constraints
+}
+
+function get_all_variables_namedVector_objective(variables: Map<string,string[]>): Map<string,number>{
+    const all_variables = new Map<string,number>() 
+
+    for( let value of Array.from(variables.entries())){
+        const variable = value[0].replace("]","").replace("[","_")
+        
+        all_variables.set(variable,0)
+    }
+
+    return all_variables
+}
+
+export function run_model(indexes: Map<string,string>, variables: Map<string, string[]>,index_cols: string[],constraints: string[],columns: Map<string,string[]>,goal: string,objective: string): Map<string,string>{
     let solution = new Map<string,string>()
 
-    const objective_model = parse_objective(indexes ,columns ,goal ,objective )
-    const constraints_model = parse_constraints(indexes, constraints, columns )
+    const objective_model = parse_objective(indexes , variables, columns ,goal ,objective )
+    const constraints_model = parse_constraints(indexes, variables, constraints, columns )
 
+    const non_negativy_max_constraints = get_non_negativity_max_values_constraints(variables,MIN_VAR,MAX_VAR)
+
+    constraints_model.push(...non_negativy_max_constraints)
+
+    console.log(constraints_model)
+    
     const optimization_type = goal == "Maximize" ? "max" : "min"
 
     const model  = {

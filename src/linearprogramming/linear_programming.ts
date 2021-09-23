@@ -100,31 +100,45 @@ function get_indexes(statement: string): string[] {
 
 export function generate_mul_operation(statement1: string, statement2: string,cols: collumns): string {
     
-    const indexes_stat1 = get_indexes(statement1)
-    const indexes_stat2 = get_indexes(statement2)
+    const isNumerical = (x: string) => !isNaN(parseFloat(x))
+
+    if( isNumerical(statement1) && isNumerical(statement2) ) 
+            return "" + parseFloat(statement1) * parseFloat(statement2) 
     
-    const matchs = indexes_stat1.filter( (x: string) => indexes_stat2.includes(x))
+    if( isNumerical(statement1) ) return `( ${statement1} ) X ${statement2}`
+    if( isNumerical(statement2) ) return `${statement1} X ( ${statement2} )`
 
-    if(matchs.length == 0) return `( ${statement1} ) X ${statement2}`
+    const statement1_removed_sign_spaces = statement1.replace(/\+/g, "").replace(/\- /g,"-")
+    const statement2_removed_sign_spaces = statement2.replace(/\+/g, "").replace(/\- /g,"-")
 
-    const match = matchs[0]
+    const statement1_elements = statement1_removed_sign_spaces.split(" ").filter( ( x: string ) => x != " " && x != "" )
+    const statement2_elements = statement2_removed_sign_spaces.split(" ").filter( ( x: string ) => x != " " && x != "" )
+    
+    let expr = ""
 
-    const index_values = ( cols.get(match) as collumn )
+    for( let raw_element1 of statement1_elements ) {
+        const sign_1 = ( raw_element1.match(/\-/) || [] ).length == 0 ? 1 : -1
+        const element1 = raw_element1.replace(/\-/g,"")
 
-    let expr: string = ""
+        for( let raw_element2 of statement2_elements ) {
+            const sign_2 = ( raw_element2.match(/\-/) || [] ).length == 0 ? 1 : -1
+            const element2 = raw_element2.replace(/\-/g,"")
+            
+            const sign = sign_1 * sign_2
 
-    for (let i = 0; i < index_values.length; i++) {
-        const index_value = index_values[i]
-        const new_stat1 = statement1.replace(`index_${match}`, index_value)
-        const new_stat2 = statement2.replace(`index_${match}`, index_value)
-        expr += ` ( ${new_stat1} X ${new_stat2} )`
-        if (i < index_values.length - 1) expr += " + "
-         
+            if(sign == -1) ` -  ( ${element1} X ${element2} )`
+
+            if(sign == 1) ` +  ( ${element1} X ${element2} )`
+        }
     }
+   
+    expr = expr.replace(/ \+  \+ /g,"+")
+    expr = expr.replace(/ \-  \- /g,"+")
+    expr = expr.replace(/ \+  \- /g,"-")
+    expr = expr.replace(/ \-  \+ /g,"-")
 
     return expr
 
-    
 }
 
 function get_index(exp: string): string {
@@ -164,8 +178,6 @@ export function fix_expression(expr: string,cols: collumns): string {
             new_exp += exp.replace(`index_${index}`,val)
         }
             
-        
-
         new_expr = new_expr.replace(exp,new_exp)
 
     }

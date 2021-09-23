@@ -155,6 +155,19 @@ LPGenerator['col_address'] = function (block: any) {
     const state = dataStore.getState()
     const indexes = state.indexes
     const col = block.getFieldValue('COL')
+    const index = block.getFieldValue("INDEX")
+    const index_col = indexes.get(col) || ""
+
+    if(index == "each" || index == "sum")
+        return [`${col}[${index}_index_${index_col}]`, LPGenerator.PRECEDENCE];
+
+    return [`${col}[index_${index}]`, LPGenerator.PRECEDENCE];
+};
+
+LPGenerator['col_val_address'] = function (block: any) { 
+    const state = dataStore.getState()
+    const indexes = state.indexes
+    const col = block.getFieldValue('COL')
     const index = indexes.get(col)
     return [`${col}[index_${index}]`, LPGenerator.PRECEDENCE];
 };

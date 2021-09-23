@@ -285,7 +285,6 @@ var ReactMatrixVariableField = (variables: any,index1: any, index2: any) => ({
     }
   ],
   "extensions": ["dynamic_menu_extension_matrix_var_val","on_change_col_val"]
-
 })
 
 Blockly.Blocks['matrix_variable'] = {

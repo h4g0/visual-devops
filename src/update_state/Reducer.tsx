@@ -2,8 +2,6 @@ import { my_variable } from '../linearprogramming/linear_programming'
 import { Types } from './Actions'
 
 
-// Declaração das variáveis globais e dos respetivos set's 
-
 const default_state: any = {
     variables: new Map<string, string[]>(),
     constraints: [],
