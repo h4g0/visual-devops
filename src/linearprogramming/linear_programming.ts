@@ -98,6 +98,13 @@ function get_indexes(statement: string): string[] {
     return clean_indexes
 }
 
+function get_inequality_indexes(statement: string): string[] {
+    const indexes = statement.match(/each_index_[a-zA-Z0-9]+/g)
+    const clean_indexes = indexes == undefined ? [] : indexes.map( (x: string) => x.replace("each_index_","")) 
+
+    return clean_indexes
+}
+
 export function generate_mul_operation(statement1: string, statement2: string,cols: collumns): string {
     
     const isNumerical = (x: string) => !isNaN(parseFloat(x))
@@ -126,9 +133,9 @@ export function generate_mul_operation(statement1: string, statement2: string,co
             
             const sign = sign_1 * sign_2
 
-            if(sign == -1) ` -  ( ${element1} X ${element2} )`
+            if(sign == -1) expr += ` -  ( ${element1} X ${element2} )`
 
-            if(sign == 1) ` +  ( ${element1} X ${element2} )`
+            if(sign == 1)  expr += ` +  ( ${element1} X ${element2} )`
         }
     }
    
@@ -144,15 +151,15 @@ export function generate_mul_operation(statement1: string, statement2: string,co
 function get_index(exp: string): string {
     const index_exp = /index_[a-zA-Z0-9]+/
     const index = exp.match(index_exp) || []
-    const clean_index = index[0].replace("index_","")
+    const clean_index = index[0].replace("sum_index_","").replace("each_index_","").replace("index_","")
 
     return clean_index
 }
 
 function get_non_expanded_expr(statement: string): string[] {
-    const index_exp = /index_[a-zA-Z0-9]+/
+    const index_exp = /sum_index_[a-zA-Z0-9]+/
     //const non_exp = statement.match(/[a-zA-Z0-9]+(\[index_[a-zA-Z0-9]+\])+/g) || []
-    const non_exp = statement.match(/[a-zA-Z]+(\[index_[a-zA-Z0-9]+\])+/g) || []
+    const non_exp = statement.match(/[a-zA-Z]+(\[sum_index_[a-zA-Z0-9]+\])+/g) || []
 
     console.log((non_exp))
 
@@ -162,7 +169,14 @@ function get_non_expanded_expr(statement: string): string[] {
 export function fix_expression(expr: string,cols: collumns): string {
     console.log("fix expression")
     const non_exp = get_non_expanded_expr(expr)
+    
+    expr = expr.replace(/ \+  \+ /g,"+")
+    expr = expr.replace(/ \-  \- /g,"+")
+    expr = expr.replace(/ \+  \- /g,"-")
+    expr = expr.replace(/ \-  \+ /g,"-")
+
     let new_expr: string = expr
+   
     console.log(expr)
     console.log(non_exp)
     for(let exp of non_exp) {
@@ -175,7 +189,7 @@ export function fix_expression(expr: string,cols: collumns): string {
         for(let i = 0; i < vals.length; i++) {
             const val = vals[i]
             if(i > 0) new_exp += " + "
-            new_exp += exp.replace(`index_${index}`,val)
+            new_exp += exp.replace(`sum_index_${index}`,val)
         }
             
         new_expr = new_expr.replace(exp,new_exp)
@@ -201,7 +215,7 @@ function expand_numerical_left_right_side(expr: string,cols: collumns){
         for(let i = 0; i < vals.length; i++) {
             const val = vals[i]
             if(i > 0) new_exp += "\n"
-            new_exp = exp.replace(`index_${index}`,val)
+            new_exp = exp.replace(`sum_index_${index}`,val)
             exprs.push(expr.replace(exp,new_exp))
         }
 
@@ -214,21 +228,31 @@ function expand_numerical_left_right_side(expr: string,cols: collumns){
 
 export function generate_inequality_operation(operation: string,cols: collumns, prev_statement: string, next_statement: string) {
     let constraints: string[] = []
-    const indexes_prev = get_indexes(prev_statement)
-    const indexes_next = get_indexes(next_statement)
+    const indexes_prev = get_inequality_indexes(prev_statement)
+    const indexes_next = get_inequality_indexes(next_statement)
 
     console.log(`${prev_statement} ${next_statement}`)
-    const matchs = indexes_prev.filter( (x: string) => indexes_next.includes(x))
+    const matchs = indexes_prev
+
+    console.log(prev_statement)
+    console.log(next_statement)
+
+    console.log(matchs)
+    for(let index of indexes_next){
+        if(!indexes_next.includes(index))
+            matchs.push(index)
+    }
+
     const expression_numerical = /^[ 0-9]+$/g
     
     if(expression_numerical.test(prev_statement) || expression_numerical.test(next_statement))
         return  expand_numerical_left_right_side(`${prev_statement} ${operation} ${next_statement}`,cols)
         
     for (let match of matchs) {
-        const values = ( cols.get(match) as collumn)
+        const values = ( (cols.get(match) || [] ) as collumn)
         for (let value of values) {
-            const new_prev_statement  = prev_statement.replace(`index_${match}`,value)
-            const new_next_statement  = next_statement.replace(`index_${match}`,value)
+            const new_prev_statement  = prev_statement.replace(`each_index_${match}`,value)
+            const new_next_statement  = next_statement.replace(`each_index_${match}`,value)
 
             constraints.push( `${new_prev_statement} ${operation} ${new_next_statement}` )
         }
@@ -246,6 +270,7 @@ export function gen_operation(op: string, cols: collumns, prev_statement: string
 
     if(op == "X") return generate_mul_operation(prev_statement,next_statement,cols)
     if(op == "+") return []
+
     return ""
 }
 

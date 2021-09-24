@@ -153,13 +153,16 @@ LPGenerator['constraint'] = function (block: any) {
 
 LPGenerator['col_address'] = function (block: any) { 
     const state = dataStore.getState()
+    const cols = state.columns
     const indexes = state.indexes
     const col = block.getFieldValue('COL')
     const index = block.getFieldValue("INDEX")
     const index_col = indexes.get(col) || ""
 
-    if(index == "each" || index == "sum")
+    if(index == "each")
         return [`${col}[${index}_index_${index_col}]`, LPGenerator.PRECEDENCE];
+    if(index == "sum")
+        return [fix_expression(`${col}[${index}_index_${index_col}]`,cols), LPGenerator.PRECEDENCE]
 
     return [`${col}[index_${index}]`, LPGenerator.PRECEDENCE];
 };
@@ -167,8 +170,16 @@ LPGenerator['col_address'] = function (block: any) {
 LPGenerator['col_val_address'] = function (block: any) { 
     const state = dataStore.getState()
     const indexes = state.indexes
+    const cols = state.columns
     const col = block.getFieldValue('COL')
-    const index = indexes.get(col)
+    const index = block.getFieldValue("INDEX")
+    const index_col = indexes.get(col) || ""
+
+    if(index == "each")
+        return [`${col}[${index}_index_${index_col}]`, LPGenerator.PRECEDENCE];
+    if(index == "sum")
+        return [fix_expression(`${col}[${index}_index_${index_col}]`,cols), LPGenerator.PRECEDENCE]
+
     return [`${col}[index_${index}]`, LPGenerator.PRECEDENCE];
 };
 
@@ -206,26 +217,31 @@ LPGenerator['col_variable'] = function (block: any){
 
     const variable: string = block.getFieldValue("COL")
 
-    const indexes = variables.get(variable) || []
+    //const indexes = variables.get(variable) || []
+    //const index = block.getFieldValue("COL1")
+
     const index = block.getFieldValue("COL1")
+    const index_col = (variables.get(variable) || [""])[0]
 
-    if( indexes.length == 1) {
-
-        const variable_holder = `${variable}[${index}]`
+    if(index == "each")
+        return [`${variable}[${index}_index_${index_col}]`, LPGenerator.PRECEDENCE];
+    if(index == "sum")
+        return [fix_expression(`${variable}[${index}_index_${index_col}]`,cols),LPGenerator.PRECEDENCE]
         
-        return [variable_holder, LPGenerator.PRECEDENCE]
-    }
+    const variable_holder = `${variable}[${index}]`
+        
+    
 
-    else {
+    /*else {
         let variable_holder = variable
         for(let i of indexes ) {
             const vals = cols.get(i) || []
             if (vals.include(index) ) variable_holder += `[index]`
             else variable_holder += `[index_${i}]`
-        }
+        }*/
 
-        return [variable_holder, LPGenerator.PRECEDENCE]
-    }
+    return [variable_holder, LPGenerator.PRECEDENCE]
+    
 
 }
 

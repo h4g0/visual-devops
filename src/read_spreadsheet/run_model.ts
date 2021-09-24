@@ -1,3 +1,5 @@
+import { generate_col_variable, generate_matrix_variable } from "../linearprogramming/linear_programming";
+
 const SimpleSimplex = require('simple-simplex');
 
 const MIN_VAR = 0
@@ -173,8 +175,8 @@ function get_values_expr(statement: string): [Map<string,number>,number] {
 
 }
 
-function get_values_ineq(variables: Map<string,string[]>,statement: string): [Map<string,number>,number]{
-    let values = get_all_variables_namedVector_objective(variables)
+function get_values_ineq(variables: Map<string,string[]>,cols: Map<string,string[]>,statement: string): [Map<string,number>,number]{
+    let values = get_all_variables_namedVector_objective(variables,cols)
     const expr = statement.split(/(\<\=|\>\=|\=|\>|\<)/g)
 
     console.log(expr)
@@ -209,7 +211,7 @@ function parse_model(indexes: Map<string,string>,variables: Map<string,string[]>
     const simplified_subtrs_objective = simplify_subtrs(replaced_objective)
     const simpliflid_mult_objective = simplify_mults(simplified_subtrs_objective)
 
-    const values_constants = get_values_ineq(variables,simpliflid_mult_objective)
+    const values_constants = get_values_ineq(variables,columns,simpliflid_mult_objective)
 
     const values = values_constants[0]
     const constants = values_constants[1]
@@ -248,8 +250,8 @@ function parse_constraints(indexes: Map<string,string>,variables: Map<string,str
     return model_constraints
 }
 
-function get_non_negativity_max_values_constraints(variables: Map<string,string[]>,min_var: number,max_var: number){
-    const zero_variables = get_all_variables_namedVector_objective(variables)
+function get_non_negativity_max_values_constraints(variables: Map<string,string[]>,cols: Map<string,string[]>,min_var: number,max_var: number){
+    const zero_variables = get_all_variables_namedVector_objective(variables,cols)
     let non_negativy_max_constraints = []
 
     for(let value of Array.from(zero_variables.entries())){
@@ -277,13 +279,37 @@ function get_non_negativity_max_values_constraints(variables: Map<string,string[
     return non_negativy_max_constraints
 }
 
-function get_all_variables_namedVector_objective(variables: Map<string,string[]>): Map<string,number>{
+function get_all_variables_namedVector_objective(variables: Map<string,string[]>,cols: Map<string,string[]>): Map<string,number>{
     const all_variables = new Map<string,number>() 
 
+
     for( let value of Array.from(variables.entries())){
-        const variable = value[0].replace("]","").replace("[","_")
-        
-        all_variables.set(variable,0)
+        const variable = value[0]
+        const var_cols = cols.get(variable) || []
+        console.log(var_cols)
+        if(var_cols.length == 0) {
+            const variable_name = value[0].replace("]","").replace("[","_")
+            all_variables.set(variable_name,0)
+        }
+
+        if(var_cols.length == 1){
+            const gen_vars = generate_col_variable(cols,variable,var_cols[0])
+            
+            for( let value of Array.from(gen_vars.entries())){
+                const variable_name = value[0].replace("]","").replace("[","_")
+                all_variables.set(variable_name,0)            }
+
+        }
+
+        if(var_cols.length == 2){
+            const gen_vars = generate_matrix_variable(cols,variable,var_cols[0],var_cols[1])
+            
+            for( let value of Array.from(gen_vars.entries())){
+                const variable_name = value[0].replace("]","").replace("[","_")
+                all_variables.set(variable_name,0)            }
+
+        }
+       
     }
 
     return all_variables
@@ -295,7 +321,7 @@ export function run_model(indexes: Map<string,string>, variables: Map<string, st
     const objective_model = parse_objective(indexes , variables, columns ,goal ,objective )
     const constraints_model = parse_constraints(indexes, variables, constraints, columns )
 
-    const non_negativy_max_constraints = get_non_negativity_max_values_constraints(variables,MIN_VAR,MAX_VAR)
+    const non_negativy_max_constraints = get_non_negativity_max_values_constraints(variables,columns,MIN_VAR,MAX_VAR)
 
     constraints_model.push(...non_negativy_max_constraints)
 

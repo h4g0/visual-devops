@@ -14,8 +14,10 @@ function RunModel(props: any) {
     const indexes  = ( useSelector((state: any) => state.indexes) as Map<string,string> )
     const index_cols = ( useSelector((state: any) => state.index_cols) as string[] )
     const columns = ( useSelector((state: any) => state.columns) as Map<string,string[]> )
-    const goal =  ( useSelector((state: any) => state.columns) as string)
-    const objective = ( useSelector((state: any) => state.columns) as string)
+    const variables = ( useSelector((state: any) => state.variables) as Map<string,string[]>)
+    const constraints =  ( useSelector((state: any) => state.constraints) as string[])
+    const goal =  ( useSelector((state: any) => state.goal) as string)
+    const objective = ( useSelector((state: any) => state.objective) as string)
 
     const update_values = (result: Map<string,string>) => {
     
@@ -25,7 +27,7 @@ function RunModel(props: any) {
     
     const runModel = () => {
         console.log("running model")
-        run_model(indexes ,index_cols ,["Mixture[Beans] + Mixture[Corn] >= 1","Mixture[Beans] + 2Mixture[Corn] <= 2"],columns ,"Maximize" ,"Iron[Beans] + ( Mixture[Beans] + Mixture[Corn] ) X 82 + 4 X ( Mixture[Beans] + Mixture[Corn] ) >= ( Mixture[Beans] + Mixture[Corn] ) X 10")
+        run_model(indexes , variables, index_cols , constraints,columns ,goal ,objective)
     }
 
     return (
