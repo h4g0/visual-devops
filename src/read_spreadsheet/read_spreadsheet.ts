@@ -70,7 +70,7 @@ function get_cols(spreadsheet: any): collumns {
         let vals = []
 
         for(let row of spreadsheet)
-            vals.push( row[key] || 0 )
+            if( row[key] != null ) vals.push( row[key] )
         
         cols.set(key, vals)
     }

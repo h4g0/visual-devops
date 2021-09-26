@@ -182,7 +182,20 @@ function get_values_ineq(variables: Map<string,string[]>,cols: Map<string,string
     console.log(expr)
     if(expr.length == 0) return [values,0]
 
-    if(expr.length == 1) return get_values_expr(statement)
+    if(expr.length == 1) {
+        const values_expr = get_values_expr(statement)
+        
+        for( let value of Array.from(values_expr[0].entries())){
+            const variable = value[0].replace("]","").replace("[","_")
+            const value_right = value[1]
+    
+            values.set(variable, round_decimal(value_right))
+        }
+
+
+        return [values,0]
+
+    }
 
     const values_constants_right = get_values_expr(expr[0])
     const values_constants_left = get_values_expr(expr[2])
@@ -240,6 +253,9 @@ function parse_constraints(indexes: Map<string,string>,variables: Map<string,str
         const values = values_constants[0]
         const constant = values_constants[1]
     
+        console.log("CONSTANT")
+        console.log(constraint)
+        console.log(constant)
         model_constraints.push({
             namedVector: Object.fromEntries(values),
             constraint: ineq,
@@ -285,7 +301,7 @@ function get_all_variables_namedVector_objective(variables: Map<string,string[]>
 
     for( let value of Array.from(variables.entries())){
         const variable = value[0]
-        const var_cols = cols.get(variable) || []
+        const var_cols = value[1]
         console.log(var_cols)
         if(var_cols.length == 0) {
             const variable_name = value[0].replace("]","").replace("[","_")
@@ -293,20 +309,23 @@ function get_all_variables_namedVector_objective(variables: Map<string,string[]>
         }
 
         if(var_cols.length == 1){
+            console.log("gen variables")
             const gen_vars = generate_col_variable(cols,variable,var_cols[0])
-            
-            for( let value of Array.from(gen_vars.entries())){
-                const variable_name = value[0].replace("]","").replace("[","_")
-                all_variables.set(variable_name,0)            }
+            console.log(gen_vars)
+            for( let gen_value of Array.from(gen_vars.entries())){
+                const variable_name = gen_value[0].replace("]","").replace("[","_")
+                all_variables.set(variable_name,0)            
+            }
 
         }
 
         if(var_cols.length == 2){
             const gen_vars = generate_matrix_variable(cols,variable,var_cols[0],var_cols[1])
             
-            for( let value of Array.from(gen_vars.entries())){
-                const variable_name = value[0].replace("]","").replace("[","_")
-                all_variables.set(variable_name,0)            }
+            for( let gen_value of Array.from(gen_vars.entries())){
+                const variable_name = gen_value[0].replace("]","").replace("[","_")
+                all_variables.set(variable_name,0)            
+            }
 
         }
        
@@ -327,7 +346,9 @@ export function run_model(indexes: Map<string,string>, variables: Map<string, st
 
     console.log(constraints_model)
     
-    const optimization_type = goal == "Maximize" ? "max" : "min"
+    const optimization_type = goal == "MAXIMIZE" ? "max" : "min"
+
+    console.log(goal)
 
     const model  = {
         objective: Object.fromEntries(objective_model),

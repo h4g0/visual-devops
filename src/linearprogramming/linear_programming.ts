@@ -237,9 +237,14 @@ export function generate_inequality_operation(operation: string,cols: collumns, 
     console.log(prev_statement)
     console.log(next_statement)
 
+    console.log("indexes_prev")
+    console.log(indexes_prev)
+    console.log("indexes_next")
+    console.log(indexes_next)
+
     console.log(matchs)
     for(let index of indexes_next){
-        if(!indexes_next.includes(index))
+        if(!indexes_prev.includes(index))
             matchs.push(index)
     }
 
@@ -247,18 +252,38 @@ export function generate_inequality_operation(operation: string,cols: collumns, 
     
     if(expression_numerical.test(prev_statement) || expression_numerical.test(next_statement))
         return  expand_numerical_left_right_side(`${prev_statement} ${operation} ${next_statement}`,cols)
-        
+    
+    let past_statements = [[prev_statement,next_statement]]
+
+    console.log("matchs")
+    console.log(matchs)
+
     for (let match of matchs) {
         const values = ( (cols.get(match) || [] ) as collumn)
+        let new_past_statements = []
         for (let value of values) {
-            const new_prev_statement  = prev_statement.replace(`each_index_${match}`,value)
-            const new_next_statement  = next_statement.replace(`each_index_${match}`,value)
+            for(let statement of past_statements) {
+                const reg_expr = new RegExp(`each\_index\_${match}`,"g")
+                const new_prev_statement  = statement[0].replace(reg_expr,value)
+                const new_next_statement  = statement[1].replace(reg_expr,value)
 
-            constraints.push( `${new_prev_statement} ${operation} ${new_next_statement}` )
+                new_past_statements.push([new_prev_statement,new_next_statement])
+            }
+          
         }
+        
+        past_statements = new_past_statements
+
+        console.log(past_statements)
     }
 
+ 
+
     if(matchs.length == 0) return [ `${prev_statement} ${operation} ${next_statement}` ]
+
+    for(let statement of past_statements){
+        constraints.push( `${statement[0]} ${operation} ${statement[1]}` )
+    }
 
     return constraints
 }

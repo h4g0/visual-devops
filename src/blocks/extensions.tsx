@@ -58,10 +58,14 @@ Blockly.Extensions.register('dynamic_menu_extension_col_val',
       function() {
         const state = dataStore.getState()
         const cols: collumns = ( state.columns as collumns )
+        const indexes: Map<string,string> = ( state.indexes as Map<string,string>)
+
         //const col_keys = Array.from(cols.entries()).map( (x: [string,collumn]) => x[0] )
         const block_col = ( state.block_col as Map<string,string> )
         const col = block_col.get(id) || ""
-        const entries = cols.get(col) || []  
+        const index = indexes.get(col) || ""
+
+        const entries = cols.get(index) || []  
 
         const options = entries.map( (entry: string) => [""  + entry , "" + entry])
         
@@ -248,6 +252,8 @@ Blockly.Extensions.register('dynamic_menu_extension_col_var_val',
 
         const col = block_col.get(id) || ""
 
+        console.log(variables)
+        console.log(cols)
         console.log(variables.get(col) )
         
         const vars_col = cols.get( (variables.get(col) || [""])[0]) || []
