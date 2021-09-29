@@ -1,4 +1,5 @@
 import { generate_col_variable, generate_matrix_variable } from "../linearprogramming/linear_programming";
+const glpk = require('glpk.js');
 
 const SimpleSimplex = require('simple-simplex');
 
@@ -13,7 +14,7 @@ function round_decimal(x: number): number {
 
 function replace_values(statement: string,columns: Map<string,string[]>,indexes: Map<string,string>): string {
     let new_statement = "" + statement
-    let elements = statement.match(/[a-zA-Z]+(\[[a-zA-Z]+\])+/g) || []
+    let elements = statement.match(/[a-zA-Z\(\)\_]+(\[[a-zA-Z\(\)\_]+\])+/g) || []
 
     for(let element of elements) {
         const col_indexes = get_col_indexes(element)
@@ -334,10 +335,81 @@ function get_all_variables_namedVector_objective(variables: Map<string,string[]>
     return all_variables
 }
 
-export function run_model(indexes: Map<string,string>, variables: Map<string, string[]>,index_cols: string[],constraints: string[],columns: Map<string,string[]>,goal: string,objective: string): Map<string,string>{
+function convert_subjectTo_glpk(simplex_model: any): any{
+    const constraints = simplex_model.constraints
+    const subjectTo = []
+
+  
+    for(let i = 0; i < constraints.length; i++) {
+      
+      const goal = constraints[i].constraint
+      const bond = goal == "<=" ? glpk.GLP_LO : glpk.GLP_UP
+      const ub = goal == ">=" ? constraints[i].constant : 0
+      const lb = goal == "<=" ? constraints[i].constant : 0
+      const namedVector = Object.keys(constraints[i].namedVector)
+
+      
+      const constraint = {
+        name: `const${i}`,
+        vars: namedVector.map((x:any) => {
+          return {name: x, coef: constraints[i].namedVector[x]}
+        })
+      ,
+        bnds: { type: bond, ub: ub, lb: lb }
+      }
+
+      subjectTo.push(constraint)
+    }
+
+    return subjectTo
+}
+
+function convert_model_glpk(simplex_model: any): any {
+  console.log(simplex_model.objective)
+    const model = { name: 'LP',
+        objective: {
+            direction: glpk.GLP_MAX,
+            name: 'obj',
+            vars: 
+                Object.keys(simplex_model.objective).map((x: any) => {
+                   return {name: x[0], coef: x[1]}
+                })
+            
+        },
+
+        subjectTo:  convert_subjectTo_glpk(simplex_model),
+    }
+
+    return model
+
+}
+
+async function run_gltk_model(simplex_model: any,glpk: any) {
+  console.log(glpk.GLP_UP)
+
+  const glpk_model = convert_model_glpk(simplex_model)
+
+  console.log(glpk)
+
+  const options = {
+    msglev: glpk.GLP_MSG_ALL,
+    presol: true,
+    cb: {
+        call: (progress: any) => console.log(progress),
+        each: 1
+    }
+
+  
+  };
+
+  const res = glpk.solve(glpk_model,options)
+
+  return res
+}
+export async function run_model(indexes: Map<string,string>, variables: Map<string, string[]>,index_cols: string[],constraints: string[],columns: Map<string,string[]>,goal: string,objective: string): Promise<Map<string,string>>{
     let solution = new Map<string,string>()
 
-    const objective_model = parse_objective(indexes , variables, columns ,goal ,objective )
+    /*const objective_model = parse_objective(indexes , variables, columns ,goal ,objective )
     const constraints_model = parse_constraints(indexes, variables, constraints, columns )
 
     const non_negativy_max_constraints = get_non_negativity_max_values_constraints(variables,columns,MIN_VAR,MAX_VAR)
@@ -354,10 +426,106 @@ export function run_model(indexes: Map<string,string>, variables: Map<string, st
         objective: Object.fromEntries(objective_model),
         constraints: constraints_model,
         optimizationType: optimization_type
-    }
+    }*/
     
-    console.log(model)
 
+    const new_model = {
+        "objective": {
+          "varname_Blonde": 1,
+          "varname_Red": 1
+        },
+        "constraints": [
+          {
+            "namedVector": {
+              "varname_Blonde": 1,
+              "varname_Red": 0
+            },
+            "constraint": "<=",
+            "constant": 20
+          },
+          {
+            "namedVector": {
+              "varname_Blonde": 0,
+              "varname_Red": 1
+            },
+            "constraint": "<=",
+            "constant": 20
+          },
+          {
+            "namedVector": {
+              "varname_Blonde": 1,
+              "varname_Red": 0
+            },
+            "constraint": "<=",
+            "constant": 2
+          },
+          {
+            "namedVector": {
+              "varname_Blonde": 0,
+              "varname_Red": 1
+            },
+            "constraint": "<=",
+            "constant": 2
+          },
+          {
+            "namedVector": {
+              "varname_Blonde": 1,
+              "varname_Red": 0
+            },
+            "constraint": "<=",
+            "constant": 10
+          },
+          {
+            "namedVector": {
+              "varname_Blonde": 0,
+              "varname_Red": 1
+            },
+            "constraint": "<=",
+            "constant": 10
+          },
+          {
+            "namedVector": {
+              "varname_Blonde": 1,
+              "varname_Red": 0
+            },
+            "constraint": ">=",
+            "constant": 0
+          },
+          {
+            "namedVector": {
+              "varname_Blonde": 1,
+              "varname_Red": 0
+            },
+            "constraint": "<=",
+            "constant": 10000
+          },
+          {
+            "namedVector": {
+              "varname_Blonde": 0,
+              "varname_Red": 1
+            },
+            "constraint": ">=",
+            "constant": 0
+          },
+          {
+            "namedVector": {
+              "varname_Blonde": 0,
+              "varname_Red": 1
+            },
+            "constraint": "<=",
+            "constant": 10000
+          }
+        ],
+        "optimizationType": "max"
+      }
+    
+    
+
+    /*console.log(model)
+
+    console.log(JSON.stringify(model, null , 2))
+    
+    
     const solver = new SimpleSimplex(model)
 
     
@@ -368,7 +536,7 @@ export function run_model(indexes: Map<string,string>, variables: Map<string, st
     console.log({
         solution: result.solution,
         isOptimal: result.details.isOptimal,
-    })
+    })*/
 
     /*const solver = new SimpleSimplex({
         objective: {
