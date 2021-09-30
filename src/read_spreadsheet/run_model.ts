@@ -1,8 +1,6 @@
 import { generate_col_variable, generate_matrix_variable } from "../linearprogramming/linear_programming";
 const glpk = require('glpk.js');
 
-const SimpleSimplex = require('simple-simplex');
-
 const MIN_VAR = 0
 const MAX_VAR = 10000
 
@@ -335,7 +333,7 @@ function get_all_variables_namedVector_objective(variables: Map<string,string[]>
     return all_variables
 }
 
-function convert_subjectTo_glpk(simplex_model: any): any{
+function convert_subjectTo_glpk(simplex_model: any,solver: any): any{
     const constraints = simplex_model.constraints
     const subjectTo = []
 
@@ -343,7 +341,7 @@ function convert_subjectTo_glpk(simplex_model: any): any{
     for(let i = 0; i < constraints.length; i++) {
       
       const goal = constraints[i].constraint
-      const bond = goal == "<=" ? glpk.GLP_LO : glpk.GLP_UP
+      const bond = goal == "<=" ? solver.GLP_LO : solver.GLP_UP
       const ub = goal == ">=" ? constraints[i].constant : 0
       const lb = goal == "<=" ? constraints[i].constant : 0
       const namedVector = Object.keys(constraints[i].namedVector)
@@ -364,11 +362,11 @@ function convert_subjectTo_glpk(simplex_model: any): any{
     return subjectTo
 }
 
-function convert_model_glpk(simplex_model: any): any {
+function convert_model_glpk(simplex_model: any,solver: any): any {
   console.log(simplex_model.objective)
     const model = { name: 'LP',
         objective: {
-            direction: glpk.GLP_MAX,
+            direction: solver.GLP_MAX,
             name: 'obj',
             vars: 
                 Object.keys(simplex_model.objective).map((x: any) => {
@@ -377,22 +375,22 @@ function convert_model_glpk(simplex_model: any): any {
             
         },
 
-        subjectTo:  convert_subjectTo_glpk(simplex_model),
+        subjectTo:  convert_subjectTo_glpk(simplex_model,solver),
     }
 
     return model
 
 }
 
-async function run_gltk_model(simplex_model: any,glpk: any) {
-  console.log(glpk.GLP_UP)
+async function run_gltk_model(simplex_model: any,solver: any) {
+  console.log(solver.GLP_UP)
 
-  const glpk_model = convert_model_glpk(simplex_model)
+  const glpk_model = convert_model_glpk(simplex_model,solver)
 
-  console.log(glpk)
+  console.log(solver)
 
   const options = {
-    msglev: glpk.GLP_MSG_ALL,
+    msglev: solver.GLP_MSG_ALL,
     presol: true,
     cb: {
         call: (progress: any) => console.log(progress),
@@ -402,7 +400,7 @@ async function run_gltk_model(simplex_model: any,glpk: any) {
   
   };
 
-  const res = glpk.solve(glpk_model,options)
+  const res = solver.solve(glpk_model,options)
 
   return res
 }
@@ -519,7 +517,17 @@ export async function run_model(indexes: Map<string,string>, variables: Map<stri
         "optimizationType": "max"
       }
     
-    
+    //const solver = await glpk
+
+    require("clp-wasm/clp-wasm").then((clp: any) => {
+      const lp = `Maximize
+       obj: + 0.6 x1 + 0.5 x2
+       Subject To
+       cons1: + x1 + 2 x2 <= 1
+       cons2: + 3 x1 + x2 <= 2
+       End`;
+      console.log(clp.solve(lp)); // Prints a result object with solution values, objective, etc.
+    });
 
     /*console.log(model)
 
