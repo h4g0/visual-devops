@@ -3,8 +3,6 @@ import { useSelector,useDispatch } from 'react-redux'
 import { updateColumns, updateIndexCols, updateIndexes } from "../update_state/Actions";
 import { get_spreadsheet_json } from "./get_spreadsheet._json";
 
-const xlsx = require("xlsx")
-
 
 async function read_spreadsheet(doc: any) {
     /*const workbook = xlsx.readFile(doc)

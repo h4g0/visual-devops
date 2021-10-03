@@ -164,7 +164,7 @@ LPGenerator['col_address'] = function (block: any) {
     if(index == "sum")
         return [fix_expression(`${col}[${index}_index_${index_col}]`,cols), LPGenerator.PRECEDENCE]
 
-    return [`${col}[index_${index}]`, LPGenerator.PRECEDENCE];
+    return [`${col}[${index}]`, LPGenerator.PRECEDENCE];
 };
 
 LPGenerator['col_val_address'] = function (block: any) { 
@@ -180,7 +180,7 @@ LPGenerator['col_val_address'] = function (block: any) {
     if(index == "sum")
         return [fix_expression(`${col}[${index}_index_${index_col}]`,cols), LPGenerator.PRECEDENCE]
 
-    return [`${col}[index_${index}]`, LPGenerator.PRECEDENCE];
+    return [`${col}[${index}]`, LPGenerator.PRECEDENCE];
 };
 
 LPGenerator['matrix_variable'] = function (block: any){

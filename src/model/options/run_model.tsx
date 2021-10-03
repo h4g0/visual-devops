@@ -19,15 +19,16 @@ function RunModel(props: any) {
     const goal =  ( useSelector((state: any) => state.goal) as string)
     const objective = ( useSelector((state: any) => state.objective) as string)
 
-    const update_values = (result: Map<string,string>) => {
+    const update_values = (result: Map<string,number>) => {
     
         dispatch(  updateResult( {result: result} ) )
     
     }
     
-    const runModel = () => {
+    const runModel = async() => {
         console.log("running model")
-        run_model(indexes , variables, index_cols , constraints,columns ,goal ,objective)
+        const solution = await run_model(indexes , variables, index_cols , constraints,columns ,goal ,objective)
+        update_values(solution)
     }
 
     return (

@@ -11,6 +11,9 @@ export const Types = {
     OBJECTIVE: "OBJECTIVE",
     RESULT: "RESULT",
     GOAL: "GOAL",
+    CLEAR_VARIABLES: "CLEAR_VARIABLES",
+    CLEAR_CONSTRAINTS: "CLEAR_CONSTRAINTS",
+    CLEAR_OBJECTIVE: "CLEAR_OBJECTIVE",
     CLEAR: "CLEAR",
 };
 
@@ -21,7 +24,7 @@ export const updateConstraints = (value: {constraints: string[]})  => ({
     payload: value
 });
 
-export const updateResult = (value: {result: Map<string,string>})  => ({
+export const updateResult = (value: {result: Map<string,number>})  => ({
     type: Types.RESULT,
     payload: value
 });
@@ -62,6 +65,21 @@ export const updateBlockIndex = (value: {block: string, index: string}) => ({
     payload: value
 });
  
+export const clearVariables = (value: {}) => ({
+    type: Types.CLEAR_VARIABLES,
+    payload: value
+});
+
+export const clearConstraints = (value: {}) => ({
+    type: Types.CLEAR_CONSTRAINTS,
+    payload: value
+});
+
+export const clearObjective = (value: {}) => ({
+    type: Types.CLEAR_OBJECTIVE,
+    payload: value
+});
+
 export const clearModel = (value: {}) => ({
     type: Types.CLEAR,
     payload: value

@@ -174,6 +174,11 @@ export function fix_expression(expr: string,cols: collumns): string {
     expr = expr.replace(/ \-  \- /g,"+")
     expr = expr.replace(/ \+  \- /g,"-")
     expr = expr.replace(/ \-  \+ /g,"-")
+    console.log(expr)
+    expr = expr.replace(/^[ ]\+/g,"")
+
+    console.log("repalce +")
+    console.log(expr)
 
     let new_expr: string = expr
    

@@ -301,6 +301,7 @@ init: function() {
 
 
 var ReactVariablesField = {
+  "type": "variables",
   "message0": "Variables %1",
   "args0": [
     {
@@ -308,7 +309,8 @@ var ReactVariablesField = {
       "name": "VARIABLES"
     }
   ],
-  nextStatement: "ACTION"
+  nextStatement: "variables",
+  "extensions": ["on_change_vals"]
 }
 
 
@@ -325,6 +327,7 @@ init: function() {
 };
 
 var ReactConstraintsField = {
+  "type": "constraints",
   "message0": "Constraints %1",
   "args0": [
     {
@@ -332,8 +335,8 @@ var ReactConstraintsField = {
       "name": "CONSTRAINTS"
     }
   ],
-  previousStatement: "ACTION",
-  nextStatement: "ACTION"
+  previousStatement: "variables",
+  nextStatement: "objective"
 }
 
 
@@ -351,7 +354,7 @@ init: function() {
 
 var ReactColVariableField = (variables: any,index_cols: any) => ({
   "message0": "variable %1",
-  "output": "ACTION",
+  "output": "VARIABLE",
   "args0": [
     {
       "type": "input_dummy",
@@ -486,12 +489,9 @@ var ReactOperationField = {
     {
       "type": "field_dropdown",
       "name": "OPERATION",
-      "options": [
-        ["<", "<"],
+      "options": [       
         ["<=", "<="],
-        [">",">"],
         [">=",">="],
-        ["=","="],
         ["X","X"],
         ["-","-"],
         ["+","+"],
@@ -582,7 +582,7 @@ var ReactObjectiveField = {
       }
      ],
     "input": "ACTION",
-    "previousStatement": "ACTION",
+    "previousStatement": "objective",
 }
 
 Blockly.Blocks['objective'] = {

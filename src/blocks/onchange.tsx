@@ -2,7 +2,8 @@ import * as Blockly from 'blockly/core';
 import { collumn, collumns, generate_col_variable_index } from '../linearprogramming/linear_programming';
 
 import dataStore from './../update_state/Store'
-import { updateBlockIndex, updateVariables } from '../update_state/Actions';
+import { clearVariables, updateBlockIndex, updateVariables } from '../update_state/Actions';
+import { LPGenerator } from '../generator/generator';
 
 
 Blockly.Extensions.register('on_change_col_val', function() {
@@ -24,6 +25,16 @@ Blockly.Extensions.register('on_change_col_val', function() {
     });
   });
 
+  Blockly.Extensions.register('on_change_vals', function() {
+    // Example validation upon block change:
+      //@ts-ignore
+    this.setOnChange(function(changeEvent) {
+      dataStore.dispatch( clearVariables( {} ) )
+      //@ts-ignore
+      const variables = LPGenerator.statementToCode(this, 'VARIABLES', LPGenerator.PRECEDENCE) || 'null'   
+    });
+  });
+ 
   
 Blockly.Extensions.register('on_change_col_new_var', function() {
   // Example validation upon block change:

@@ -1,5 +1,6 @@
+import { VariableMap } from "blockly";
 import { generate_col_variable, generate_matrix_variable } from "../linearprogramming/linear_programming";
-const glpk = require('glpk.js');
+import { get_solution } from "./get_solution";
 
 const MIN_VAR = 0
 const MAX_VAR = 10000
@@ -128,9 +129,11 @@ function simplify_mults(statement: string): string {
 
 }
 
-function get_values_expr(statement: string): [Map<string,number>,number] {
+function get_values_expr(statement: string,variables: Map<string,string[]>,cols: Map<string,string[]>): [Map<string,number>,number] {
     
-    let values = new Map<string,number>()
+    console.log(statement)
+
+    let values = get_all_variables_namedVector_objective(variables,cols)
 
     let new_statement = statement.replace(/\+[ ]*/g,"+")
     new_statement = new_statement.replace(/\-[ ]*/g,"-")
@@ -152,7 +155,7 @@ function get_values_expr(statement: string): [Map<string,number>,number] {
 
         const variables = ( value.match(new RegExp(var_expr)) || [] )
         if( variables.length == 0) continue
-        const variable = variables[0]
+        const variable = variables[0].replace(/\]/g,"").replace(/\[/g,"_")
 
         const past_value = values.get(variable) || 0
 
@@ -182,7 +185,7 @@ function get_values_ineq(variables: Map<string,string[]>,cols: Map<string,string
     if(expr.length == 0) return [values,0]
 
     if(expr.length == 1) {
-        const values_expr = get_values_expr(statement)
+        const values_expr = get_values_expr(statement,variables,cols)
         
         for( let value of Array.from(values_expr[0].entries())){
             const variable = value[0].replace("]","").replace("[","_")
@@ -196,8 +199,8 @@ function get_values_ineq(variables: Map<string,string[]>,cols: Map<string,string
 
     }
 
-    const values_constants_right = get_values_expr(expr[0])
-    const values_constants_left = get_values_expr(expr[2])
+    const values_constants_right = get_values_expr(expr[0],variables,cols)
+    const values_constants_left = get_values_expr(expr[2],variables,cols)
 
     const values_right = values_constants_right[0]
     const values_left = values_constants_left[0]
@@ -205,13 +208,19 @@ function get_values_ineq(variables: Map<string,string[]>,cols: Map<string,string
     const constants_right = values_constants_right[1]
     const constants_left = values_constants_left[1]
 
+    console.log(values_left)
+    console.log(values_right)
+
+    
     for( let value of Array.from(values_right.entries())){
         const variable = value[0].replace("]","").replace("[","_")
         const value_right = value[1]
-        const value_left = values_left.get(variable)  || 0
-
+        console.log(value[0])
+        const value_left = values_left.get(value[0])  || 0
+        console.log(value_left)
         values.set(variable, round_decimal(value_right - value_left))
     }
+
 
     const constants = constants_left - constants_right
 
@@ -228,8 +237,7 @@ function parse_model(indexes: Map<string,string>,variables: Map<string,string[]>
     const values = values_constants[0]
     const constants = values_constants[1]
 
-    console.log(values)
-    console.log(constants)
+  
 
     return values_constants
 }
@@ -252,9 +260,6 @@ function parse_constraints(indexes: Map<string,string>,variables: Map<string,str
         const values = values_constants[0]
         const constant = values_constants[1]
     
-        console.log("CONSTANT")
-        console.log(constraint)
-        console.log(constant)
         model_constraints.push({
             namedVector: Object.fromEntries(values),
             constraint: ineq,
@@ -301,16 +306,15 @@ function get_all_variables_namedVector_objective(variables: Map<string,string[]>
     for( let value of Array.from(variables.entries())){
         const variable = value[0]
         const var_cols = value[1]
-        console.log(var_cols)
+
         if(var_cols.length == 0) {
             const variable_name = value[0].replace("]","").replace("[","_")
             all_variables.set(variable_name,0)
         }
 
         if(var_cols.length == 1){
-            console.log("gen variables")
             const gen_vars = generate_col_variable(cols,variable,var_cols[0])
-            console.log(gen_vars)
+
             for( let gen_value of Array.from(gen_vars.entries())){
                 const variable_name = gen_value[0].replace("]","").replace("[","_")
                 all_variables.set(variable_name,0)            
@@ -333,81 +337,105 @@ function get_all_variables_namedVector_objective(variables: Map<string,string[]>
     return all_variables
 }
 
-function convert_subjectTo_glpk(simplex_model: any,solver: any): any{
+function convert_subjectTo_clp(simplex_model: any): any{
     const constraints = simplex_model.constraints
     const subjectTo = []
 
+    
+  const transform_vars= (x: any,y: any) => {
+    const value = parseFloat(y)
+    const sign = value >= 0 ? "+" : "-"
+    const abs = value >= 0 ? value : value * -1
+
+    return ` ${sign} ${y} ${x}`
+  }
   
     for(let i = 0; i < constraints.length; i++) {
       
       const goal = constraints[i].constraint
-      const bond = goal == "<=" ? solver.GLP_LO : solver.GLP_UP
-      const ub = goal == ">=" ? constraints[i].constant : 0
-      const lb = goal == "<=" ? constraints[i].constant : 0
+
+      const constant = constraints[i].constant
+
       const namedVector = Object.keys(constraints[i].namedVector)
 
+      const constraint_vars = namedVector.reduce((acc: string,x: any) => acc + transform_vars(x,constraints[i].namedVector[x]),"")
       
-      const constraint = {
-        name: `const${i}`,
-        vars: namedVector.map((x:any) => {
-          return {name: x, coef: constraints[i].namedVector[x]}
-        })
-      ,
-        bnds: { type: bond, ub: ub, lb: lb }
-      }
+      const constraint = `cons${i}:${constraint_vars} ${goal} ${constant}`
+      
 
       subjectTo.push(constraint)
     }
 
-    return subjectTo
+    return "\n" + subjectTo.join("\n")
 }
 
-function convert_model_glpk(simplex_model: any,solver: any): any {
-  console.log(simplex_model.objective)
-    const model = { name: 'LP',
-        objective: {
-            direction: solver.GLP_MAX,
-            name: 'obj',
-            vars: 
-                Object.keys(simplex_model.objective).map((x: any) => {
-                   return {name: x[0], coef: x[1]}
-                })
-            
-        },
+function convert_model_clp(simplex_model: any): any {
 
-        subjectTo:  convert_subjectTo_glpk(simplex_model,solver),
-    }
+  const transform_objective = (x: any,y: any) => {
+    const value = parseFloat(y)
+    const sign = value >= 0 ? "+" : "-"
+    const abs = value >= 0 ? value : value * -1
 
-    return model
+    return ` ${sign} ${abs} ${x}`
+  }
 
-}
+  let model = '' 
+  model += simplex_model.optimizationType == "max" ? "Maximize" : "Minimize"
 
-async function run_gltk_model(simplex_model: any,solver: any) {
-  console.log(solver.GLP_UP)
-
-  const glpk_model = convert_model_glpk(simplex_model,solver)
-
-  console.log(solver)
-
-  const options = {
-    msglev: solver.GLP_MSG_ALL,
-    presol: true,
-    cb: {
-        call: (progress: any) => console.log(progress),
-        each: 1
-    }
-
+  model += "\n" + "obj:" + Object.keys(simplex_model.objective).reduce((acc: string,x: any) => acc + transform_objective(x,simplex_model.objective[x]),"")
   
-  };
+  model += "\nSubject To"
 
-  const res = solver.solve(glpk_model,options)
+  model += convert_subjectTo_clp(simplex_model)
+  
+  model += "\nEnd"
 
-  return res
+  return model
+
 }
-export async function run_model(indexes: Map<string,string>, variables: Map<string, string[]>,index_cols: string[],constraints: string[],columns: Map<string,string[]>,goal: string,objective: string): Promise<Map<string,string>>{
-    let solution = new Map<string,string>()
 
-    /*const objective_model = parse_objective(indexes , variables, columns ,goal ,objective )
+function convert_results(solution: any) {
+  let results = new Map<string,number>()
+
+
+  const solution_array  = solution.solution
+  const solution_variables = solution.variables
+
+  results.set("Objective",parseInt(solution.objectiveValue))
+  
+  for(let i = 0; i < solution_array.length; i++){
+    let variable = solution_variables[i].replace(/\_/,"[")
+    variable = variable.replace(/\_/g,"][")
+    if( (variable.match(/\[/g) || []).length > 0 ) variable += "]"
+
+    results.set(variable,round_decimal(solution_array[i]))
+  }
+
+  console.log(solution)
+
+
+  return results
+
+}
+async function run_clp_model(simplex_model: any) {
+
+  const clp_model = convert_model_clp(simplex_model)
+
+
+  const solution = await get_solution(clp_model)
+  
+  console.log(solution)
+  console.log(clp_model)
+
+
+  if(!solution) return new Map<string,number>()
+  return convert_results(solution)
+
+}
+
+export async function run_model(indexes: Map<string,string>, variables: Map<string, string[]>,index_cols: string[],constraints: string[],columns: Map<string,string[]>,goal: string,objective: string): Promise<Map<string,number>>{
+
+    const objective_model = parse_objective(indexes , variables, columns ,goal ,objective )
     const constraints_model = parse_constraints(indexes, variables, constraints, columns )
 
     const non_negativy_max_constraints = get_non_negativity_max_values_constraints(variables,columns,MIN_VAR,MAX_VAR)
@@ -424,10 +452,12 @@ export async function run_model(indexes: Map<string,string>, variables: Map<stri
         objective: Object.fromEntries(objective_model),
         constraints: constraints_model,
         optimizationType: optimization_type
-    }*/
+    }
+
+    console.log(model)
     
 
-    const new_model = {
+    /*const new_model = {
         "objective": {
           "varname_Blonde": 1,
           "varname_Red": 1
@@ -515,72 +545,13 @@ export async function run_model(indexes: Map<string,string>, variables: Map<stri
           }
         ],
         "optimizationType": "max"
-      }
+      }*/
     
-    //const solver = await glpk
-
-    require("clp-wasm/clp-wasm").then((clp: any) => {
-      const lp = `Maximize
-       obj: + 0.6 x1 + 0.5 x2
-       Subject To
-       cons1: + x1 + 2 x2 <= 1
-       cons2: + 3 x1 + x2 <= 2
-       End`;
-      console.log(clp.solve(lp)); // Prints a result object with solution values, objective, etc.
-    });
-
-    /*console.log(model)
-
-    console.log(JSON.stringify(model, null , 2))
-    
-    
-    const solver = new SimpleSimplex(model)
 
     
-    const result = solver.solve({
-        methodName: 'simplex',
-      });
+    const solution = await run_clp_model(model)
 
-    console.log({
-        solution: result.solution,
-        isOptimal: result.details.isOptimal,
-    })*/
-
-    /*const solver = new SimpleSimplex({
-        objective: {
-          A: 70,
-          b: 210,
-          c: -200,
-        },
-        constraints: [
-          {
-            namedVector: { A: 1, b: -1, c: 1 },
-            constraint: '<=',
-            constant: 100,
-          },
-          {
-            namedVector: { A: 5, b: 4, c: 4 },
-            constraint: '<=',
-            constant: 480,
-          },
-          {
-            namedVector: { A: 40, b: 20, c: 30 },
-            constraint: '<=',
-            constant: 3200,
-          },
-        ],
-        optimizationType: 'max',
-      });
-
-      const result = solver.solve({
-        methodName: 'simplex',
-      });
-       
-      // see the solution and meta data
-      console.log({
-        solution: result.solution,
-        isOptimal: result.details.isOptimal,
-      })*/
-    
+    console.log(solution)
+   
     return solution
 }

@@ -11,7 +11,7 @@ const default_state: any = {
     index_cols: [],
     columns: new Map<string,string[]>(),
     block_col: new Map<string,string>(),
-    result: new Map<string,string>(),
+    result: new Map<string,number>(),
 }
 
 export const dataReducer = function (state = default_state , action: any) {
@@ -51,6 +51,15 @@ export const dataReducer = function (state = default_state , action: any) {
             return new_state
         case Types.RESULT:
             new_state.result = action.payload.result
+            return new_state
+        case Types.CLEAR_VARIABLES:
+            new_state.variables = new Map<string,string[]>()
+            return new_state
+        case Types.CLEAR_CONSTRAINTS:
+            new_state.constraints = []
+            return new_state
+        case Types.CLEAR_OBJECTIVE:
+            new_state.objective = ""
             return new_state
         case Types.CLEAR:
             new_state.variables =  new Map<string, string[]>()
