@@ -104,7 +104,16 @@ function get_inequality_indexes(statement: string): string[] {
     const indexes = statement.match(/each_index_[a-zA-Z0-9\_]+/g)
     const clean_indexes = indexes == undefined ? [] : indexes.map( (x: string) => x.replace("each_index_","")) 
 
-    const removed_reps = Array.from( new Set( ...clean_indexes) )
+    console.log(clean_indexes)
+    const clean_indexes_set = new Set()
+
+    for(let index of clean_indexes)
+        clean_indexes_set.add(index)
+
+    const removed_reps = Array.from(clean_indexes_set) as string[]
+
+    console.log("REMOVED REPS")
+    console.log(removed_reps)
     return removed_reps
 }
 
@@ -288,10 +297,10 @@ export function generate_inequality_operation(operation: string,cols: collumns, 
             matchs.push(index)
     }
 
-    const expression_numerical = /^[ 0-9]+$/g
+    /*const expression_numerical = /^[ 0-9]+$/g
     
     if(expression_numerical.test(prev_statement) || expression_numerical.test(next_statement))
-        return  expand_numerical_left_right_side(`${prev_statement} ${operation} ${next_statement}`,cols)
+        return  expand_numerical_left_right_side(`${prev_statement} ${operation} ${next_statement}`,cols)*/
     
     let past_statements = [[prev_statement,next_statement]]
 
