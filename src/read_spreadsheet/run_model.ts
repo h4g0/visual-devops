@@ -13,7 +13,7 @@ function round_decimal(x: number): number {
 
 function replace_values(statement: string,columns: Map<string,string[]>,indexes: Map<string,string>): string {
     let new_statement = "" + statement
-    let elements = statement.match(/[a-zA-Z\(\)\_]+(\[[a-zA-Z9-9\(\)\_]+\])+/g) || []
+    let elements = statement.match(/[a-zA-Z0-9\(\)\_]+(\[[a-zA-Z0-9\(\)\_]+\])+/g) || []
 
     console.log("Elements")
     console.log(elements)

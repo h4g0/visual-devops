@@ -4,6 +4,11 @@
 
 This sample shows how to load Blockly in a [React](https://reactjs.org/) project.
 
+## TO do
+
+* No more than 1 inequation
+* Run model error in constant
+  
 ## Running the sample
 
 ### Installation
