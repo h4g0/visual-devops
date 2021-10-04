@@ -101,10 +101,11 @@ function get_indexes(statement: string): string[] {
 }
 
 function get_inequality_indexes(statement: string): string[] {
-    const indexes = statement.match(/each_index_[a-zA-Z0-9]+/g)
+    const indexes = statement.match(/each_index_[a-zA-Z0-9\_]+/g)
     const clean_indexes = indexes == undefined ? [] : indexes.map( (x: string) => x.replace("each_index_","")) 
 
-    return clean_indexes
+    const removed_reps = Array.from( new Set( ...clean_indexes) )
+    return removed_reps
 }
 
 export function generate_mul_operation(statement1: string, statement2: string,cols: collumns): string {
