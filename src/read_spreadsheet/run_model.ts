@@ -15,7 +15,14 @@ function replace_values(statement: string,columns: Map<string,string[]>,indexes:
     let new_statement = "" + statement
     let elements = statement.match(/[a-zA-Z\(\)\_]+(\[[a-zA-Z\(\)\_]+\])+/g) || []
 
+    console.log("Elements")
+    console.log(elements)
+    
     for(let element of elements) {
+
+        console.log("Element")
+        console.log(element)
+
         const col_indexes = get_col_indexes(element)
 
         if(col_indexes.length > 2) continue
@@ -123,7 +130,10 @@ function simplify_mults(statement: string): string {
         
     }
 
-    new_statement = new_statement.replace("X ", "X")
+
+    console.log("MULTS")
+    console.log(statement)
+    console.log(new_statement)
 
     return new_statement
 
@@ -131,6 +141,8 @@ function simplify_mults(statement: string): string {
 
 function get_values_expr(statement: string,variables: Map<string,string[]>,cols: Map<string,string[]>): [Map<string,number>,number] {
     
+    statement = statement.replace(/ X /g,"")
+
     console.log(statement)
 
     let values = get_all_variables_namedVector_objective(variables,cols)
@@ -229,6 +241,8 @@ function get_values_ineq(variables: Map<string,string[]>,cols: Map<string,string
 
 function parse_model(indexes: Map<string,string>,variables: Map<string,string[]>,columns: Map<string,string[]>,statement: string){
     const replaced_objective = replace_values(statement, columns,indexes)
+
+    console.log(replaced_objective)
     const simplified_subtrs_objective = simplify_subtrs(replaced_objective)
     const simpliflid_mult_objective = simplify_mults(simplified_subtrs_objective)
 
@@ -256,7 +270,7 @@ function parse_constraints(indexes: Map<string,string>,variables: Map<string,str
     for(let constraint of constraints){
         const values_constants = parse_model(indexes , variables, columns ,constraint)
 
-        const ineq = ( constraint.match(/(\<\=|\>\=|\=|\>|\<)/g) || ["="] )[0]
+        const ineq = ( constraint.match(/(\<\=|\>\=|\=|\>|\<)/g) || ["Error"] )[0]
         const values = values_constants[0]
         const constant = values_constants[1]
     
@@ -347,7 +361,7 @@ function convert_subjectTo_clp(simplex_model: any): any{
     const sign = value >= 0 ? "+" : "-"
     const abs = value >= 0 ? value : value * -1
 
-    return ` ${sign} ${y} ${x}`
+    return ` ${sign} ${abs} ${x}`
   }
   
     for(let i = 0; i < constraints.length; i++) {

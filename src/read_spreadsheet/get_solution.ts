@@ -1,6 +1,6 @@
 const axios = require('axios')
 
-const location = "http://localhost:3000/"
+const location = "https://read-xlsx.herokuapp.com/"
 
 export async function get_solution(model: string): Promise<any>{
     

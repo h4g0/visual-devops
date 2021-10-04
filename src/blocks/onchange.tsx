@@ -35,6 +35,8 @@ Blockly.Extensions.register('on_change_col_val', function() {
     });
   });
  
+
+  /*
   
 Blockly.Extensions.register('on_change_col_new_var', function() {
   // Example validation upon block change:
@@ -57,3 +59,5 @@ Blockly.Extensions.register('on_change_col_new_var', function() {
 
   });
 });
+
+*/

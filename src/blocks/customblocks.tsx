@@ -145,7 +145,7 @@ var ReactNewColVariableField = () => ({
         "options": []
       }
     ],
-    "extensions": ["dynamic_menu_extension_col_var","on_change_col_new_var"]
+    "extensions": ["dynamic_menu_extension_col_var"]
 })
 
 

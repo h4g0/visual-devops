@@ -110,7 +110,8 @@ LPGenerator['new_single_variable'] = function(block: any){
 LPGenerator['operation'] = function (block: any) { 
     const state: any = dataStore.getState()
     const cols: any = state.columns
-
+    const variables: any = state.variables
+    
     const prev_statement =  LPGenerator.valueToCode(block, 'PREV_STATEMENT', LPGenerator.PRECEDENCE) || 'null'
     const next_statement =  LPGenerator.valueToCode(block, 'NEXT_STATEMENT', LPGenerator.PRECEDENCE) || 'null'
     
@@ -119,7 +120,7 @@ LPGenerator['operation'] = function (block: any) {
     
     const operation = block.getFieldValue('OPERATION')
 
-    const constraints = gen_operation(operation, cols, prev_statement,next_statement)
+    const constraints = gen_operation(operation, cols, variables,prev_statement,next_statement)
 
     console.log(constraints)
 

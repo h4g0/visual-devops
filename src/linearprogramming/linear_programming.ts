@@ -1,3 +1,5 @@
+import { booleanLiteral } from "@babel/types"
+
 const single_var = "single"
 const col_var = "col"
 const mat_var = "mat"
@@ -112,8 +114,8 @@ export function generate_mul_operation(statement1: string, statement2: string,co
     if( isNumerical(statement1) && isNumerical(statement2) ) 
             return "" + parseFloat(statement1) * parseFloat(statement2) 
     
-    if( isNumerical(statement1) ) return `( ${statement1} ) X ${statement2}`
-    if( isNumerical(statement2) ) return `${statement1} X ( ${statement2} )`
+    if( isNumerical(statement1) ) return `${statement1} X ( ${statement2} )`
+    if( isNumerical(statement2) ) return `( ${statement1} ) X ${statement2} `
 
     const statement1_removed_sign_spaces = statement1.replace(/\+/g, "").replace(/\- /g,"-")
     const statement2_removed_sign_spaces = statement2.replace(/\+/g, "").replace(/\- /g,"-")
@@ -122,6 +124,8 @@ export function generate_mul_operation(statement1: string, statement2: string,co
     const statement2_elements = statement2_removed_sign_spaces.split(" ").filter( ( x: string ) => x != " " && x != "" )
     
     let expr = ""
+
+    if( statement1_elements.length == 1 || statement2_elements.length == 1) {
 
     for( let raw_element1 of statement1_elements ) {
         const sign_1 = ( raw_element1.match(/\-/) || [] ).length == 0 ? 1 : -1
@@ -138,6 +142,30 @@ export function generate_mul_operation(statement1: string, statement2: string,co
             if(sign == 1)  expr += ` +  ( ${element1} X ${element2} )`
         }
     }
+
+    }
+
+    else if(statement1_elements.length == statement2_elements.length) {
+        for( let i = 0; i < statement1_elements.length; i++ ) {
+            const raw_element1 = statement1_elements[i]
+            const raw_element2 = statement2_elements[i]
+
+            const sign_1 = ( raw_element1.match(/\-/) || [] ).length == 0 ? 1 : -1
+            const element1 = raw_element1.replace(/\-/g,"")
+    
+            const sign_2 = ( raw_element2.match(/\-/) || [] ).length == 0 ? 1 : -1
+            const element2 = raw_element2.replace(/\-/g,"")
+                
+            const sign = sign_1 * sign_2
+    
+            if(sign == -1) expr += ` -  ( ${element1} X ${element2} )`
+    
+            if(sign == 1)  expr += ` +  ( ${element1} X ${element2} )`
+            
+        }
+    }
+
+    else alert("Couldn't compile model do to differents sized columns being multiplied")
    
     expr = expr.replace(/ \+  \+ /g,"+")
     expr = expr.replace(/ \-  \- /g,"+")
@@ -157,13 +185,20 @@ function get_index(exp: string): string {
 }
 
 function get_non_expanded_expr(statement: string): string[] {
-    const index_exp = /sum_index_[a-zA-Z0-9]+/
+    const index_exp = /sum_index_[a-zA-Z0-9\_]+/
     //const non_exp = statement.match(/[a-zA-Z0-9]+(\[index_[a-zA-Z0-9]+\])+/g) || []
-    const non_exp = statement.match(/[a-zA-Z]+(\[sum_index_[a-zA-Z0-9]+\])+/g) || []
+    const non_exp = statement.match(/[a-zA-Z0-9\_]+(\[sum_index_[a-zA-Z0-9]+\])+/g) || []
 
     console.log((non_exp))
 
     return non_exp
+}
+
+function get_vars_cols(statement: string): string[] {
+    //const non_exp = statement.match(/[a-zA-Z0-9]+(\[index_[a-zA-Z0-9]+\])+/g) || []
+    const vars_cols_exp = statement.match(/[a-zA-Z0-9\_]+(\[[a-zA-Z0-9\_]+\])+/g) || []
+
+    return vars_cols_exp.map( (x: string) => x.replace(/\[.*\]/g,""))
 }
 
 export function fix_expression(expr: string,cols: collumns): string {
@@ -177,7 +212,6 @@ export function fix_expression(expr: string,cols: collumns): string {
     console.log(expr)
     expr = expr.replace(/^[ ]\+/g,"")
 
-    console.log("repalce +")
     console.log(expr)
 
     let new_expr: string = expr
@@ -202,7 +236,7 @@ export function fix_expression(expr: string,cols: collumns): string {
     }
 
     console.log("fix expression")
-
+    
     return new_expr
 }
 
@@ -293,13 +327,29 @@ export function generate_inequality_operation(operation: string,cols: collumns, 
     return constraints
 }
 
-export function gen_operation(op: string, cols: collumns, prev_statement: string, next_statement: string){
+export function gen_operation(op: string, cols: collumns, variables: Map<string,string[]>, prev_statement: string, next_statement: string){
     const indequality_ops= ["<",">","<=",">=","="]
 
     if (indequality_ops.includes(op)) return generate_inequality_operation(op, cols,prev_statement,next_statement).join("\n")
 
-    if(op == "X") return generate_mul_operation(prev_statement,next_statement,cols)
-    if(op == "+") return []
+    if(op == "X") {
+        const vars_cols = get_vars_cols(prev_statement)
+        const is_var_prev_statement = vars_cols.reduce( (acc: boolean,curr: string) => variables.get(curr) != null || acc, false)
+        
+        console.log("CHECKING STATEMENTS")
+        console.log(variables)
+        console.log(vars_cols)
+        console.log(is_var_prev_statement)
+        console.log(prev_statement)
+        console.log(next_statement)
+
+        console.log()
+        if(is_var_prev_statement)
+            return generate_mul_operation(next_statement,prev_statement,cols)
+        else
+            return generate_mul_operation(prev_statement,next_statement,cols)
+    }
+    if(op == "+") return prev_statement + " + " + next_statement
 
     return ""
 }
