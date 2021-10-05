@@ -336,7 +336,9 @@ var ReactConstraintsField = {
     }
   ],
   previousStatement: "variables",
-  nextStatement: "objective"
+  nextStatement: "objective",
+  "extensions": ["on_change_cons"]
+
 }
 
 
@@ -583,6 +585,7 @@ var ReactObjectiveField = {
      ],
     "input": "ACTION",
     "previousStatement": "objective",
+    "extensions": ["on_change_obj"]
 }
 
 Blockly.Blocks['objective'] = {

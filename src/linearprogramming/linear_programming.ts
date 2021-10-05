@@ -37,6 +37,37 @@ export function generate_matrix_variable_index(name: string,col1: string, col2: 
     return [name, [col1,col2]]
 
 }
+export function generate_matrix_variable_prety(cols: collumns, name: string,col1: string, col2: string): string {
+    let variable = ""
+
+    const col1_items = cols.get(col1)
+    const col2_items = cols.get(col2)
+
+    if( col1_items == undefined || col2_items == undefined ) return variable
+
+    for (let item1 of col1_items) {
+        for (let item2 of col2_items) {
+            variable += "  " + `${name}[${item1}][${item2}]`
+        }
+        variable += "\n\n"
+    }
+
+    return variable
+}
+
+
+export function  generate_col_variable_prety(cols: collumns, name: string, col: string): string {
+    let variable = ""
+
+    const col_items = cols.get(col)
+    
+    if (col_items == undefined) return variable
+
+    for( let item of  col_items)
+        variable += "  " + `${name}[${item}]`
+
+    return variable
+}
 
 
 export function generate_matrix_variable(cols: collumns, name: string,col1: string, col2: string): variables {

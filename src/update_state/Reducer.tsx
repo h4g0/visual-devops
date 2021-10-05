@@ -60,6 +60,7 @@ export const dataReducer = function (state = default_state , action: any) {
             return new_state
         case Types.CLEAR_OBJECTIVE:
             new_state.objective = ""
+            new_state.goal = ""
             return new_state
         case Types.CLEAR:
             new_state.variables =  new Map<string, string[]>()

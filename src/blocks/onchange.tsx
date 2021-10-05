@@ -1,8 +1,8 @@
 import * as Blockly from 'blockly/core';
-import { collumn, collumns, generate_col_variable_index } from '../linearprogramming/linear_programming';
+import { collumn, collumns, fix_expression, generate_col_variable_index } from '../linearprogramming/linear_programming';
 
 import dataStore from './../update_state/Store'
-import { clearVariables, updateBlockIndex, updateVariables } from '../update_state/Actions';
+import { clearConstraints, clearObjective, clearVariables, updateBlockIndex, updateConstraints, updateGoal, updateObjective, updateVariables } from '../update_state/Actions';
 import { LPGenerator } from '../generator/generator';
 
 
@@ -34,10 +34,50 @@ Blockly.Extensions.register('on_change_col_val', function() {
       const variables = LPGenerator.statementToCode(this, 'VARIABLES', LPGenerator.PRECEDENCE) || 'null'   
     });
   });
+
+  Blockly.Extensions.register('on_change_cons', function() {
+    // Example validation upon block change:
+      //@ts-ignore
+    this.setOnChange(function(changeEvent) {
+      dataStore.dispatch( clearConstraints( {} ) )
+      //@ts-ignore
+      const constraints = LPGenerator.statementToCode(this, 'CONSTRAINTS', LPGenerator.PRECEDENCE) || 'null'
+      const constraints_list = ( constraints as string ).split("\n")
+  
+      if(constraints_list.length == 1 && constraints_list[0] == "null") return 
+
+      dataStore.dispatch( updateConstraints( { constraints: constraints_list } ) )    
+    });
+  });
+
+
+  Blockly.Extensions.register('on_change_obj', function() {
+    // Example validation upon block change:
+      //@ts-ignore
+    this.setOnChange(function(changeEvent) {
+      dataStore.dispatch( clearObjective( {} ) )
+
+      const state = dataStore.getState()
+      const cols = state.columns
+      //@ts-ignore
+      const objective =  LPGenerator.valueToCode(this, 'OBJECTIVE', LPGenerator.PRECEDENCE) || 'null'
+      //@ts-ignore
+      const obj =  this.getFieldValue('OBJ')
+      const fixed_objective = fix_expression(objective, cols)
+
+      if(fixed_objective == "null") return
+      
+      dataStore.dispatch( updateGoal( {goal: obj } ) )
+      dataStore.dispatch( updateObjective( {objective: fixed_objective} ) ) 
+    
+  });
+});
  
 
-  /*
+
+
   
+/*
 Blockly.Extensions.register('on_change_col_new_var', function() {
   // Example validation upon block change:
     //@ts-ignore
