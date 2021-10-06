@@ -60,7 +60,7 @@ export function  generate_col_variable_prety(cols: collumns, name: string, col: 
     let variable = ""
 
     const col_items = cols.get(col)
-    
+
     if (col_items == undefined) return variable
 
     for( let item of  col_items)
@@ -252,6 +252,7 @@ export function fix_expression(expr: string,cols: collumns): string {
     expr = expr.replace(/ \-  \+ /g,"-")
     console.log(expr)
     expr = expr.replace(/^[ ]\+/g,"")
+    expr = expr.replace(/\n[ ]\+/g,"\n")
 
     console.log(expr)
 

@@ -3,7 +3,7 @@ import { generate_col_variable, generate_matrix_variable } from "../linearprogra
 import { get_solution } from "./get_solution";
 
 const MIN_VAR = 0
-const MAX_VAR = 10000
+const MAX_VAR = 100000
 
 function round_decimal(x: number): number {
     //@ts-ignore
@@ -86,7 +86,7 @@ function simplify_mults(statement: string): string {
 
     let mults = []
     
-    const col_expr = `[a-zA-Z]+(\\[.*\\]])+`
+    const col_expr = `[a-zA-Z0-9\_]+(\\[.*\\]])+`
     const num_expr = `[0-9]+((\\.)[0-9]+)*`
     
     const mults_rigth = statement.match(new RegExp(`\\([^\\)]*\\) X ${num_expr}`,"g")) || []
@@ -143,6 +143,7 @@ function get_values_expr(statement: string,variables: Map<string,string[]>,cols:
     
     statement = statement.replace(/ X /g,"")
 
+    console.log("STATEMENT")
     console.log(statement)
 
     let values = get_all_variables_namedVector_objective(variables,cols)
@@ -151,23 +152,24 @@ function get_values_expr(statement: string,variables: Map<string,string[]>,cols:
     new_statement = new_statement.replace(/\-[ ]*/g,"-")
 
     const num_expr = `[0-9]+((\\.)[0-9]+)*`
-    const var_expr = `[a-zA-Z]+(\\[[^\\]]*\\])+`
+    const var_expr = `[a-zA-Z0-9\_]+(\\[[^\\]]*\\])+`
     const val_expr = `([\\+\\-])?(${num_expr})?${var_expr}`
 
     
     const values_list = new_statement.match(new RegExp(val_expr,"g")) || []
 
     for(let value of values_list) {
+        console.log(value)
         new_statement = new_statement.replace(value,"")
 
         const sign = value[0] == "-" ? -1 : 1
         value = value.replace(/[\+\-]/g,"")
 
-        const numerical_value = parseFloat( (value.match(new RegExp(num_expr)) || ["1"])[0] )
+        const numerical_value = parseFloat( (value.match(new RegExp(`^${num_expr}`)) || ["1"])[0] )
 
         const variables = ( value.match(new RegExp(var_expr)) || [] )
         if( variables.length == 0) continue
-        const variable = variables[0].replace(/\]/g,"").replace(/\[/g,"_")
+        const variable = variables[0].replace(/\]/g,"").replace(/\[/g,"_").replace(new RegExp(`^${num_expr}`),"")
 
         const past_value = values.get(variable) || 0
 
@@ -177,6 +179,7 @@ function get_values_expr(statement: string,variables: Map<string,string[]>,cols:
     const numerical_expr = `([\\+\\-])?(${num_expr})`
     const numerical_values = new_statement.match(new RegExp(numerical_expr,"g")) || []
 
+    console.log(numerical_values)
     const constant = numerical_values.reduce( (acc: number, curr: string) => {
         const sign = curr[0] == "-" ? -1 : 1
         curr = curr.replace(/[\+\-]/g,"")

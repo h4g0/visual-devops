@@ -4,6 +4,8 @@ export function find_errors_variables(variable: string,cols: Map<string,string[]
     
     if(cols.get(variable) != null) return `Error: a column with the name ${variable} already exists`
     
+    if(variable.replace(/[ ]/g,"").length == 0) return "Error: empty variable name"
+
     return ""
 }
 
@@ -55,11 +57,11 @@ function var_multiplication(constraint: string,variables: Map<string,string[]>):
 }
 
 function single_value(constraint: string){
-    const comas = /\,/g
+    const empty_indexes = /\[\]/g
     const raw_indexes = /index/g
     
-    if( constraint.match(comas) != null) return true
-    if( constraint.match(raw_indexes)) return true
+    if( constraint.match(empty_indexes) != null) return true
+    if( constraint.match(raw_indexes) != null) return true
     
 
     return false
