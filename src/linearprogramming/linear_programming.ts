@@ -205,8 +205,6 @@ export function generate_mul_operation(statement1: string, statement2: string,co
             
         }
     }
-
-    else alert("Couldn't compile model do to differents sized columns being multiplied")
    
     expr = expr.replace(/ \+  \+ /g,"+")
     expr = expr.replace(/ \-  \- /g,"+")
