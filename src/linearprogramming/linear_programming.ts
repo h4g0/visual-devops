@@ -217,7 +217,9 @@ export function generate_mul_operation(statement1: string, statement2: string,co
 
 function get_index(exp: string): string {
     const index_exp = /index_[a-zA-Z0-9]+/
-    const index = exp.match(index_exp) || []
+    const index: string[] = exp.match(index_exp) || []
+    
+
     const clean_index = index[0].replace("sum_index_","").replace("each_index_","").replace("index_","")
 
     return clean_index

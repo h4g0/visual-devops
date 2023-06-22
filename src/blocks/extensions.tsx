@@ -3,6 +3,8 @@ import { collumn, collumns, model1_cols } from '../linearprogramming/linear_prog
 
 import dataStore from './../update_state/Store'
 
+
+/*
 Blockly.Extensions.register('dynamic_menu_extension_col_var',
 
 function() {
@@ -339,7 +341,7 @@ Blockly.Extensions.register('dynamic_menu_extension_two_cols',
 
 
 
-
+*/
 
 
   

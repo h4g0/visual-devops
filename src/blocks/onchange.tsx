@@ -5,7 +5,7 @@ import dataStore from './../update_state/Store'
 import { clearConstraints, clearObjective, clearVariables, updateBlockIndex, updateConstraints, updateGoal, updateObjective, updateVariables } from '../update_state/Actions';
 import { LPGenerator } from '../generator/generator';
 
-
+/*
 Blockly.Extensions.register('on_change_col_val', function() {
     // Example validation upon block change:
       //@ts-ignore
@@ -75,7 +75,7 @@ Blockly.Extensions.register('on_change_col_val', function() {
  
 
 
-
+*/
   
 /*
 Blockly.Extensions.register('on_change_col_new_var', function() {

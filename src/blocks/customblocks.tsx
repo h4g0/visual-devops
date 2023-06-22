@@ -31,19 +31,20 @@ import { collumn, collumns, model1_cols } from '../linearprogramming/linear_prog
 import dataStore from './../update_state/Store'
 
 // Since we're using json to initialize the field, we'll need to import it.
-import './extensions'
-import './onchange'
+
 import '../fields/BlocklyReactField';
 import '../fields/DateField';
 import { updateBlockIndex } from '../update_state/Actions';
 
-let var_creation_color: string = "#C2948A"
+let var_creation_color: string = "#f5b261"
 let value_color: string = "#7EA8BE"
 let constr_obj_color: string = "#326886"
 let operation_color: string = "#BBB193"
-let model_block_variables_color: string = "#B2796C"
-let model_blocks_color_constraints: string  = "#28536B"
-let model_blocks_color_objective: string = "#7A523E"
+let model_block_variables_color: string = "#dd3f34"
+let model_blocks_color_constraints: string  = "#022c5c"
+let model_blocks_color_step: string  = "#218dbb"
+
+let model_blocks_color_objective: string = "#ad4017"
 
 
 let index_cols: any = [["Compartment", "Compartment"],["Cargo","Cargo"],["Supplier","Supplier"],["Plant","Plant"],
@@ -128,24 +129,50 @@ Blockly.Blocks['test_react_date_field'] = {
   }
 };
 
+
+var ReactOnField = () => ({
+  "message0": "on: %1",
+  "nextStatement": "ACTION",
+  "previousStatement": "ACTION",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "VAR",
+      "options": [["repository_dispatch","repository_dispatch"]]
+    }
+  ],
+  "message1": "environment: %1",
+  "args1": [
+    {
+      "type": "input_statement",
+      "name": "VARIABLES"
+    }
+  ],
+})
+
+Blockly.Blocks['on'] = {
+  init: function() {
+    //@ts-ignore
+    this.jsonInit(ReactOnField());
+    //@ts-ignore
+    this.setStyle('loop_blocks');
+    //@ts-ignore
+    this.setColour(var_creation_color)
+  }
+};
+
+
 var ReactNewColVariableField = () => ({
-    "message0": "new column variable %1 index %2",
+    "message0": "new col variable: %1",
     "nextStatement": "ACTION",
     "previousStatement": "ACTION",
     "args0": [
       {
-        "type": "field_input",
-        "name": "VARNAME",
-        "text": "varname",
-        "spellcheck": false
-      },
-      {
         "type": "input_dummy",
         "name": "COL",
-        "options": []
+        "options": [["r","repository_dispatch"]]
       }
     ],
-    "extensions": ["dynamic_menu_extension_col_var"]
 })
 
 
@@ -161,9 +188,8 @@ Blockly.Blocks['new_col_variable'] = {
 };
 
 var ReactNewSingleVariableField = {
-  "message0": "new single variable %1",
-  "nextStatement": "ACTION",
-  "previousStatement": "ACTION",
+  "message0": "Tool/Framework: %1",
+  "output": "ACTION",
   "args0": [
     {
       "type": "field_input",
@@ -185,6 +211,39 @@ init: function() {
 }
 };
 
+
+var ReactEnvironmentField = {
+  "previousStatement": "ACTION",
+  "nextStatement": "ACTION",
+  "message0": "Environment:",
+  "message1": "Key: %1 Value: %2",
+  "args1": [
+    {
+      "type": "field_input",
+      "name": "VARNAME",
+      "text": "varname",
+      "spellcheck": false
+    },
+    {
+      "type": "field_input",
+      "name": "VARNAME",
+      "text": "varname",
+      "spellcheck": false
+    }
+  ]
+}
+
+Blockly.Blocks['envrionment'] = {
+init: function() {
+  //@ts-ignore
+  this.jsonInit(ReactEnvironmentField);
+  //@ts-ignore
+  this.setStyle('loop_blocks');
+  //@ts-ignore
+  this.setColour(var_creation_color)
+}
+};
+
 /*let optreactcolfield: any = Array.from(model1_cols.keys()).map((val,index) => {
   return [val, val]
 })*/
@@ -199,7 +258,6 @@ var ReactColField = {
       "options": []
     }
   ],
-"extensions": ["dynamic_menu_extension_col"]
 }
 
 Blockly.Blocks['col_address'] = {
@@ -223,7 +281,6 @@ var ReactColValField = {
       "options": []
     }
   ],
-  "extensions": ["dynamic_menu_extension_col_val","on_change_col_val"]
 
 }
 
@@ -246,20 +303,11 @@ var ReactNewMatrixVariableField = (index_cols: any) => ({
     "previousStatement": "ACTION",
     "args0": [
       {
-        "type": "field_input",
-        "name": "VARNAME",
-        "text": "varname",
+        "type": "input_dummy",
+        "name": "COL1",
+        "options": [["",""]],
       }
     ],
-  "message1": "columns : %1",
-  "args1": [
-    {
-      "type": "input_dummy",
-      "name": "COL1",
-      "options": [["",""]],
-    }
-  ],
-  "extensions": ["dynamic_menu_extension_two_cols"]
 
 })
 
@@ -284,7 +332,6 @@ var ReactMatrixVariableField = (variables: any,index1: any, index2: any) => ({
       "options": []
     }
   ],
-  "extensions": ["dynamic_menu_extension_matrix_var_val","on_change_col_val"]
 })
 
 Blockly.Blocks['matrix_variable'] = {
@@ -302,15 +349,25 @@ init: function() {
 
 var ReactVariablesField = {
   "type": "variables",
-  "message0": "Variables %1",
+  "message0": "Pipeline %1",
   "args0": [
     {
       "type": "input_statement",
       "name": "VARIABLES"
     }
   ],
-  nextStatement: "variables",
-  "extensions": ["on_change_vals"]
+
+  "message1": "name: %1",
+  "args1": [
+    {
+      "type": "field_input",
+      "name": "VARNAME",
+      "text": "varname",
+      "spellcheck": false
+    }
+  ]
+
+ // nextStatement: "variables",
 }
 
 
@@ -328,7 +385,7 @@ init: function() {
 
 var ReactConstraintsField = {
   "type": "constraints",
-  "message0": "Constraints %1",
+  "message0": "Jobs: %1",
   "args0": [
     {
       "type": "input_statement",
@@ -337,7 +394,6 @@ var ReactConstraintsField = {
   ],
   previousStatement: "variables",
   nextStatement: "objective",
-  "extensions": ["on_change_cons"]
 
 }
 
@@ -347,6 +403,93 @@ Blockly.Blocks['constraints'] = {
 init: function() {
   //@ts-ignore
   this.jsonInit(ReactConstraintsField);
+  //@ts-ignore
+  this.setStyle('loop_blocks');
+    //@ts-ignore
+    this.setColour(model_blocks_color_constraints)
+}
+};
+
+
+
+var ReactStepField = {
+  "type": "constraints",
+  "message0": "Step:",
+  "message1": "Comments: %1",
+  "args1": [
+    {
+      "type": "field_input",
+      "name": "VARNAME",
+      "text": "varname",
+      "spellcheck": false
+    }],
+    "message2": "Tool/Framework: %1",
+    "args2": [
+      {
+        "type": "input_value",
+        "name": "CONSTRAINTS"
+      }],
+      "message3": "Arguments: %1",
+      "args3": [
+        {
+          "type": "field_input",
+          "name": "VARNAME",
+          "text": "varname",
+          "spellcheck": false
+        }],
+  "message4": "Environment: %1",
+  "args4": [
+    {
+      "type": "input_statement",
+      "name": "CONSTRAINTS"
+    }
+  ],
+  previousStatement: "ACTION",
+  nextStatement: "ACTION",
+
+}
+
+
+
+Blockly.Blocks['step'] = {
+init: function() {
+  //@ts-ignore
+  this.jsonInit(ReactStepField);
+  //@ts-ignore
+  this.setStyle('loop_blocks');
+    //@ts-ignore
+  this.setColour(model_blocks_color_step)
+}
+};
+
+var ReactJobsField = {
+  "message0": "Job %1:",
+  "args0": [
+    {
+      "type": "field_input",
+      "name": "VARNAME",
+      "text": "varname",
+      "spellcheck": false
+    }
+  ],
+  "message1": "%1",
+  "args1": [
+    {
+      "type": "input_statement",
+      "name": "CONSTRAINTS"
+    }
+  ],
+  previousStatement: "ACTION",
+  nextStatement: "ACTION",
+
+}
+
+
+
+Blockly.Blocks['jobs'] = {
+init: function() {
+  //@ts-ignore
+  this.jsonInit(ReactJobsField);
   //@ts-ignore
   this.setStyle('loop_blocks');
     //@ts-ignore
@@ -364,7 +507,6 @@ var ReactColVariableField = (variables: any,index_cols: any) => ({
       "options": []
     }
   ],
-  "extensions": ["dynamic_menu_extension_col_var_val","on_change_col_val"]
 
 })
 
@@ -390,7 +532,6 @@ var ReactSingleVariableField = (variables: any) => ({
       "options": []
     }
   ],
-  "extensions": ["dynamic_menu_extension_single_var_val"]
 })
 
 Blockly.Blocks['single_variable'] = {
@@ -420,7 +561,6 @@ var ReactForallField = (opt: any) => ({
     "output": "ACTION",
 
 })
-
 Blockly.Blocks['forall'] = {
   init: function() {
     //@ts-ignore
@@ -520,7 +660,7 @@ Blockly.Blocks['operation'] = {
 
 
 var ReactConstraintField = {
-  "message0": "Constraint %1",
+  "message0": "Job %1",
   "args0": [
     {
       "type": "input_value",
@@ -585,7 +725,6 @@ var ReactObjectiveField = {
      ],
     "input": "ACTION",
     "previousStatement": "objective",
-    "extensions": ["on_change_obj"]
 }
 
 Blockly.Blocks['objective'] = {
@@ -598,3 +737,31 @@ Blockly.Blocks['objective'] = {
     this.setColour(model_blocks_color_objective)
   }
 };
+
+
+
+var ReactNeedsField = {
+  "message0": "Needs %1",
+  "args0": [
+      {
+        "type": "input_value",
+        "name": "OBJECTIVE",
+      }
+     ],
+    "input": "ACTION",
+    "previousStatement": "ACTION",
+    "nextStatement": "ACTION",
+
+}
+
+Blockly.Blocks['needs'] = {
+  init: function() {
+    //@ts-ignore
+    this.jsonInit(ReactNeedsField);
+    //@ts-ignore
+    this.setStyle('loop_blocks');
+    //@ts-ignore
+    this.setColour(model_blocks_color_objective)
+  }
+};
+

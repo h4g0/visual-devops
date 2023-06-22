@@ -70,9 +70,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <Provider store={dataStore} >
       <div>
-        <Model generator={this.generateCode}/>
           <BlocklyComponent ref={this.simpleWorkspace}
           readOnly={false} trashcan={true} media={'media/'}
           move={{
@@ -86,21 +84,21 @@ class App extends React.Component {
 </xml>
       `}>
             <Block type = "variables" />
-            <Block type = "constraints" />
-            <Block type = "constraint" /> 
-            <Block type = "objective" />
+          
+            <Block type= "on"/>
+          
+            <Block type="jobs"/>
+
+            <Block type="step"/>
+
             <Block type = "new_single_variable" />
-            <Block type = "new_col_variable" />
-            <Block type = "new_matrix_variable"/>
-            <Block type = "col_val_address" />
-            <Block type = "single_variable" />
-            <Block type = "col_variable"/>
-            <Block type = "matrix_variable" />
-            <Block type = "number" />
-            <Block type = "operation" />
+           
+            <Block type= "envrionment" />
+
+            <Block type= "needs" />
+            
           </BlocklyComponent>
       </div>
-      </Provider>
     );
   }
 }

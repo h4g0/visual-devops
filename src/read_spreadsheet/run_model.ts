@@ -115,7 +115,7 @@ function simplify_mults(statement: string): string {
             const numerical_values = element.match(new RegExp(num_expr,"g")) || []
 
             if( numerical_values.length > 0 ) {
-                const new_element = element.replace(numerical_values[0], "" + parseFloat(numerical_values[0]) * parseFloat(part2))
+                const new_element = element.replace(numerical_values[0] || "", "" + parseFloat(numerical_values[0] || "0") * parseFloat(part2))
                 new_elements = new_elements.replace(element,new_element)
             }
 
@@ -169,7 +169,7 @@ function get_values_expr(statement: string,variables: Map<string,string[]>,cols:
 
         const variables = ( value.match(new RegExp(var_expr)) || [] )
         if( variables.length == 0) continue
-        const variable = variables[0].replace(/\]/g,"").replace(/\[/g,"_").replace(new RegExp(`^${num_expr}`),"")
+        const variable = (variables[0] || "").replace(/\]/g,"").replace(/\[/g,"_").replace(new RegExp(`^${num_expr}`),"")
 
         const past_value = values.get(variable) || 0
 
@@ -180,12 +180,14 @@ function get_values_expr(statement: string,variables: Map<string,string[]>,cols:
     const numerical_values = new_statement.match(new RegExp(numerical_expr,"g")) || []
 
     console.log(numerical_values)
-    const constant = numerical_values.reduce( (acc: number, curr: string) => {
+    const constant = 0 
+    
+    /*numerical_values.reduce( (acc: number, curr: string) => {
         const sign = curr[0] == "-" ? -1 : 1
         curr = curr.replace(/[\+\-]/g,"")
 
         return acc + parseFloat(curr) * sign
-    }, 0)
+    }, 0)*/
 
 
     return [values,constant]
