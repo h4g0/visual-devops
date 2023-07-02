@@ -131,7 +131,7 @@ Blockly.Blocks['test_react_date_field'] = {
 
 
 var ReactOnField = () => ({
-  "message0": "on: %1",
+  "message0": "On: %1",
   "nextStatement": "ACTION",
   "previousStatement": "ACTION",
   "args0": [
@@ -141,7 +141,7 @@ var ReactOnField = () => ({
       "options": [["repository_dispatch","repository_dispatch"]]
     }
   ],
-  "message1": "environment: %1",
+  "message1": "Environment: %1",
   "args1": [
     {
       "type": "input_statement",
@@ -215,9 +215,8 @@ init: function() {
 var ReactEnvironmentField = {
   "previousStatement": "ACTION",
   "nextStatement": "ACTION",
-  "message0": "Environment:",
-  "message1": "Key: %1 Value: %2",
-  "args1": [
+  "message0": "Key: %1 Value: %2",
+  "args0": [
     {
       "type": "field_input",
       "name": "VARNAME",
@@ -357,7 +356,7 @@ var ReactVariablesField = {
     }
   ],
 
-  "message1": "name: %1",
+  "message1": "Name: %1",
   "args1": [
     {
       "type": "field_input",
@@ -415,7 +414,7 @@ init: function() {
 var ReactStepField = {
   "type": "constraints",
   "message0": "Step:",
-  "message1": "Comments: %1",
+  "message1": "Name: %1",
   "args1": [
     {
       "type": "field_input",
